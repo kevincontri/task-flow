@@ -1,5 +1,8 @@
 from pydantic_settings import BaseSettings
+from pathlib import Path
+
 # Reads environment variables with pydantic-settings
+
 
 class Settings(BaseSettings):
     DATABASE_URL: str
@@ -7,8 +10,9 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
+
     class Config:
-        env_file = ".env"
+        env_file = Path(__file__).parent.parent.parent.parent / ".env"
 
 
 settings = Settings()
