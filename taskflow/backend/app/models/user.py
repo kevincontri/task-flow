@@ -4,7 +4,7 @@ from sqlalchemy.sql import func
 from datetime import datetime
 from typing import List
 
-from app.core.database import Base
+from ..core.database import Base
 
 
 class User(Base):

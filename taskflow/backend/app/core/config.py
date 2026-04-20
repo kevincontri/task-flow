@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = Field(min_length=15)
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    PORT: int = 8000
 
     class Config:
         env_file = Path(__file__).parent.parent.parent.parent / ".env"

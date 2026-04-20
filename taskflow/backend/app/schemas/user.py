@@ -14,14 +14,13 @@ class UserCreate(UserBase):
         description="Password of the user",
         min_length=8,
         max_length=128,
-        pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,128}$",
     )
 
 
 class UserResponse(UserBase):
     id: int
     created_at: AwareDatetime
-    
+
     model_config = ConfigDict(from_attributes=True)
 
 
