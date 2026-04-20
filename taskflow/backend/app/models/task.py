@@ -15,6 +15,12 @@ class TaskStatus(enum.Enum):
     DONE = "done"
 
 
+class TaskPriority(enum.Enum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+
+
 class Task(Base):
     __tablename__ = "task"
 
@@ -25,7 +31,7 @@ class Task(Base):
         DateTime(timezone=True), server_default=func.now()
     )
     status: Mapped[TaskStatus] = mapped_column(Enum(TaskStatus), nullable=False)
-    priority: Mapped[str] = mapped_column(String, nullable=False)
+    priority: Mapped[TaskPriority] = mapped_column(Enum(TaskPriority), nullable=False)
     deadline: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
 
     project_id: Mapped[int] = mapped_column(ForeignKey("project.id"))
