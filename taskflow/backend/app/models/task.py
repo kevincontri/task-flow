@@ -5,7 +5,6 @@ from datetime import datetime
 from typing import List
 import enum
 
-
 from app.core.database import Base
 
 

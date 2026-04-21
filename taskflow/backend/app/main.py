@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from .core.database import engine, Base
+from .models import User, Project, Task, Comment
 from .routes import auth
 
 @asynccontextmanager

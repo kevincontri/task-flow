@@ -17,3 +17,4 @@ class Comment(Base):
     task_id: Mapped[int] = mapped_column(ForeignKey("task.id"))
     author_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     task: Mapped["Task"] = relationship("Task", back_populates="comments")
+    author: Mapped["User"] = relationship("User", back_populates="comments")
