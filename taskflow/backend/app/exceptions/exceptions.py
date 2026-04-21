@@ -1,6 +1,18 @@
 class DuplicateError(Exception):
-  pass
+    pass
+
 
 class InvalidCredentials(Exception):
-  pass
-  
+    pass
+
+
+class DatabaseError(Exception):
+    pass
+
+
+class NotFoundError(Exception):
+    pass
+
+
+class ForbiddenAccess(Exception):
+    pass

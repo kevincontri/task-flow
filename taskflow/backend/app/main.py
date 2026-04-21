@@ -3,6 +3,8 @@ from fastapi import FastAPI
 from .core.database import engine, Base
 from .models import User, Project, Task, Comment
 from .routes import auth
+from .routes import projects
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -13,6 +15,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(auth.router)
+app.include_router(projects.router)
+
 
 @app.get("/health")
 async def health():

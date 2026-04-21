@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, AwareDatetime
+from pydantic import BaseModel, Field, AwareDatetime, ConfigDict
 
 
 class ProjectBase(BaseModel):
@@ -19,9 +19,10 @@ class ProjectUpdate(ProjectBase):
     description: str | None = Field(
         default=None, description="Description of the project"
     )
-    owner_id: int | None = Field(default=None, description="ID of the project owner")
+
 
 class ProjectResponse(ProjectBase):
+    model_config = ConfigDict(from_attributes=True)
     id: int = Field(..., description="ID of the project")
     created_at: AwareDatetime = Field(..., description="Creation date of the project")
     owner_id: int = Field(..., description="ID of the project owner")

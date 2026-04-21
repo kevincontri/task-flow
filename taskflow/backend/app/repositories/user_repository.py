@@ -23,6 +23,10 @@ async def create_user(
         hashed_password=hashed_password,
     )
     session.add(db_user)
-    await session.commit()
-    await session.refresh(db_user)
-    return db_user
+    try:
+        await session.commit()
+        await session.refresh(db_user)
+        return db_user
+    except Exception:
+        await session.rollback()
+        raise

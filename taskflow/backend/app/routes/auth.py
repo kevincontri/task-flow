@@ -8,7 +8,7 @@ from ..exceptions.exceptions import DuplicateError, InvalidCredentials
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/register", response_model=UserResponse)
+@router.post("/register", response_model=UserResponse, status_code=201)
 async def register_user(user: UserCreate, session: AsyncSession = Depends(get_db)):
     try:
         db_user = await register(session, user)
@@ -17,7 +17,7 @@ async def register_user(user: UserCreate, session: AsyncSession = Depends(get_db
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.post("/login", response_model=TokenResponse)
+@router.post("/login", response_model=TokenResponse, status_code=200)
 async def login_user(user: LoginRequest, session: AsyncSession = Depends(get_db)):
     try:
         return await login(session, user.email, user.password)
