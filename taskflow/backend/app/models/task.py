@@ -3,21 +3,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from datetime import datetime
 from typing import List
-import enum
 
 from app.core.database import Base
-
-
-class TaskStatus(enum.Enum):
-    TODO = "todo"
-    IN_PROGRESS = "in_progress"
-    DONE = "done"
-
-
-class TaskPriority(enum.Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
+from app.core.enums import TaskStatus, TaskPriority
 
 
 class Task(Base):
@@ -29,8 +17,12 @@ class Task(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
-    status: Mapped[TaskStatus] = mapped_column(Enum(TaskStatus), nullable=False)
-    priority: Mapped[TaskPriority] = mapped_column(Enum(TaskPriority), nullable=False)
+    status: Mapped[TaskStatus] = mapped_column(
+        Enum(TaskStatus, values_callable=lambda x: [e.value for e in x]), nullable=False
+    )
+    priority: Mapped[TaskPriority] = mapped_column(
+        Enum(TaskPriority, values_callable=lambda x: [e.value for e in x]), nullable=False
+    )
     deadline: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
 
     project_id: Mapped[int] = mapped_column(ForeignKey("project.id"))

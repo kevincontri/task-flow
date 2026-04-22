@@ -4,6 +4,7 @@ from .core.database import engine, Base
 from .models import User, Project, Task, Comment
 from .routes import auth
 from .routes import projects
+from .routes import tasks
 
 
 @asynccontextmanager
@@ -16,6 +17,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.include_router(auth.router)
 app.include_router(projects.router)
+app.include_router(tasks.router)
 
 
 @app.get("/health")
