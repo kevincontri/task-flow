@@ -52,7 +52,7 @@ async def delete_task_repo(session: AsyncSession, task_id: int):
     await session.commit()
 
 
-async def update_task_status(session: AsyncSession, task_id: int, status: str):
+async def update_task_status_repo(session: AsyncSession, task_id: int, status: str):
     result = await session.execute(
         update(Task).where(Task.id == task_id).values(status=status).returning(Task)
     )

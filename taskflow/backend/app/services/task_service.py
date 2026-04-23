@@ -3,7 +3,7 @@ from ..repositories.task_repository import (
     get_tasks_by_project_repo,
     get_tasks_by_status_repo,
     get_task_by_id_repo,
-    update_task_status,
+    update_task_status_repo,
     update_task_repo,
     delete_task_repo,
 )
@@ -104,5 +104,5 @@ async def update_task_status(
     if task is None:
         raise NotFoundError("Task Not Found")
 
-    updated_task = await update_task_status(session, task_id, status)
+    updated_task = await update_task_status_repo(session, task_id, status)
     return updated_task

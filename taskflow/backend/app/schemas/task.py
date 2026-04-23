@@ -4,7 +4,6 @@ from datetime import datetime
 
 
 class TaskBase(BaseModel):
-    id: int
     name: str = Field(..., description="Name of the task", min_length=3, max_length=32)
     description: str | None = Field(
         default=None,
@@ -45,6 +44,7 @@ class TaskUpdate(BaseModel):
 
 
 class TaskResponse(TaskCreate):
+    id: int
     project_id: int
     created_at: AwareDatetime
 

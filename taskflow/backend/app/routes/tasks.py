@@ -100,7 +100,7 @@ async def move_task_route(
 ):
     try:
         updated_task = await update_task_status(
-            session, task_id, project_id, int(user.id), status
+            session, task_id, project_id, int(user.id), status.status
         )
         return updated_task
     except NotFoundError as e:
