@@ -7,7 +7,7 @@ from ..repositories.project_repository import (
     update_project_repo,
     delete_project_repo,
 )
-from ..exceptions.exceptions import DatabaseError, NotFoundError, ForbiddenAccess
+from ..exceptions.exceptions import DatabaseError, NotFoundError
 from ..models.project import Project
 from sqlalchemy.exc import SQLAlchemyError
 

@@ -8,17 +8,13 @@ class CommentBase(BaseModel):
 
 
 class CommentCreate(CommentBase):
-    task_id: int = Field(..., description="ID of the task")
+    pass
 
 
 class CommentResponse(CommentBase):
     id: int
     created_at: AwareDatetime
-    
-    model_config = ConfigDict(from_attributes=True)
-
-
-class CommentUpdate(BaseModel):
-    content: str | None = Field(default=None, description="Content of the comment")
+    task_id: int
+    author_id: int
 
     model_config = ConfigDict(from_attributes=True)
