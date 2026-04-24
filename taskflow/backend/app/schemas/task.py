@@ -39,8 +39,7 @@ class TaskUpdate(BaseModel):
         default=None, description="Update Deadline of the task"
     )
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TaskResponse(TaskCreate):
@@ -54,5 +53,4 @@ class TaskResponse(TaskCreate):
 class TaskMoveRequest(BaseModel):
     status: TaskStatus = Field(..., description="Status of the task for moving")
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

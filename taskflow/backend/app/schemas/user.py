@@ -1,4 +1,5 @@
-from pydantic import BaseModel, AwareDatetime, Field, ConfigDict, EmailStr
+from datetime import datetime, timezone
+from pydantic import BaseModel, AwareDatetime, Field, ConfigDict, EmailStr, field_validator
 
 
 class UserBase(BaseModel):
@@ -20,6 +21,13 @@ class UserCreate(UserBase):
 class UserResponse(UserBase):
     id: int
     created_at: AwareDatetime
+
+    @field_validator("created_at", mode="before")
+    @classmethod
+    def assume_utc_if_naive(cls, v: datetime) -> datetime:
+        if isinstance(v, datetime) and v.tzinfo is None:
+            return v.replace(tzinfo=timezone.utc)
+        return v
 
     model_config = ConfigDict(from_attributes=True)
 
