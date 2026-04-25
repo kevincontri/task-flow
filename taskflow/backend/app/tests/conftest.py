@@ -57,7 +57,10 @@ async def authenticated_client(client):
     )
     access_token = response.json()["access_token"]
     headers = {"Authorization": f"Bearer {access_token}"}
+
+    transport = ASGITransport(app=app)
+
     async with httpx.AsyncClient(
-        app=app, base_url="http://test", headers=headers
+        transport=transport, base_url="http://test", headers=headers
     ) as ac:
         yield ac

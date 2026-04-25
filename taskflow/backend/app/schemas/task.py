@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field, AwareDatetime, ConfigDict
+from pydantic import BaseModel, Field, AwareDatetime, ConfigDict, field_validator
 from ..core.enums import TaskPriority, TaskStatus
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class TaskBase(BaseModel):
@@ -48,6 +48,13 @@ class TaskResponse(TaskCreate):
     created_at: AwareDatetime
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_validator("created_at", mode="before")
+    @classmethod
+    def assume_utc_if_naive(cls, v: datetime) -> datetime:
+        if isinstance(v, datetime) and v.tzinfo is None:
+            return v.replace(tzinfo=timezone.utc)
+        return v
 
 
 class TaskMoveRequest(BaseModel):
