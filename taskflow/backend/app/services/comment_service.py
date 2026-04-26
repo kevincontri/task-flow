@@ -54,4 +54,7 @@ async def delete_comment(
     comment_id: int,
 ) -> None:
     await get_task_by_id(session, task_id, project_id, author_id)
+    comment = await get_comment_by_id_repo(session, comment_id, author_id)
+    if comment is None:
+        raise NotFoundError("Comment Not Found")
     await delete_comment_repo(session, comment_id)
