@@ -5,6 +5,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import Board from "./pages/Board";
 
 export default function App() {
   return (
@@ -18,6 +19,14 @@ export default function App() {
             element={
               <PrivateRoute>
                 <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/board/:projectId"
+            element={
+              <PrivateRoute>
+                <Board />
               </PrivateRoute>
             }
           />

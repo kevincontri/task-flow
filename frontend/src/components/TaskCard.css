@@ -1,0 +1,127 @@
+.task-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 12px;
+  padding: 14px 14px 10px;
+  cursor: grab;
+  user-select: none;
+  transition: box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.task-card:active {
+  cursor: grabbing;
+}
+
+.task-card:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+}
+
+/* ── Header ── */
+.task-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+
+.task-card-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.4;
+}
+
+/* ── Priority badge ── */
+.priority-badge {
+  flex-shrink: 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: capitalize;
+  letter-spacing: 0.03em;
+  border: 1px solid;
+}
+
+.priority-badge--low {
+  background: rgba(134, 239, 172, 0.14);
+  color: #86efac;
+  border-color: rgba(134, 239, 172, 0.25);
+}
+
+.priority-badge--medium {
+  background: rgba(251, 191, 36, 0.14);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.25);
+}
+
+.priority-badge--high {
+  background: rgba(239, 68, 68, 0.14);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+/* ── Description ── */
+.task-card-desc {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.42);
+  font-weight: 300;
+  line-height: 1.45;
+  margin-bottom: 8px;
+}
+
+/* ── Deadline ── */
+.task-card-deadline {
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.38);
+  font-weight: 300;
+  margin-bottom: 8px;
+}
+
+/* ── Actions ── */
+.task-card-actions {
+  display: flex;
+  gap: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding-top: 8px;
+}
+
+.btn-task-edit,
+.btn-task-delete {
+  flex: 1;
+  padding: 5px;
+  border-radius: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid;
+  transition: all 0.15s ease;
+}
+
+.btn-task-edit {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.13);
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.btn-task-edit:hover {
+  background: rgba(255, 255, 255, 0.11);
+  color: #fff;
+}
+
+.btn-task-delete {
+  background: rgba(239, 68, 68, 0.06);
+  border-color: rgba(239, 68, 68, 0.18);
+  color: rgba(252, 165, 165, 0.68);
+}
+
+.btn-task-delete:hover {
+  background: rgba(239, 68, 68, 0.14);
+  color: #fca5a5;
+}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./ProjectModal.css";
 
 export default function ProjectModal({ project, onSave, onClose }) {
   const [name, setName] = useState(project?.name || "");
@@ -6,52 +7,53 @@ export default function ProjectModal({ project, onSave, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     onSave({ name, description });
   };
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        backgroundColor: "rgba(0,0,0,0.5)",
-      }}
-    >
-      <div
-        style={{
-          background: "white",
-          padding: "2rem",
-          margin: "10% auto",
-          maxWidth: "400px",
-        }}
-      >
-        <h2>{project ? "Editar Projeto" : "Novo Projeto"}</h2>
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h2 className="modal-title">
+            {project ? "Edit Project" : "New Project"}
+          </h2>
+          <button className="modal-close" onClick={onClose}>
+            ×
+          </button>
+        </div>
 
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Nome</label>
+        <form onSubmit={handleSubmit} className="modal-form">
+          <div className="field-group">
+            <label htmlFor="proj-name">Name</label>
             <input
+              id="proj-name"
+              type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              placeholder="Project name"
               required
             />
           </div>
-          <div>
-            <label>Descrição</label>
+
+          <div className="field-group">
+            <label htmlFor="proj-desc">Description</label>
             <textarea
+              id="proj-desc"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              placeholder="Brief description..."
+              rows={3}
             />
           </div>
 
-          <button type="submit">Salvar</button>
-          <button type="button" onClick={onClose}>
-            Cancelar
-          </button>
+          <div className="modal-actions">
+            <button type="button" className="btn-modal-cancel" onClick={onClose}>
+              Cancel
+            </button>
+            <button type="submit" className="btn-modal-save">
+              Save
+            </button>
+          </div>
         </form>
       </div>
     </div>

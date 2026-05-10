@@ -1,4 +1,5 @@
 from ..models.task import Task
+from ..models.comment import Comment
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete
 from ..schemas.task import TaskCreate, TaskUpdate
@@ -48,6 +49,8 @@ async def update_task_repo(
 
 
 async def delete_task_repo(session: AsyncSession, task_id: int):
+    # Delete dependent comments first to avoid FK constraint violations
+    await session.execute(delete(Comment).where(Comment.task_id == task_id))
     await session.execute(delete(Task).where(Task.id == task_id))
     await session.commit()
 

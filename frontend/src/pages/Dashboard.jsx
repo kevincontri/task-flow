@@ -8,6 +8,7 @@ import {
 } from "../api/projects";
 import ProjectCard from "../components/ProjectCard";
 import ProjectModal from "../components/ProjectModal";
+import "./Dashboard.css";
 
 export default function Dashboard() {
   const [projects, setProjects] = useState([]);
@@ -44,9 +45,16 @@ export default function Dashboard() {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Deletar projeto?")) return;
-
-    await deleteProject(id);
-    setProjects(projects.filter((p) => p.id !== id));
+    try {
+      await deleteProject(id);
+      setProjects((prev) => prev.filter((p) => p.id !== id));
+    } catch (err) {
+      console.error("Failed to delete project:", err);
+      alert(
+        "Failed to delete project: " +
+          (err.response?.data?.detail || err.message),
+      );
+    }
   };
 
   const handleSave = async (data) => {
@@ -59,28 +67,69 @@ export default function Dashboard() {
       const created = await createProject(data);
       setProjects([...projects, created]);
     }
-
     setShowModal(false);
   };
 
   return (
-    <div>
-      <div>
-        <h1>Meus Projetos</h1>
-        <button onClick={logout}>Sair</button>
-        <button onClick={handleNewProject}> + Novo Projeto </button>
-      </div>
+    <div className="dashboard-page">
+      <header className="dash-navbar">
+        <div className="dash-brand">
+          <div className="dash-brand-icon">
+            <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+              <path
+                d="M6 16 L13 23 L26 9"
+                stroke="white"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <span className="dash-brand-name">TaskFlow</span>
+        </div>
+        <button className="btn-logout" onClick={logout}>
+          Sign Out
+        </button>
+      </header>
 
-      {loading && <p>Carregando...</p>}
+      <main className="dash-main">
+        <div className="dash-section-header">
+          <div>
+            <h1 className="dash-title">My Projects</h1>
+            <p className="dash-subtitle">
+              {projects.length} project{projects.length !== 1 ? "s" : ""}
+            </p>
+          </div>
+          <button className="btn-new-project" onClick={handleNewProject}>
+            <span>+</span> New Project
+          </button>
+        </div>
 
-      {projects.map((project) => (
-        <ProjectCard
-          key={project.id}
-          project={project}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
-      ))}
+        {loading && (
+          <div className="dash-loading">
+            <div className="loading-dot" />
+            <div className="loading-dot" />
+            <div className="loading-dot" />
+          </div>
+        )}
+
+        {!loading && projects.length === 0 && (
+          <div className="dash-empty">
+            <p>No projects yet. Create your first one!</p>
+          </div>
+        )}
+
+        <div className="projects-grid">
+          {projects.map((project) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
+      </main>
 
       {showModal && (
         <ProjectModal
