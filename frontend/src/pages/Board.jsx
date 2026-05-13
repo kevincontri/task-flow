@@ -16,8 +16,8 @@ import "./Board.css";
 const STATUSES = ["todo", "in_progress", "done"];
 
 export default function Board() {
-  const { projectId } = useParams();
-  const location = useLocation();
+  const { projectId } = useParams(); // Get projectId from URL params
+  const location = useLocation(); // Get projectName from location state (passed from Dashboard (ProjectCard))
   const projectName = location.state?.projectName || "Project Board";
 
   const [tasks, setTasks] = useState([]);
@@ -75,25 +75,13 @@ export default function Board() {
   };
 
   const handleDelete = async (taskId) => {
-    console.log("[delete] click", { projectId, taskId, type: typeof taskId });
     if (!window.confirm("Delete Task?")) return;
     try {
-      console.log(`[delete] DELETE /projects/${projectId}/tasks/${taskId}`);
       await deleteTask(projectId, taskId);
-      console.log("[delete] success");
       setTasks((prev) => prev.filter((t) => t.id !== taskId));
     } catch (err) {
-      console.error("[delete] FAILED", {
-        message: err.message,
-        code: err.code,
-        status: err.response?.status,
-        detail: err.response?.data?.detail,
-        url: err.config?.url,
-        method: err.config?.method,
-      });
       alert(
-        "Failed to delete task: " +
-          (err.response?.data?.detail || err.message),
+        "Failed to delete task: " + (err.response?.data?.detail || err.message),
       );
     }
   };
