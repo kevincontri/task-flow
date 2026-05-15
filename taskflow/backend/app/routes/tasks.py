@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from ..core.database import get_db
-from ..core.deps import get_current_user
+from ..core.deps import get_owned_project
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..schemas.task import TaskCreate, TaskResponse, TaskUpdate, TaskMoveRequest
 from ..services.task_service import (
@@ -13,7 +13,11 @@ from ..services.task_service import (
 )
 from ..exceptions.exceptions import NotFoundError, DatabaseError
 
-router = APIRouter(prefix="/projects/{project_id}/tasks", tags=["tasks"])
+router = APIRouter(
+    prefix="/projects/{project_id}/tasks",
+    tags=["tasks"],
+    dependencies=[Depends(get_owned_project)],
+)
 
 
 @router.post("", status_code=201, response_model=TaskResponse)
@@ -21,10 +25,9 @@ async def create_task_route(
     project_id: int,
     task: TaskCreate,
     session: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
 ):
     try:
-        new_task = await create_task(session, task, project_id, int(user.id))
+        new_task = await create_task(session, task, project_id)
         return new_task
     except NotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -36,10 +39,9 @@ async def create_task_route(
 async def get_tasks_by_project_route(
     project_id: int,
     session: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
 ):
     try:
-        tasks = await get_tasks_by_project(session, project_id, int(user.id))
+        tasks = await get_tasks_by_project(session, project_id)
         return tasks
     except NotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -47,13 +49,11 @@ async def get_tasks_by_project_route(
 
 @router.get("/{task_id}", response_model=TaskResponse, status_code=200)
 async def get_task_by_id_route(
-    project_id: int,
     task_id: int,
     session: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
 ):
     try:
-        task = await get_task_by_id(session, task_id, project_id, int(user.id))
+        task = await get_task_by_id(session, task_id)
         return task
     except NotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -61,16 +61,12 @@ async def get_task_by_id_route(
 
 @router.put("/{task_id}", response_model=TaskResponse, status_code=200)
 async def update_task_route(
-    project_id: int,
     task_id: int,
     task: TaskUpdate,
     session: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
 ):
     try:
-        updated_task = await update_task(
-            session, task_id, project_id, int(user.id), task
-        )
+        updated_task = await update_task(session, task_id, task)
         return updated_task
     except NotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -78,13 +74,11 @@ async def update_task_route(
 
 @router.delete("/{task_id}", status_code=204)
 async def delete_task_route(
-    project_id: int,
     task_id: int,
     session: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
 ):
     try:
-        await delete_task(session, task_id, project_id, int(user.id))
+        await delete_task(session, task_id)
         return
     except NotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -92,16 +86,12 @@ async def delete_task_route(
 
 @router.patch("/{task_id}/move", response_model=TaskResponse, status_code=200)
 async def move_task_route(
-    project_id: int,
     task_id: int,
     status: TaskMoveRequest,
     session: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
 ):
     try:
-        updated_task = await update_task_status(
-            session, task_id, project_id, int(user.id), status.status
-        )
+        updated_task = await update_task_status(session, task_id, status.status)
         return updated_task
     except NotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
