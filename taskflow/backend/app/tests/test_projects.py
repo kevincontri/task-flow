@@ -1,3 +1,6 @@
+import pytest
+
+@pytest.mark.asyncio
 async def test_create_projects(authenticated_client):
     response = await authenticated_client.post(
         "/projects",
@@ -9,7 +12,7 @@ async def test_create_projects(authenticated_client):
     assert "created_at" in response.json()
     assert "owner_id" in response.json()
 
-
+@pytest.mark.asyncio
 async def test_get_projects(authenticated_client):
     response = await authenticated_client.post(
         "/projects",
@@ -23,12 +26,12 @@ async def test_get_projects(authenticated_client):
     assert "created_at" in response.json()[0]
     assert "owner_id" in response.json()[0]
 
-
+@pytest.mark.asyncio
 async def test_projects_wrong(authenticated_client):
     no_project = await authenticated_client.get("/projects/999")
     assert no_project.status_code == 404
 
-
+@pytest.mark.asyncio
 async def test_delete_project(authenticated_client):
     response = await authenticated_client.post(
         "/projects",

@@ -1,3 +1,6 @@
+import pytest
+
+@pytest.mark.asyncio
 async def test_create_task(authenticated_client):
     project = await authenticated_client.post(
         "/projects",
@@ -17,7 +20,7 @@ async def test_create_task(authenticated_client):
     assert response.json()["status"] == "todo"
     assert response.json()["priority"] == "medium"
 
-
+@pytest.mark.asyncio
 async def test_move_task(authenticated_client):
     project = await authenticated_client.post(
         "/projects",
@@ -43,7 +46,7 @@ async def test_move_task(authenticated_client):
     assert response.status_code == 200
     assert response.json()["status"] == "done"
 
-
+@pytest.mark.asyncio
 async def test_create_task_wrong(authenticated_client):
     task = await authenticated_client.post(
         f"/projects/999/tasks",

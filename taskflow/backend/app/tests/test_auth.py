@@ -1,3 +1,6 @@
+import pytest
+
+@pytest.mark.asyncio
 async def test_register_success(client):
     response = await client.post(
         "/auth/register",
@@ -11,7 +14,7 @@ async def test_register_success(client):
     assert response.json()["email"] == "example@example.com"
     assert "password" not in response.json()
 
-
+@pytest.mark.asyncio
 async def test_register_duplicated(client):
     await client.post(
         "/auth/register",
@@ -31,7 +34,7 @@ async def test_register_duplicated(client):
     )
     assert response.status_code == 400
 
-
+@pytest.mark.asyncio
 async def test_login(client):
     await client.post(
         "/auth/register",
@@ -49,7 +52,7 @@ async def test_login(client):
     assert "access_token" in response.json()
     assert "token_type" in response.json()
 
-
+@pytest.mark.asyncio
 async def test_login_wrong_ps(client):
     await client.post(
         "/auth/register",

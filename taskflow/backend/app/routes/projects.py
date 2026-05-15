@@ -11,7 +11,6 @@ from ..services.project_service import (
 from ..schemas.project import ProjectCreate, ProjectResponse, ProjectUpdate
 from ..core.deps import get_current_user
 from typing import List
-from ..exceptions.exceptions import NotFoundError
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -40,11 +39,7 @@ async def get_project_by_id_route(
     session: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    try:
-        project = await get_project_by_id(session, int(user.id), project_id)
-        return project
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    return await get_project_by_id(session, int(user.id), project_id)
 
 
 @router.put("/{project_id}", response_model=ProjectResponse, status_code=200)
@@ -56,11 +51,7 @@ async def update_project_route(
 ):
     if data.name is None and data.description is None:
         raise HTTPException(status_code=400, detail="No data provided")
-    try:
-        project = await update_project(session, project_id, data, int(user.id))
-        return project
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    return await update_project(session, project_id, data, int(user.id))
 
 
 @router.delete("/{project_id}", status_code=204)
@@ -69,8 +60,5 @@ async def delete_project_route(
     session: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    try:
-        await delete_project(session, project_id, int(user.id))
-        return
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    await delete_project(session, project_id, int(user.id))
+    return

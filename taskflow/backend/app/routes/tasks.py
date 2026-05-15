@@ -26,13 +26,7 @@ async def create_task_route(
     task: TaskCreate,
     session: AsyncSession = Depends(get_db),
 ):
-    try:
-        new_task = await create_task(session, task, project_id)
-        return new_task
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    except DatabaseError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    return await create_task(session, task, project_id)
 
 
 @router.get("", response_model=list[TaskResponse], status_code=200)
@@ -40,11 +34,7 @@ async def get_tasks_by_project_route(
     project_id: int,
     session: AsyncSession = Depends(get_db),
 ):
-    try:
-        tasks = await get_tasks_by_project(session, project_id)
-        return tasks
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    return await get_tasks_by_project(session, project_id)
 
 
 @router.get("/{task_id}", response_model=TaskResponse, status_code=200)
@@ -52,11 +42,7 @@ async def get_task_by_id_route(
     task_id: int,
     session: AsyncSession = Depends(get_db),
 ):
-    try:
-        task = await get_task_by_id(session, task_id)
-        return task
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    return await get_task_by_id(session, task_id)
 
 
 @router.put("/{task_id}", response_model=TaskResponse, status_code=200)
@@ -65,11 +51,7 @@ async def update_task_route(
     task: TaskUpdate,
     session: AsyncSession = Depends(get_db),
 ):
-    try:
-        updated_task = await update_task(session, task_id, task)
-        return updated_task
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    return await update_task(session, task_id, task)
 
 
 @router.delete("/{task_id}", status_code=204)
@@ -77,11 +59,7 @@ async def delete_task_route(
     task_id: int,
     session: AsyncSession = Depends(get_db),
 ):
-    try:
-        await delete_task(session, task_id)
-        return
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    return await delete_task(session, task_id)
 
 
 @router.patch("/{task_id}/move", response_model=TaskResponse, status_code=200)
@@ -90,8 +68,4 @@ async def move_task_route(
     status: TaskMoveRequest,
     session: AsyncSession = Depends(get_db),
 ):
-    try:
-        updated_task = await update_task_status(session, task_id, status.status)
-        return updated_task
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    return await update_task_status(session, task_id, status.status)

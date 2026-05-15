@@ -1,3 +1,6 @@
+import pytest
+
+@pytest.mark.asyncio
 async def test_create_and_get_comments(authenticated_client):
     response = await authenticated_client.post(
         "/projects",
@@ -34,7 +37,7 @@ async def test_create_and_get_comments(authenticated_client):
     assert "author_id" in comments.json()[0]
     assert "task_id" in comments.json()[0]
 
-
+@pytest.mark.asyncio
 async def test_delete_comment_wrong(authenticated_client):
     response = await authenticated_client.delete("/projects/1/tasks/1/comments/999")
     assert response.status_code == 404

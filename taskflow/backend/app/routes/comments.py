@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..core.database import get_db
 from ..services.comment_service import (
@@ -9,7 +9,6 @@ from ..services.comment_service import (
 )
 from ..schemas.comment import CommentCreate, CommentResponse
 from ..core.deps import get_current_user, get_owned_project, task_exists
-from ..exceptions.exceptions import NotFoundError
 
 router = APIRouter(
     prefix="/projects/{project_id}/tasks/{task_id}/comments",
@@ -47,10 +46,7 @@ async def get_comment_by_id_route(
     session: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    try:
-        return await get_comment_by_id(session, int(user.id), comment_id)
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    return await get_comment_by_id(session, int(user.id), comment_id)
 
 
 @router.delete("/{comment_id}", status_code=204)
@@ -61,7 +57,5 @@ async def delete_comment_route(
     session: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    try:
-        await delete_comment(session, int(user.id), comment_id)
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    await delete_comment(session, int(user.id), comment_id)
+    return
