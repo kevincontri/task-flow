@@ -5,18 +5,18 @@ from ..repositories.comment_repository import (
     get_comment_by_id_repo,
     delete_comment_repo,
 )
-from ..schemas.comment import CommentCreate
 from ..models.comment import Comment
 from ..exceptions.exceptions import NotFoundError
+from typing import Any
 
 
 async def create_comment(
     session: AsyncSession,
-    comment: CommentCreate,
     task_id: int,
     author_id: int,
+    **comment: Any,
 ) -> Comment:
-    return await create_comment_repo(session, comment, task_id, author_id)
+    return await create_comment_repo(session, task_id, author_id, **comment)
 
 
 async def get_comments(

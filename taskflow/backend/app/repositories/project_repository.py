@@ -1,13 +1,13 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete
 from ..models.project import Project
-from ..schemas.project import ProjectCreate, ProjectUpdate
+from typing import Any
 
 
 async def create_project_repo(
-    session: AsyncSession, project: ProjectCreate, owner_id: int
+    session: AsyncSession, owner_id: int, **project: Any
 ) -> Project:
-    db_project = Project(**project.model_dump(), owner_id=owner_id)
+    db_project = Project(owner_id=owner_id, **project)
     session.add(db_project)
     await session.commit()
     await session.refresh(db_project)
@@ -29,13 +29,12 @@ async def get_project_by_id_repo(
 
 
 async def update_project_repo(
-    session: AsyncSession, project_id: int, project_data: ProjectUpdate
+    session: AsyncSession, project_id: int, **project_data: Any
 ) -> Project:
-    update_data = project_data.model_dump(exclude_unset=True)
     result = await session.execute(
         update(Project)
         .where(Project.id == project_id)
-        .values(**update_data)
+        .values(**project_data)
         .returning(Project)
     )
     await session.commit()

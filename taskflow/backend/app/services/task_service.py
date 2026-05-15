@@ -10,17 +10,13 @@ from ..repositories.task_repository import (
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..models.task import Task
-from ..schemas.task import TaskCreate, TaskUpdate
 from ..exceptions.exceptions import DatabaseError, NotFoundError
+from typing import Any
 
 
-async def create_task(
-    session: AsyncSession,
-    task: TaskCreate,
-    project_id: int,
-) -> Task:
+async def create_task(session: AsyncSession, project_id: int, **task: Any) -> Task:
     try:
-        new_task = await create_task_repo(task, session, project_id)
+        new_task = await create_task_repo(session, project_id, **task)
         return new_task
     except SQLAlchemyError:
         raise DatabaseError("Database Transaction Error")
@@ -55,31 +51,17 @@ async def get_task_by_id(
 async def update_task(
     session: AsyncSession,
     task_id: int,
-    task_data: TaskUpdate,
+    **task_data: Any,
 ) -> Task:
-    task = await get_task_by_id_repo(session, task_id)
-    if task is None:
-        raise NotFoundError("Task Not Found")
-
-    result = await update_task_repo(session, task_id, task_data)
-    return result
+    return await update_task_repo(session, task_id, **task_data)
 
 
 async def delete_task(
     session: AsyncSession,
     task_id: int,
 ):
-    task = await get_task_by_id_repo(session, task_id)
-    if task is None:
-        raise NotFoundError("Task Not Found")
-
     await delete_task_repo(session, task_id)
 
 
 async def update_task_status(session: AsyncSession, task_id: int, status: str):
-    task = await get_task_by_id_repo(session, task_id)
-    if task is None:
-        raise NotFoundError("Task Not Found")
-
-    updated_task = await update_task_status_repo(session, task_id, status)
-    return updated_task
+    return await update_task_status_repo(session, task_id, status)

@@ -25,7 +25,12 @@ async def create_comment_route(
     session: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    return await create_comment(session, comment, task_id, int(user.id))
+    return await create_comment(
+        session,
+        task_id,
+        int(user.id),
+        **comment.model_dump(),
+    )
 
 
 @router.get("", response_model=list[CommentResponse], status_code=200)

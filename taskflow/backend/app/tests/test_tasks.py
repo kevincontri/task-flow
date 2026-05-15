@@ -1,5 +1,6 @@
 import pytest
 
+
 @pytest.mark.asyncio
 async def test_create_task(authenticated_client):
     project = await authenticated_client.post(
@@ -19,6 +20,7 @@ async def test_create_task(authenticated_client):
     assert response.status_code == 201
     assert response.json()["status"] == "todo"
     assert response.json()["priority"] == "medium"
+
 
 @pytest.mark.asyncio
 async def test_move_task(authenticated_client):
@@ -46,6 +48,7 @@ async def test_move_task(authenticated_client):
     assert response.status_code == 200
     assert response.json()["status"] == "done"
 
+
 @pytest.mark.asyncio
 async def test_create_task_wrong(authenticated_client):
     task = await authenticated_client.post(
@@ -57,3 +60,37 @@ async def test_create_task_wrong(authenticated_client):
         },
     )
     assert task.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_update_task(authenticated_client):
+    project = await authenticated_client.post(
+        "/projects",
+        json={"name": "exampleName", "description": "exampleDescription"},
+    )
+    project_id = project.json()["id"]
+
+    task = await authenticated_client.post(
+        f"/projects/{project_id}/tasks",
+        json={
+            "name": "exampleName",
+            "description": "exampleDescription",
+            "deadline": "2023-01-01T00:00:00.000Z",
+        },
+    )
+    task_id = task.json()["id"]
+
+    response = await authenticated_client.put(
+        f"/projects/{project_id}/tasks/{task_id}",
+        json={
+            "name": "newName",
+            "description": "newDescription",
+            "deadline": "2023-01-01T00:00:00.000Z",
+            "priority": "high",
+            "status": "done",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["name"] == "newName"
+    assert response.json()["description"] == "newDescription"

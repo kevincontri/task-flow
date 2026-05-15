@@ -1,17 +1,18 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..core.security import hash_password, verify_password, create_access_token
 from ..repositories.user_repository import get_user_by_email, create_user
-from ..schemas.user import UserCreate, TokenResponse
+from ..schemas.user import TokenResponse
 from ..models.user import User
 from ..exceptions.exceptions import DuplicateError, InvalidCredentials
+from typing import Any
 
 
-async def register(session: AsyncSession, user: UserCreate) -> User:
-    if await get_user_by_email(session, user.email):
+async def register(session: AsyncSession, **user: Any) -> User:
+    if await get_user_by_email(session, user["email"]):
         raise DuplicateError("Email already registered")
 
-    hashed_password = hash_password(user.password)
-    db_user = await create_user(session, user, hashed_password)
+    hashed_password = hash_password(user["password"])
+    db_user = await create_user(session, hashed_password, **user)
     return db_user
 
 

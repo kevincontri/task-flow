@@ -1,13 +1,13 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 from ..models.comment import Comment
-from ..schemas.comment import CommentCreate
+from typing import Any
 
 
 async def create_comment_repo(
-    session: AsyncSession, comment: CommentCreate, task_id: int, author_id: int
+    session: AsyncSession, task_id: int, author_id: int, **comment: Any
 ) -> Comment:
-    db_comment = Comment(**comment.model_dump(), task_id=task_id, author_id=author_id)
+    db_comment = Comment(task_id=task_id, author_id=author_id, **comment)
     session.add(db_comment)
     await session.commit()
     await session.refresh(db_comment)

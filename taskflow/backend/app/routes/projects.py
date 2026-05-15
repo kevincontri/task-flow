@@ -21,7 +21,7 @@ async def create_project_route(
     session: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    new_project = await create_project(session, project, int(user.id))
+    new_project = await create_project(session, int(user.id), **project.model_dump())
     return new_project
 
 
@@ -51,7 +51,9 @@ async def update_project_route(
 ):
     if data.name is None and data.description is None:
         raise HTTPException(status_code=400, detail="No data provided")
-    return await update_project(session, project_id, data, int(user.id))
+    return await update_project(
+        session, project_id, int(user.id), **data.model_dump(exclude_unset=True)
+    )
 
 
 @router.delete("/{project_id}", status_code=204)

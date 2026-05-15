@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from ..schemas.project import ProjectCreate, ProjectUpdate
+from ..schemas.project import ProjectUpdate
 from ..repositories.project_repository import (
     create_project_repo,
     get_projects_repo,
@@ -10,13 +10,14 @@ from ..repositories.project_repository import (
 from ..exceptions.exceptions import DatabaseError, NotFoundError
 from ..models.project import Project
 from sqlalchemy.exc import SQLAlchemyError
+from typing import Any
 
 
 async def create_project(
-    session: AsyncSession, project: ProjectCreate, owner_id: int
+    session: AsyncSession, owner_id: int, **project: Any
 ) -> Project:
     try:
-        new_project = await create_project_repo(session, project, owner_id)
+        new_project = await create_project_repo(session, owner_id, **project)
         return new_project
     except SQLAlchemyError:
         raise DatabaseError("Database Transaction Error")
@@ -37,11 +38,11 @@ async def get_project_by_id(
 
 
 async def update_project(
-    session: AsyncSession, project_id: int, project_data: ProjectUpdate, owner_id: int
+    session: AsyncSession, project_id: int, owner_id: int, **project_data: Any
 ) -> Project:
     project = await get_project_by_id_repo(session, project_id, owner_id)
     if project is not None:
-        updated_project = await update_project_repo(session, project_id, project_data)
+        updated_project = await update_project_repo(session, project_id, **project_data)
         return updated_project
     raise NotFoundError("Project Not Found")
 

@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from ..core.database import get_db
-from ..core.deps import get_owned_project
+from ..core.deps import get_owned_project, task_exists
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..schemas.task import TaskCreate, TaskResponse, TaskUpdate, TaskMoveRequest
 from ..services.task_service import (
@@ -11,7 +11,6 @@ from ..services.task_service import (
     update_task,
     delete_task,
 )
-from ..exceptions.exceptions import NotFoundError, DatabaseError
 
 router = APIRouter(
     prefix="/projects/{project_id}/tasks",
@@ -26,7 +25,8 @@ async def create_task_route(
     task: TaskCreate,
     session: AsyncSession = Depends(get_db),
 ):
-    return await create_task(session, task, project_id)
+    # return tasks as a **kwarg to avoid circular dependency issues
+    return await create_task(session, project_id, **task.model_dump())
 
 
 @router.get("", response_model=list[TaskResponse], status_code=200)
@@ -50,14 +50,16 @@ async def update_task_route(
     task_id: int,
     task: TaskUpdate,
     session: AsyncSession = Depends(get_db),
+    task_exists=Depends(task_exists),
 ):
-    return await update_task(session, task_id, task)
+    return await update_task(session, task_id, **task.model_dump(exclude_unset=True))
 
 
 @router.delete("/{task_id}", status_code=204)
 async def delete_task_route(
     task_id: int,
     session: AsyncSession = Depends(get_db),
+    task_exists=Depends(task_exists),
 ):
     return await delete_task(session, task_id)
 
@@ -67,5 +69,6 @@ async def move_task_route(
     task_id: int,
     status: TaskMoveRequest,
     session: AsyncSession = Depends(get_db),
+    task_exists=Depends(task_exists),
 ):
     return await update_task_status(session, task_id, status.status)

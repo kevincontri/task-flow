@@ -2,20 +2,15 @@ from ..models.task import Task
 from ..models.comment import Comment
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete
-from ..schemas.task import TaskCreate, TaskUpdate
+from typing import Any
 
 
 async def create_task_repo(
-    task: TaskCreate, session: AsyncSession, project_id: int
+    session: AsyncSession,
+    project_id: int,
+    **task: Any,
 ) -> Task:
-    new_task = Task(
-        name=task.name,
-        description=task.description,
-        status=task.status,
-        priority=task.priority,
-        deadline=task.deadline,
-        project_id=project_id,
-    )
+    new_task = Task(project_id=project_id, **task)
     session.add(new_task)
     await session.commit()
     await session.refresh(new_task)
@@ -38,11 +33,10 @@ async def get_task_by_id_repo(session: AsyncSession, task_id: int) -> Task | Non
 
 
 async def update_task_repo(
-    session: AsyncSession, task_id: int, task_data: TaskUpdate
+    session: AsyncSession, task_id: int, **task_data: Any
 ) -> Task:
-    update_data = task_data.model_dump(exclude_unset=True)
     result = await session.execute(
-        update(Task).where(Task.id == task_id).values(**update_data).returning(Task)
+        update(Task).where(Task.id == task_id).values(**task_data).returning(Task)
     )
     await session.commit()
     return result.scalars().first()
