@@ -7,6 +7,7 @@ from .database import get_db
 from ..repositories.user_repository import get_user_by_id
 from ..models.user import User
 from ..repositories.project_repository import get_project_by_id_repo
+from ..services.task_service import get_task_by_id
 
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
@@ -46,3 +47,12 @@ async def get_owned_project(
         raise HTTPException(status_code=404, detail="Project not found")
     return project
 
+
+async def task_exists(
+    task_id: int,
+    session: AsyncSession = Depends(get_db),
+):
+    task = await get_task_by_id(session, task_id)
+    if task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return task

@@ -8,11 +8,13 @@ from ..services.comment_service import (
     delete_comment,
 )
 from ..schemas.comment import CommentCreate, CommentResponse
-from ..core.deps import get_current_user
+from ..core.deps import get_current_user, get_owned_project, task_exists
 from ..exceptions.exceptions import NotFoundError
 
 router = APIRouter(
-    prefix="/projects/{project_id}/tasks/{task_id}/comments", tags=["comments"]
+    prefix="/projects/{project_id}/tasks/{task_id}/comments",
+    tags=["comments"],
+    dependencies=[Depends(get_owned_project), Depends(task_exists)],
 )
 
 
@@ -24,10 +26,7 @@ async def create_comment_route(
     session: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    try:
-        return await create_comment(session, comment, task_id, project_id, int(user.id))
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    return await create_comment(session, comment, task_id, int(user.id))
 
 
 @router.get("", response_model=list[CommentResponse], status_code=200)
@@ -49,9 +48,7 @@ async def get_comment_by_id_route(
     user=Depends(get_current_user),
 ):
     try:
-        return await get_comment_by_id(
-            session, task_id, project_id, int(user.id), comment_id
-        )
+        return await get_comment_by_id(session, int(user.id), comment_id)
     except NotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -65,6 +62,6 @@ async def delete_comment_route(
     user=Depends(get_current_user),
 ):
     try:
-        await delete_comment(session, task_id, project_id, int(user.id), comment_id)
+        await delete_comment(session, int(user.id), comment_id)
     except NotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
