@@ -66,3 +66,35 @@ async def test_update_project(authenticated_client):
     assert response.status_code == 200
     assert response.json()["name"] == "newName"
     assert response.json()["description"] == "newDescription"
+
+
+async def test_project_with_task_delete(authenticated_client):
+    project = await authenticated_client.post(
+        "/projects",
+        json={"name": "exampleName", "description": "exampleDescription"},
+    )
+    project_id = project.json()["id"]
+
+    task = await authenticated_client.post(
+        f"/projects/{project_id}/tasks",
+        json={
+            "name": "exampleName",
+            "description": "exampleDescription",
+            "deadline": "2023-01-01T00:00:00.000Z",
+        },
+    )
+    task_id = task.json()["id"]
+
+    response = await authenticated_client.delete(f"/projects/{project_id}")
+
+    assert response.status_code == 204
+
+    task_excluded = await authenticated_client.get(
+        f"/projects/{project_id}/tasks/{task_id}"
+    )
+
+    assert task_excluded.status_code == 404
+
+    project_excluded = await authenticated_client.get(f"/projects/{project_id}")
+
+    assert project_excluded.status_code == 404

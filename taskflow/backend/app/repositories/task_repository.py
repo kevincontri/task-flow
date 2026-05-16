@@ -43,8 +43,6 @@ async def update_task_repo(
 
 
 async def delete_task_repo(session: AsyncSession, task_id: int):
-    # Delete dependent comments first to avoid FK constraint violations
-    await session.execute(delete(Comment).where(Comment.task_id == task_id))
     await session.execute(delete(Task).where(Task.id == task_id))
     await session.commit()
 

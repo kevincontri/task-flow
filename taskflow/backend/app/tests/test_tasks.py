@@ -94,3 +94,41 @@ async def test_update_task(authenticated_client):
     assert response.status_code == 200
     assert response.json()["name"] == "newName"
     assert response.json()["description"] == "newDescription"
+
+
+@pytest.mark.asyncio
+async def test_task_with_comments_delete(authenticated_client):
+    project = await authenticated_client.post(
+        "/projects",
+        json={"name": "exampleName", "description": "exampleDescription"},
+    )
+    project_id = project.json()["id"]
+
+    task = await authenticated_client.post(
+        f"/projects/{project_id}/tasks",
+        json={
+            "name": "exampleName",
+            "description": "exampleDescription",
+            "deadline": "2023-01-01T00:00:00.000Z",
+        },
+    )
+    task_id = task.json()["id"]
+
+    comment_response = await authenticated_client.post(
+        f"/projects/{project_id}/tasks/{task_id}/comments",
+        json={"content": "exampleComment"},
+    )
+
+    comment_id = comment_response.json()["id"]
+
+    task_delete_response = await authenticated_client.delete(
+        f"/projects/{project_id}/tasks/{task_id}"
+    )
+
+    assert task_delete_response.status_code == 204
+
+    comment_excluded = await authenticated_client.get(
+        f"/projects/{project_id}/tasks/{task_id}/comments/{comment_id}"
+    )
+
+    assert comment_excluded.status_code == 404

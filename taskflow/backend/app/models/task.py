@@ -21,10 +21,18 @@ class Task(Base):
         Enum(TaskStatus, values_callable=lambda x: [e.value for e in x]), nullable=False
     )
     priority: Mapped[TaskPriority] = mapped_column(
-        Enum(TaskPriority, values_callable=lambda x: [e.value for e in x]), nullable=False
+        Enum(TaskPriority, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
     )
     deadline: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
 
-    project_id: Mapped[int] = mapped_column(ForeignKey("project.id"))
+    project_id: Mapped[int] = mapped_column(
+        ForeignKey("project.id", ondelete="CASCADE")
+    )
     project: Mapped["Project"] = relationship("Project", back_populates="tasks")
-    comments: Mapped[List["Comment"]] = relationship("Comment", back_populates="task")
+    comments: Mapped[List["Comment"]] = relationship(
+        "Comment",
+        back_populates="task",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
