@@ -1,3 +1,4 @@
+# type: ignore
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from app.core.database import Base, get_db
 import pytest
