@@ -17,7 +17,7 @@ class Project(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
-    owner_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    owner_id: Mapped[int] = mapped_column(ForeignKey("user.id"), index=True)
 
     owner: Mapped["User"] = relationship("User", back_populates="projects")
     tasks: Mapped[List["Task"]] = relationship(

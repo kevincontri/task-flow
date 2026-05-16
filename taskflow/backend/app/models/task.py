@@ -19,7 +19,9 @@ class Task(Base):
         DateTime(timezone=True), server_default=func.now()
     )
     status: Mapped[TaskStatus] = mapped_column(
-        Enum(TaskStatus, values_callable=lambda x: [e.value for e in x]), nullable=False
+        Enum(TaskStatus, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+        index=True,
     )
     priority: Mapped[TaskPriority] = mapped_column(
         Enum(TaskPriority, values_callable=lambda x: [e.value for e in x]),
@@ -28,7 +30,7 @@ class Task(Base):
     deadline: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
 
     project_id: Mapped[int] = mapped_column(
-        ForeignKey("project.id", ondelete="CASCADE")
+        ForeignKey("project.id", ondelete="CASCADE"), index=True
     )
     project: Mapped["Project"] = relationship("Project", back_populates="tasks")
     comments: Mapped[List["Comment"]] = relationship(
