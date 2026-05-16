@@ -3,6 +3,8 @@ from fastapi.responses import JSONResponse
 from .routes import auth, projects, tasks, comments
 from fastapi.middleware.cors import CORSMiddleware
 from .exceptions.exceptions import *
+from .core.database import AsyncSessionLocal
+from sqlalchemy import select
 
 app = FastAPI(title="Taskflow", description="Taskflow API", version="1.0.0")
 
@@ -21,7 +23,12 @@ app.include_router(comments.router)
 
 @app.get("/health")
 async def health():
-    return {"status": "ok"}
+    try:
+        async with AsyncSessionLocal() as session:
+            await session.execute(select(1))
+            return {"status": "ok"}
+    except Exception:
+        return JSONResponse(status_code=503, content={"status": "db_unavailable"})
 
 
 @app.exception_handler(NotFoundError)

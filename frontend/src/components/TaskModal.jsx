@@ -47,6 +47,7 @@ export default function TaskModal({ task, initialStatus, onSave, onClose }) {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="What needs to be done..."
               rows={3}
+              required
             />
           </div>
 
@@ -74,7 +75,11 @@ export default function TaskModal({ task, initialStatus, onSave, onClose }) {
           </div>
 
           <div className="modal-actions">
-            <button type="button" className="btn-modal-cancel" onClick={onClose}>
+            <button
+              type="button"
+              className="btn-modal-cancel"
+              onClick={onClose}
+            >
               Cancel
             </button>
             <button type="submit" className="btn-modal-save">

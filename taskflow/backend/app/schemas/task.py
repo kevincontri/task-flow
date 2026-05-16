@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 class TaskBase(BaseModel):
     name: str = Field(..., description="Name of the task", min_length=3, max_length=32)
-    description: str | None = Field(
+    description: str = Field(
         default=None,
         description="Description of the task",
         min_length=3,
