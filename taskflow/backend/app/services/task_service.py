@@ -1,7 +1,6 @@
 from ..repositories.task_repository import (
     create_task_repo,
     get_tasks_by_project_repo,
-    get_tasks_by_status_repo,
     get_task_by_id_repo,
     update_task_status_repo,
     update_task_repo,
@@ -27,14 +26,6 @@ async def get_tasks_by_project(
     project_id: int,
 ) -> list:
     result = await get_tasks_by_project_repo(session, project_id)
-    return result
-
-
-async def get_tasks_by_status(
-    session: AsyncSession,
-    status: str,
-) -> list:
-    result = await get_tasks_by_status_repo(session, status)
     return result
 
 

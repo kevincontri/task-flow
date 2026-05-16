@@ -6,7 +6,7 @@ from pydantic import Field
 # Reads environment variables with pydantic-settings
 class Settings(BaseSettings):
     DATABASE_URL: str
-    SECRET_KEY: str = Field(min_length=15)
+    SECRET_KEY: str = Field(min_length=32, max_length=128)
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     PORT: int = 8000

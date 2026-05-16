@@ -1,5 +1,4 @@
 from ..models.task import Task
-from ..models.comment import Comment
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete
 from typing import Any
@@ -19,11 +18,6 @@ async def create_task_repo(
 
 async def get_tasks_by_project_repo(session: AsyncSession, project_id: int) -> list:
     result = await session.execute(select(Task).where(Task.project_id == project_id))
-    return result.scalars().all()
-
-
-async def get_tasks_by_status_repo(session: AsyncSession, status: str) -> list:
-    result = await session.execute(select(Task).where(Task.status == status))
     return result.scalars().all()
 
 
