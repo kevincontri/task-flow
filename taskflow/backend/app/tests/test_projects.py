@@ -1,4 +1,4 @@
-import pytest # type: ignore
+import pytest  # type: ignore
 
 
 @pytest.mark.asyncio
@@ -68,6 +68,7 @@ async def test_update_project(authenticated_client):
     assert response.json()["description"] == "newDescription"
 
 
+@pytest.mark.asyncio
 async def test_project_with_task_delete(authenticated_client):
     project = await authenticated_client.post(
         "/projects",
