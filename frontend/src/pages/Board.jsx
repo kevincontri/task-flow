@@ -127,6 +127,18 @@ export default function Board() {
 
       <main className="board-main">
         <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+          {tasks.length === 0 && (
+            <div className="board-message">
+              <p>No tasks yet. Add your first task!</p>
+            </div>
+          )}
+
+          {tasks.length > 0 && tasks.every((t) => t.status === "done") && (
+            <div className="board-message">
+              <p>All tasks are done! Great job!</p>
+            </div>
+          )}
+
           <div className="board-columns">
             {STATUSES.map((status) => (
               <KanbanColumn

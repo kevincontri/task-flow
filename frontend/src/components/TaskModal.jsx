@@ -8,11 +8,41 @@ export default function TaskModal({ task, initialStatus, onSave, onClose }) {
   const [description, setDescription] = useState(task?.description || "");
   const [priority, setPriority] = useState(task?.priority || "low");
   const [deadline, setDeadline] = useState(toDateInput(task?.deadline));
+  const [err, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Append UTC midnight so AwareDatetime validation passes on the backend
+
     const deadlineISO = deadline ? `${deadline}T00:00:00Z` : null;
+
+    if (!deadlineISO) {
+      setError("Deadline is required");
+      return;
+    }
+
+    const target_date = new Date(deadlineISO);
+    const now = new Date();
+
+    if (now > target_date) {
+      setError("Deadline cannot be in the past");
+      return;
+    } else if (target_date.getFullYear() > 2100) {
+      setError("Invalid deadline date");
+      return;
+    }
+
+    if (
+      name.length < 3 ||
+      name.length > 32 ||
+      description.length < 3 ||
+      description.length > 256
+    ) {
+      setError(
+        "Task title must be between 3 and 32 characters and description between 3 and 256 characters",
+      );
+      return;
+    }
     onSave({ name, description, priority, deadline: deadlineISO });
   };
 
@@ -25,7 +55,11 @@ export default function TaskModal({ task, initialStatus, onSave, onClose }) {
             ×
           </button>
         </div>
-
+        {err && (
+          <div className="modal-error">
+            <p>{err}</p>
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="modal-form">
           <div className="field-group">
             <label htmlFor="task-name">Title</label>
@@ -46,7 +80,6 @@ export default function TaskModal({ task, initialStatus, onSave, onClose }) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="What needs to be done..."
-              rows={3}
               required
             />
           </div>

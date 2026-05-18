@@ -93,6 +93,12 @@ export default function Dashboard() {
       </header>
 
       <main className="dash-main">
+        <div className="dash-quote">
+          <span>"Well begun is half done." - Aristotle</span>
+        </div>
+        <div className="dash-date">
+          <span>{new Date().toLocaleDateString("pt-BR")}</span>
+        </div>
         <div className="dash-section-header">
           <div>
             <h1 className="dash-title">My Projects</h1>

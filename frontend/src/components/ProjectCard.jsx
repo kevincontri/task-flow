@@ -10,14 +10,12 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
         className="project-card-body"
         onClick={() =>
           navigate(`/board/${project.id}`, {
-            state: { projectName: project.name },
+            state: { projectName: project.name }, // Pass project name for header display in Board.jsx
           })
         }
       >
         <h3 className="project-card-name">{project.name}</h3>
-        <p className="project-card-desc">
-          {project.description || "No description"}
-        </p>
+        <p className="project-card-desc">{project.description}</p>
       </div>
 
       <div className="project-card-footer">
