@@ -7,6 +7,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem("token"));
 
+  // Navigation hook to programmatically navigate after login/logout
   const navigate = useNavigate();
 
   const login = async (email, password) => {

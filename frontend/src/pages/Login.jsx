@@ -34,6 +34,7 @@ export default function Login() {
       <div className="hill hill-far" />
       <div className="hill hill-mid" />
       <div className="hill hill-near" />
+      <div className="hill hill-nearer" /> 
 
       <div className="login-card">
         <div className="login-header">
@@ -41,7 +42,7 @@ export default function Login() {
             <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
               <path
                 d="M6 16 L13 23 L26 9"
-                stroke="white"
+                stroke="white"  
                 strokeWidth="3.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -49,7 +50,7 @@ export default function Login() {
             </svg>
           </div>
           <h1 className="brand-name">TaskFlow</h1>
-          <p className="brand-tagline">Welcome back</p>
+          <p className="brand-tagline">Start tracking your tasks!</p>
         </div>
 
         {error && <div className="error-alert">{error}</div>}
@@ -85,8 +86,7 @@ export default function Login() {
         </form>
 
         <p className="register-prompt">
-          Don&apos;t have an account?{" "}
-          <Link to="/register">Create one</Link>
+          Don&apos;t have an account? <Link to="/register">Create one</Link>
         </p>
       </div>
     </div>

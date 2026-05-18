@@ -1,19 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap");
 
-/* ── Page wrapper ── */
 .login-page {
   position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   overflow: hidden;
 
-  /* Sky gradient */
   background:
-    radial-gradient(ellipse 65% 45% at 68% 18%, rgba(255, 232, 130, 0.38) 0%, transparent 55%),
-    linear-gradient(180deg,
+    radial-gradient(
+      ellipse 65% 45% at 68% 18%,
+      rgba(255, 232, 130, 0.38) 0%,
+      transparent 55%
+    ),
+    linear-gradient(
+      180deg,
       #9ecfe8 0%,
       #bfe0d8 28%,
       #a8d8a0 44%,
@@ -25,7 +28,6 @@
     );
 }
 
-/* ── Landscape hills ── */
 .hill {
   position: absolute;
   bottom: 0;
@@ -38,7 +40,7 @@
   right: -5%;
   height: 42%;
   background: linear-gradient(180deg, #7dc87c 0%, #5aaa58 100%);
-  opacity: 0.85;
+  opacity: 0.65;
   border-radius: 55% 45% 0 0 / 100% 100% 0 0;
 }
 
@@ -58,7 +60,14 @@
   border-radius: 60% 40% 0 0 / 100% 100% 0 0;
 }
 
-/* ── Glass card ── */
+.hill-nearer {
+  left: 35%;
+  right: -15%;
+  height: 12%;
+  background: linear-gradient(180deg, #1e4020 0%, #132e14 100%);
+  border-radius: 70% 30% 0 0 / 100% 100% 0 0;
+}
+
 .login-card {
   position: relative;
   z-index: 10;
@@ -66,8 +75,8 @@
   padding: 44px 40px 36px;
   border-radius: 28px;
   background: rgba(255, 255, 255, 0.13);
-  backdrop-filter: blur(28px) saturate(160%);
-  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  backdrop-filter: blur(10px) saturate(160%);
+  -webkit-backdrop-filter: blur(10px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.28);
   box-shadow:
     0 24px 72px rgba(0, 0, 0, 0.25),
@@ -109,7 +118,7 @@
 }
 
 .brand-name {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: "Playfair Display", Georgia, serif;
   font-size: 2rem;
   font-weight: 500;
   color: #fff;
@@ -155,7 +164,7 @@
   font-size: 0.78rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.75);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.06em;   
   text-transform: uppercase;
 }
 
@@ -166,11 +175,14 @@
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 12px;
   color: #fff;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 0.95rem;
   font-weight: 300;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
 .field-group input::placeholder {
@@ -190,14 +202,17 @@
   padding: 14px;
   background: #fff;
   color: #2a6b30;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 0.95rem;
   font-weight: 500;
   letter-spacing: 0.03em;
   border: none;
   border-radius: 12px;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
 }
 

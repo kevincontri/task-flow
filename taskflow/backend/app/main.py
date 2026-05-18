@@ -25,6 +25,7 @@ app.include_router(comments.router)
 async def health():
     try:
         async with AsyncSessionLocal() as session:
+            # Checks database connection with a simple query
             await session.execute(select(1))
             return {"status": "ok"}
     except Exception:
