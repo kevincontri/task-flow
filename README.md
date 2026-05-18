@@ -1,14 +1,6 @@
 # TaskFlow
 
-> A Kanban-style project and task management app — FastAPI backend, React frontend.
-
----
-
-## Demo
-
-<!-- Upload your demo video here -->
-
----
+ A **Kanban-style project** and **task management app** — FastAPI backend, React frontend.
 
 ## Features
 
