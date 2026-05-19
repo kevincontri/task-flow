@@ -9,7 +9,7 @@
 - Kanban board per project (To Do / In Progress / Done columns)
 - Drag-and-drop task reordering across columns
 - Task fields: name, description, priority (low / medium / high), deadline
-- Comments on tasks
+- Comments on tasks — add, view, and delete comments via a modal opened from each task card (Enter to submit, Shift+Enter for newline)
 - Form validation on all inputs
 - Empty-state and loading indicators throughout the UI
 
@@ -55,15 +55,15 @@ TaskFlow/
 │   └── docker-compose.yml
 └── frontend/
     └── src/
-        ├── api/                # Axios clients (projects, tasks, auth)
-        ├── components/         # ProjectCard, ProjectModal, TaskCard, TaskModal, KanbanColumn
+        ├── api/                # Axios clients (projects, tasks, auth, comments)
+        ├── components/         # ProjectCard, ProjectModal, TaskCard, TaskModal, KanbanColumn, CommentModal
         ├── contexts/           # AuthContext (JWT storage + refresh)
         ├── pages/              # Login, Register, Dashboard, Board
         ├── App.jsx
         └── main.jsx
 ```
 
-## Getting Started
+## How to run it
 
 ### Prerequisites
 
