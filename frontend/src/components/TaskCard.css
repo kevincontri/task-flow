@@ -5,7 +5,10 @@
   padding: 14px 14px 10px;
   cursor: grab;
   user-select: none;
-  transition: box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .task-card:active {
@@ -28,7 +31,7 @@
 }
 
 .task-card-title {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 0.9rem;
   font-weight: 500;
   color: #fff;
@@ -38,7 +41,7 @@
 /* ── Priority badge ── */
 .priority-badge {
   flex-shrink: 0;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 0.68rem;
   font-weight: 500;
   padding: 2px 8px;
@@ -79,8 +82,137 @@
 .task-card-deadline {
   font-size: 0.74rem;
   color: rgba(255, 255, 255, 0.38);
-  font-weight: 300;
+  font-weight: 400;
   margin-bottom: 8px;
+
+  span {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.466);
+  }
+}
+
+.task-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn-task-comment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 6px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-top: -10px;
+  margin-bottom: 4px;
+}
+
+.btn-task-comment:hover {
+  background: rgba(255, 255, 255, 0.11);
+}
+
+.task-comment-icon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.55;
+}
+
+.comments-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(96px);
+  align-items: center;
+  justify-content: center;
+}
+
+.comments-modal {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 12px;
+  padding: 20px;
+  width: 320px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.comments-list {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 12px;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+  }
+}
+
+.comment-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 8px;
+  padding: 8px;
+  margin-bottom: 8px;
+
+  p {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.4;
+  }
+}
+
+.add-comment {
+  display: flex;
+  gap: 8px;
+}
+
+.add-comment input {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.add-comment input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.add-comment button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.add-comment button:hover {
+  background: rgba(255, 255, 255, 0.11);
+  color: #fff;
 }
 
 /* ── Actions ── */
@@ -96,7 +228,7 @@
   flex: 1;
   padding: 5px;
   border-radius: 6px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 0.75rem;
   font-weight: 500;
   cursor: pointer;

@@ -1,0 +1,124 @@
+.no-comments {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  text-align: center;
+  margin-block: 30px;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 4px 8px;
+}
+
+.comment-date {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.51);
+}
+
+.comment-body {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  p {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.4;
+    margin-block: -4px 5px;
+    margin-left: 10px;
+  }
+}
+
+.comment {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 8px;
+  padding: 8px;
+  margin-block: 14px;
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.51);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: all 0.15s ease;
+  }
+
+  button:hover {
+    background: rgba(255, 255, 255, 0.11);
+    color: #fff;
+  }
+}
+
+.new-comment {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+
+  textarea {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+
+  textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+    font-style: italic;
+    font-family: "DM Sans", sans-serif;
+  }
+}
+
+.btn-add-comment {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.51);
+}
+
+.btn-add-comment:hover {
+  background: rgba(255, 255, 255, 0.11);
+  color: #fff;
+}
+
+.modal-error {
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 12px;
+  margin-top: -8px;
+
+  p {
+    color: rgba(255, 0, 0, 0.8);
+    font-size: 0.75rem;
+    font-family: "DM Sans", sans-serif;
+    margin: 0;
+  }
+}

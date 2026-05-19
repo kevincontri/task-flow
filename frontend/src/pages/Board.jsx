@@ -12,6 +12,8 @@ import KanbanColumn from "../components/KanbanColumn";
 import TaskCard from "../components/TaskCard";
 import TaskModal from "../components/TaskModal";
 import "./Board.css";
+import { getComments, createComment, deleteComment } from "../api/comments";
+import CommentsModal from "../components/CommentModal";
 
 const STATUSES = ["todo", "in_progress", "done"];
 
@@ -25,6 +27,12 @@ export default function Board() {
   const [showModal, setShowModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [initialStatus, setInitialStatus] = useState("todo");
+
+  const [commentTask, setCommentTask] = useState(null);
+  const [comments, setComments] = useState(null);
+  const [newComment, setNewComment] = useState("");
+  const [showCommentsModal, setShowCommentsModal] = useState(false);
+  const [commentError, setCommentError] = useState("");
 
   useEffect(() => {
     fetchTasks();
@@ -72,6 +80,40 @@ export default function Board() {
   const handleEdit = (task) => {
     setEditingTask(task);
     setShowModal(true);
+  };
+
+  const handleOpenComments = async (task) => {
+    const data = await getComments(task.project_id, task.id);
+    setComments(data);
+    setCommentTask(task);
+    setShowCommentsModal(true);
+  };
+
+  const handleAddComment = async () => {
+    if (newComment.trim() === "") {
+      setCommentError("Comment cannot be empty.");
+      return;
+    } else if (newComment.length < 3 || newComment.length > 256) {
+      setCommentError("Comment must be between 3 and 256 characters.");
+      return;
+    }
+
+    setCommentError("");
+
+    const comment = await createComment(
+      commentTask.project_id,
+      commentTask.id,
+      newComment,
+    );
+
+    setComments([...comments, comment]);
+    setNewComment("");
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm("Delete Comment?")) return;
+    await deleteComment(commentTask.project_id, commentTask.id, commentId);
+    setComments(comments.filter((c) => c.id !== commentId));
   };
 
   const handleDelete = async (taskId) => {
@@ -148,6 +190,7 @@ export default function Board() {
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 onNewTask={handleNewTask}
+                onOpenComments={handleOpenComments}
               />
             ))}
           </div>
@@ -163,6 +206,19 @@ export default function Board() {
           </DragOverlay>
         </DndContext>
       </main>
+
+      {showCommentsModal && (
+        <CommentsModal
+          task={commentTask}
+          onClose={() => setShowCommentsModal(false)}
+          comments={comments}
+          newComment={newComment}
+          setNewComment={setNewComment}
+          handleAddComment={handleAddComment}
+          handleDeleteComment={handleDeleteComment}
+          commentError={commentError}
+        />
+      )}
 
       {showModal && (
         <TaskModal

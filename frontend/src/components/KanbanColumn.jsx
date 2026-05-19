@@ -14,6 +14,7 @@ export default function KanbanColumn({
   onEdit,
   onDelete,
   onNewTask,
+  onOpenComments,
 }) {
   const { isOver, setNodeRef } = useDroppable({ id: status });
 
@@ -34,6 +35,7 @@ export default function KanbanColumn({
             task={task}
             onEdit={onEdit}
             onDelete={onDelete}
+            onOpenComments={() => onOpenComments(task)}
           />
         ))}
       </div>
