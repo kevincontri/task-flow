@@ -6,13 +6,23 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease, border-color 0.22s ease;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease,
+    border-color 0.22s ease;
   animation: cardIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes cardIn {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .project-card:hover {
@@ -29,8 +39,28 @@
   cursor: pointer;
 }
 
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+
+  div {
+    font-size: 0.71rem;
+    color: rgba(255, 255, 255, 0.42);
+    font-weight: 400;
+    margin-bottom: -2px;
+    background-color: rgba(255, 255, 255, 0.07);
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    display: inline-block;
+    transition: all 0.15s ease;
+  }
+}
+
 .project-card-name {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: "Playfair Display", Georgia, serif;
   font-size: 1.2rem;
   font-weight: 500;
   color: #fff;
@@ -64,7 +94,7 @@
   flex: 1;
   padding: 8px;
   border-radius: 8px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 0.82rem;
   font-weight: 500;
   cursor: pointer;

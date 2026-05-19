@@ -97,7 +97,7 @@ export default function Dashboard() {
           <span>"Well begun is half done." - Aristotle</span>
         </div>
         <div className="dash-date">
-          <span>{new Date().toLocaleDateString("pt-BR")}</span>
+          <span>{new Date().toLocaleDateString("en-US")}</span>
         </div>
         <div className="dash-section-header">
           <div>
