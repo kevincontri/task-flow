@@ -2,8 +2,12 @@ import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import "./TaskCard.css";
 import commentIcon from "../assets/comment.png";
+import { getComments } from "../api/comments";
+import { useState, useEffect } from "react";
 
 export default function TaskCard({ task, onEdit, onDelete, onOpenComments }) {
+  const [commentsCount, setCommentsCount] = useState(0);
+
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task.id,
     data: { task },
@@ -18,6 +22,16 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments }) {
     day: "numeric",
     year: "numeric",
   });
+
+  const fetchCommentsLength = async () => {
+    const comments = await getComments(task.project_id, task.id);
+    console.log("Comments length:", comments.length);
+    setCommentsCount(comments.length);
+  };
+
+  useEffect(() => {
+    fetchCommentsLength();
+  }, [task.id]);
 
   return (
     <div
@@ -38,14 +52,7 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments }) {
 
       <div className="task-card-footer">
         {task.deadline && (
-          <p
-            className="task-card-deadline"
-            style={
-              task.deadline > new Date()
-                ? { color: "#d13732e8", fontWeight: "bold" }
-                : {}
-            }
-          >
+          <p className="task-card-deadline">
             Deadline - <span>{deadlineDate}</span>
           </p>
         )}
@@ -60,6 +67,7 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments }) {
               alt="Comment"
               className="task-comment-icon"
             />
+            {commentsCount > 0 ? <span> {commentsCount} </span> : ""}
           </button>
         </div>
       </div>

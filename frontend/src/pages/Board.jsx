@@ -108,12 +108,14 @@ export default function Board() {
 
     setComments([...comments, comment]);
     setNewComment("");
+    window.location.reload();
   };
 
   const handleDeleteComment = async (commentId) => {
     if (!window.confirm("Delete Comment?")) return;
     await deleteComment(commentTask.project_id, commentTask.id, commentId);
     setComments(comments.filter((c) => c.id !== commentId));
+    window.location.reload();
   };
 
   const handleDelete = async (taskId) => {
