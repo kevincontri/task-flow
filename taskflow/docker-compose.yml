@@ -15,11 +15,15 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - app-network
 
   backend:
     build: ./backend
     ports:
       - "8000:8000"
+    networks:
+      - app-network
     env_file:
       - .env
     depends_on:
@@ -38,6 +42,21 @@ services:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+    networks:
+      - app-network
+
+  redisinsight:
+    image: redis/redisinsight:latest
+    ports:
+      - "5540:5540"
+    networks:
+      - app-network
+    depends_on:
+      - redis
+           
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   pgdata:
