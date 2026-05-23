@@ -8,6 +8,7 @@ from ..repositories.user_repository import get_user_by_id
 from ..models.user import User
 from ..repositories.project_repository import get_project_by_id_repo
 from ..services.task_service import get_task_by_id
+from .redis.redis_repository import RedisRepository
 
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
@@ -56,3 +57,12 @@ async def task_exists(
     if task is None:
         raise HTTPException(status_code=404, detail="Task not found")
     return task
+
+
+async def get_redis_conn() -> RedisRepository:
+    from ..main import redis_handler
+
+    if redis_handler is None:
+        raise HTTPException(status_code=500, detail="Redis not initialized")
+
+    return RedisRepository(await redis_handler.get_conn())

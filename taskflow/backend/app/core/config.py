@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     SQL_POOL_SIZE: int = 5
     SQL_MAX_OVERFLOW: int = 10
     SQL_POOL_RECYCLE: int = 1800
+    REDIS_URL: str = "redis"
+    REDIS_PORT: int = 6379
+    REDIS_DB: int = 0
+    REDIS_DECODE_RESPONSES: bool = True
 
     class Config:
         env_file = Path(__file__).parent.parent.parent.parent / ".env"

@@ -11,6 +11,8 @@ from ..services.task_service import (
     update_task,
     delete_task,
 )
+from ..core.deps import get_redis_conn
+from ..core.redis.redis_repository import RedisRepository
 
 router = APIRouter(
     prefix="/projects/{project_id}/tasks",
@@ -24,17 +26,19 @@ async def create_task_route(
     project_id: int,
     task: TaskCreate,
     session: AsyncSession = Depends(get_db),
+    redis_repo: RedisRepository = Depends(get_redis_conn),
 ):
     # return tasks as a **kwarg to avoid circular dependency issues
-    return await create_task(session, project_id, **task.model_dump())
+    return await create_task(session, project_id, redis_repo, **task.model_dump())
 
 
 @router.get("", response_model=list[TaskResponse], status_code=200)
 async def get_tasks_by_project_route(
     project_id: int,
     session: AsyncSession = Depends(get_db),
+    redis_repo: RedisRepository = Depends(get_redis_conn),
 ):
-    return await get_tasks_by_project(session, project_id)
+    return await get_tasks_by_project(session, redis_repo, project_id)
 
 
 @router.get("/{task_id}", response_model=TaskResponse, status_code=200)
@@ -47,28 +51,36 @@ async def get_task_by_id_route(
 
 @router.put("/{task_id}", response_model=TaskResponse, status_code=200)
 async def update_task_route(
+    project_id: int,
     task_id: int,
     task: TaskUpdate,
     session: AsyncSession = Depends(get_db),
     task_exists=Depends(task_exists),
+    redis_repo: RedisRepository = Depends(get_redis_conn),
 ):
-    return await update_task(session, task_id, **task.model_dump(exclude_unset=True))
+    return await update_task(
+        session, project_id, task_id, redis_repo, **task.model_dump(exclude_unset=True)
+    )
 
 
 @router.delete("/{task_id}", status_code=204)
 async def delete_task_route(
+    project_id: int,
     task_id: int,
     session: AsyncSession = Depends(get_db),
     task_exists=Depends(task_exists),
+    redis_repo: RedisRepository = Depends(get_redis_conn),
 ):
-    return await delete_task(session, task_id)
+    return await delete_task(session, project_id, task_id, redis_repo)
 
 
 @router.patch("/{task_id}/move", response_model=TaskResponse, status_code=200)
 async def move_task_route(
+    project_id: int,
     task_id: int,
     status: TaskMoveRequest,
     session: AsyncSession = Depends(get_db),
     task_exists=Depends(task_exists),
+    redis_repo: RedisRepository = Depends(get_redis_conn),
 ):
-    return await update_task_status(session, task_id, status.status)
+    return await update_task_status(session, project_id, task_id, status.status, redis_repo)

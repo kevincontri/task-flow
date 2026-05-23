@@ -5,8 +5,28 @@ from fastapi.middleware.cors import CORSMiddleware
 from .exceptions.exceptions import *
 from .core.database import AsyncSessionLocal
 from sqlalchemy import select
+from .core.redis.connection.redis_connection import RedisConnectionHandler
+from contextlib import asynccontextmanager
 
-app = FastAPI(title="Taskflow", description="Taskflow API", version="1.0.0")
+redis_handler: RedisConnectionHandler | None = None
+
+
+# Redis connection on startup
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global redis_handler
+    redis_handler = RedisConnectionHandler()
+    await redis_handler.connect()
+    yield 
+
+    if redis_handler:
+        conn = await redis_handler.get_conn()
+        await conn.close()
+
+
+app = FastAPI(
+    title="Taskflow", description="Taskflow API", version="2.0.0", lifespan=lifespan
+)
 
 # CORS configs to allow requests from localhost
 app.add_middleware(

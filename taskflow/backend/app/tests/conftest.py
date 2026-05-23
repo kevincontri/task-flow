@@ -6,6 +6,9 @@ from app.main import app
 import httpx
 from httpx import ASGITransport
 import pytest_asyncio
+import fakeredis.aioredis as aioredis
+from app.core.redis.redis_repository import RedisRepository
+from app.core.deps import get_redis_conn
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 TEST_SECRET_KEY = "test-secret-key"
@@ -32,8 +35,17 @@ async def db_session(engine):
 
 
 @pytest_asyncio.fixture(scope="function")
-async def client(db_session):
+async def redis_repo():
+    r = aioredis.FakeRedis(decode_responses=True)
+    yield RedisRepository(r)
+    await r.flushall()
+    await r.aclose()
+
+
+@pytest_asyncio.fixture(scope="function")
+async def client(db_session, redis_repo):
     app.dependency_overrides[get_db] = lambda: db_session
+    app.dependency_overrides[get_redis_conn] = lambda: redis_repo
 
     transport = ASGITransport(app=app)
 

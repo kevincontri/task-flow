@@ -8,7 +8,13 @@ from ..services.comment_service import (
     delete_comment,
 )
 from ..schemas.comment import CommentCreate, CommentResponse
-from ..core.deps import get_current_user, get_owned_project, task_exists
+from ..core.deps import (
+    get_current_user,
+    get_owned_project,
+    task_exists,
+    get_redis_conn,
+)
+from ..core.redis.redis_repository import RedisRepository
 
 router = APIRouter(
     prefix="/projects/{project_id}/tasks/{task_id}/comments",
@@ -24,11 +30,13 @@ async def create_comment_route(
     comment: CommentCreate,
     session: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
+    redis_repo: RedisRepository = Depends(get_redis_conn),
 ):
     return await create_comment(
         session,
         task_id,
         int(user.id),
+        redis_repo,
         **comment.model_dump(),
     )
 
@@ -39,8 +47,9 @@ async def get_comments_route(
     task_id: int,
     session: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
+    redis_repo: RedisRepository = Depends(get_redis_conn),
 ):
-    return await get_comments(session, task_id, project_id, int(user.id))
+    return await get_comments(session, task_id, int(user.id), redis_repo)
 
 
 @router.get("/{comment_id}", response_model=CommentResponse, status_code=200)
@@ -61,6 +70,7 @@ async def delete_comment_route(
     comment_id: int,
     session: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
+    redis_repo: RedisRepository = Depends(get_redis_conn),
 ):
-    await delete_comment(session, int(user.id), comment_id)
+    await delete_comment(session, int(user.id), comment_id, redis_repo, task_id)
     return
