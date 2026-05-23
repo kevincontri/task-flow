@@ -25,7 +25,6 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments }) {
 
   const fetchCommentsLength = async () => {
     const comments = await getComments(task.project_id, task.id);
-    console.log("Comments length:", comments.length);
     setCommentsCount(comments.length);
   };
 
