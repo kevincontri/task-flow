@@ -5,6 +5,7 @@
   inset: 0;
   display: flex;
   align-items: center;
+  flex-direction: column;
   justify-content: center;
   font-family: "DM Sans", sans-serif;
   overflow: hidden;
@@ -245,4 +246,26 @@
 .register-prompt a:hover {
   color: #dcfce7;
   text-decoration: underline;
+}
+
+.login-footer {
+  z-index: 10;
+  margin-top: 50px;
+  font-size: 0.64rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+
+  a {
+    color: #a7f3b4;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: #dcfce7;
+      text-decoration: underline;
+    }
+  }
 }

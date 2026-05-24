@@ -34,7 +34,7 @@ export default function Login() {
       <div className="hill hill-far" />
       <div className="hill hill-mid" />
       <div className="hill hill-near" />
-      <div className="hill hill-nearer" /> 
+      <div className="hill hill-nearer" />
 
       <div className="login-card">
         <div className="login-header">
@@ -42,7 +42,7 @@ export default function Login() {
             <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
               <path
                 d="M6 16 L13 23 L26 9"
-                stroke="white"  
+                stroke="white"
                 strokeWidth="3.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -89,6 +89,11 @@ export default function Login() {
           Don&apos;t have an account? <Link to="/register">Create one</Link>
         </p>
       </div>
+      <footer className="login-footer">
+        <p>
+          Made by <a href="https://github.com/kevincontri" target="_blank" rel="noopener noreferrer">Kevin Contri</a>
+        </p>
+      </footer>
     </div>
   );
 }

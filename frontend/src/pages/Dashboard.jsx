@@ -9,12 +9,19 @@ import {
 import ProjectCard from "../components/ProjectCard";
 import ProjectModal from "../components/ProjectModal";
 import "./Dashboard.css";
+import editIcon from "../assets/edit.png";
+import QuoteModal from "../components/QuoteModal";
 
 export default function Dashboard() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
+  const [quote, setQuote] = useState(() => {
+    return localStorage.getItem("quote") || "Add a quote to start your day!";
+  });
+  const [quoteModalOpen, setQuoteModalOpen] = useState(false);
+
   const { logout } = useAuth();
 
   useEffect(() => {
@@ -93,9 +100,19 @@ export default function Dashboard() {
       </header>
 
       <main className="dash-main">
-        <div className="dash-quote">
-          <span>"Well begun is half done." - Aristotle</span>
-        </div>
+        {quote.length > 0 && (
+          <div className="dash-quote">
+            <span>{quote}</span>
+            <button
+              onClick={() => {
+                setQuoteModalOpen(true);
+              }}
+            >
+              <img src={editIcon} alt="Edit Icon" />
+            </button>
+          </div>
+        )}
+
         <div className="dash-date">
           <span>{new Date().toLocaleDateString("en-US")}</span>
         </div>
@@ -137,6 +154,20 @@ export default function Dashboard() {
         </div>
       </main>
 
+      {quoteModalOpen && (
+        <QuoteModal
+          quote={quote}
+          setQuote={setQuote}
+          onClose={() => {
+            setQuoteModalOpen(false);
+          }}
+          onSave={(newQuote) => {
+            setQuote(newQuote);
+            localStorage.setItem("quote", newQuote);
+            setQuoteModalOpen(false);
+          }}
+        />
+      )}
       {showModal && (
         <ProjectModal
           project={editingProject}

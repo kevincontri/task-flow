@@ -14,7 +14,7 @@ export default function CommentModal({
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3 className="modal-title">Comments</h3>
+          <h3 className="modal-title">Notes</h3>
           <button className="modal-close" onClick={onClose}>
             ×
           </button>
@@ -25,7 +25,7 @@ export default function CommentModal({
           </div>
         )}
         {comments.length === 0 && (
-          <p className="no-comments">No comments yet. Add one!</p>
+          <p className="no-comments">No notes yet. Add one!</p>
         )}
         {comments.map((c) => (
           <div key={c.id} className="comment">
@@ -61,7 +61,7 @@ export default function CommentModal({
             className="btn-add-comment"
             onClick={() => handleAddComment()}
           >
-            Add Comment
+            Add Note
           </button>
         </div>
       </div>

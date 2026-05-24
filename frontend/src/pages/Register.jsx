@@ -103,10 +103,21 @@ export default function Register() {
         </form>
 
         <p className="register-prompt">
-          Already have an account?{" "}
-          <Link to="/login">Sign in</Link>
+          Already have an account? <Link to="/login">Sign in</Link>
         </p>
       </div>
+      <footer className="login-footer">
+        <p>
+          Made by{" "}
+          <a
+            href="https://github.com/kevincontri"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Kevin Contri
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }
