@@ -2,14 +2,22 @@
 
  A **Kanban-style project** and **task management app** — FastAPI backend, React frontend.
 
+## Check the website Here: 
+
+## Video Demo:
+
 ## Features
 
-- User registration and JWT authentication
-- Project CRUD with a dashboard overview
+- User registration and JWT authentication (creator name shown on login/register pages)
+- Project CRUD with a dashboard overview — each project card shows task count and creation date
 - Kanban board per project (To Do / In Progress / Done columns)
 - Drag-and-drop task reordering across columns
 - Task fields: name, description, priority (low / medium / high), deadline
-- Comments on tasks — add, view, and delete comments via a modal opened from each task card (Enter to submit, Shift+Enter for newline)
+- Notes on tasks — add, view, and delete notes via a modal opened from each task card (Enter to submit, Shift+Enter for newline); note count shown directly on the task card
+- Customizable motivational quote on the dashboard — editable via a modal, persisted in localStorage
+- Language toggle (English / Portuguese) — persisted in localStorage, all UI text updates dynamically
+- Redis caching layer with async integration and robust connection/error handling; `fakeredis` used in pytest fixtures for isolated test runs
+- RedisInsight UI for Redis database visualization
 - Form validation on all inputs
 - Empty-state and loading indicators throughout the UI
 
@@ -21,6 +29,8 @@
 - Alembic (migrations)
 - Pydantic v2 + pydantic-settings
 - python-jose / passlib (bcrypt) — JWT auth
+- redis.asyncio — async Redis client with custom `RedisRepository` (get/set/hash/TTL operations)
+- fakeredis — in-memory Redis substitute for pytest fixtures
 - pytest + pytest-asyncio
 
 **Frontend**
@@ -31,6 +41,8 @@
 
 **Infrastructure**
 - PostgreSQL 16
+- Redis 7 (Alpine) — caching layer
+- RedisInsight — Redis GUI at `http://localhost:5540`
 - Docker Compose
 
 ## Project Structure
@@ -40,24 +52,26 @@ TaskFlow/
 ├── taskflow/
 │   ├── backend/
 │   │   ├── app/
-│   │   │   ├── core/           # config, database session, security, deps, enums
+│   │   │   ├── core/
+│   │   │   │   ├── redis/      # async Redis client, connection options, RedisRepository
+│   │   │   │   └── ...         # config, database session, security, deps, enums
 │   │   │   ├── models/         # SQLAlchemy models: User, Project, Task, Comment
 │   │   │   ├── schemas/        # Pydantic request/response schemas
 │   │   │   ├── repositories/   # data-access layer
 │   │   │   ├── services/       # business logic
 │   │   │   ├── routes/         # auth, projects, tasks, comments
 │   │   │   ├── exceptions/     # custom exception classes + handlers
-│   │   │   ├── tests/          # pytest suites: auth, projects, tasks, comments
+│   │   │   ├── tests/          # pytest suites: auth, projects, tasks, comments (fakeredis fixtures)
 │   │   │   └── main.py
 │   │   ├── migrations/         # Alembic migration scripts
 │   │   └── requirements.txt
 │   ├── .env                    # environment variables (see below)
-│   └── docker-compose.yml
+│   └── docker-compose.yml      # PostgreSQL, backend, Redis, RedisInsight
 └── frontend/
     └── src/
         ├── api/                # Axios clients (projects, tasks, auth, comments)
-        ├── components/         # ProjectCard, ProjectModal, TaskCard, TaskModal, KanbanColumn, CommentModal
-        ├── contexts/           # AuthContext (JWT storage + refresh)
+        ├── components/         # ProjectCard, ProjectModal, TaskCard, TaskModal, KanbanColumn, CommentModal, QuoteModal
+        ├── contexts/           # AuthContext (JWT storage + refresh), LanguageContext (EN/PT toggle)
         ├── pages/              # Login, Register, Dashboard, Board
         ├── App.jsx
         └── main.jsx
@@ -87,7 +101,10 @@ cd taskflow
 docker compose up --build
 ```
 
-API: `http://localhost:8000` — PostgreSQL exposed on port `5433`.
+- API: `http://localhost:8000`
+- PostgreSQL: port `5433`
+- Redis: port `6379`
+- RedisInsight: `http://localhost:5540`
 
 ### Backend (local)
 
@@ -117,7 +134,7 @@ cd taskflow/backend
 pytest
 ```
 
-Covers auth, projects, tasks, and comments via fixtures in `conftest.py` with a dedicated test database session.
+Covers auth, projects, tasks, and comments via fixtures in `conftest.py` with a dedicated test database session and a `fakeredis` integration for a dedicated redis session.
 
 ## API Overview
 
