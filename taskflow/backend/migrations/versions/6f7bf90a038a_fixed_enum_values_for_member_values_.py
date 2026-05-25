@@ -52,32 +52,30 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     """Downgrade schema."""
+    op.alter_column(
+        "task",
+        "status",
+        existing_type=sa.Enum(
+            "todo",
+            "in_progress",
+            "done",
+            name="taskstatus",
+            values_callable=lambda x: [e.value for e in x],
+        ),
+        type_=sa.Enum("TODO", "IN_PROGRESS", "DONE", name="taskstatus"),
+        postgresql_using="status::text::taskstatus",
+    )
 
-
-op.alter_column(
-    "task",
-    "status",
-    existing_type=sa.Enum(
-        "todo",
-        "in_progress",
-        "done",
-        name="taskstatus",
-        values_callable=lambda x: [e.value for e in x],
-    ),
-    type_=sa.Enum("TODO", "IN_PROGRESS", "DONE", name="taskstatus"),
-    postgresql_using="status::text::taskstatus",
-)
-
-op.alter_column(
-    "task",
-    "priority",
-    existing_type=sa.Enum(
-        "low",
-        "medium",
-        "high",
-        name="taskpriority",
-        values_callable=lambda x: [e.value for e in x],
-    ),
-    type_=sa.Enum("LOW", "MEDIUM", "HIGH", name="taskpriority"),
-    postgresql_using="priority::text::taskpriority",
-)
+    op.alter_column(
+        "task",
+        "priority",
+        existing_type=sa.Enum(
+            "low",
+            "medium",
+            "high",
+            name="taskpriority",
+            values_callable=lambda x: [e.value for e in x],
+        ),
+        type_=sa.Enum("LOW", "MEDIUM", "HIGH", name="taskpriority"),
+        postgresql_using="priority::text::taskpriority",
+    )
