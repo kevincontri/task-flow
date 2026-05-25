@@ -2,8 +2,11 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import "./Login.css";
+import { useContext } from "react";
+import LanguageContext from "../contexts/LanguageContext";
 
 export default function Register() {
+  const { language } = useContext(LanguageContext);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -14,11 +17,19 @@ export default function Register() {
     e.preventDefault();
 
     if (username.length < 3 || username.length > 32) {
-      setError("Username must be between 3 and 32 characters.");
+      setError(
+        language === "en"
+          ? "Username must be between 3 and 32 characters."
+          : "O nome de usuário deve ter entre 3 e 32 caracteres.",
+      );
       return;
     }
     if (password.length < 8 || password.length > 128) {
-      setError("Password must be between 8 and 128 characters.");
+      setError(
+        language === "en"
+          ? "Password must be between 8 and 128 characters."
+          : "A senha deve ter entre 8 e 128 caracteres.",
+      );
       return;
     }
 
@@ -30,7 +41,10 @@ export default function Register() {
       if (Array.isArray(detail)) {
         setError(detail.map((d) => d.msg).join("; "));
       } else {
-        setError(detail || "Registration failed");
+        setError(
+          detail ||
+            `${language === "en" ? "Registration failed" : "Falha no registro"}: ${err.response?.status || err.message}`,
+        );
       }
     }
   };
@@ -55,7 +69,9 @@ export default function Register() {
             </svg>
           </div>
           <h1 className="brand-name">TaskFlow</h1>
-          <p className="brand-tagline">Create your account</p>
+          <p className="brand-tagline">
+            {language === "en" ? "Create your account" : "Crie sua conta"}
+          </p>
         </div>
 
         {error && <div className="error-alert">{error}</div>}
@@ -74,7 +90,9 @@ export default function Register() {
           </div>
 
           <div className="field-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">
+              {language === "en" ? "Username" : "Nome de usuário"}
+            </label>
             <input
               id="username"
               type="text"
@@ -86,7 +104,9 @@ export default function Register() {
           </div>
 
           <div className="field-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">
+              {language === "en" ? "Password" : "Senha"}
+            </label>
             <input
               id="password"
               type="password"
@@ -98,17 +118,18 @@ export default function Register() {
           </div>
 
           <button type="submit" className="btn-signin">
-            Create Account
+            {language === "en" ? "Create Account" : "Criar Conta"}
           </button>
         </form>
 
         <p className="register-prompt">
-          Already have an account? <Link to="/login">Sign in</Link>
+          {language === "en" ? "Already have an account?" : "Já tem uma conta?"}{" "}
+          <Link to="/login">{language === "en" ? "Sign in" : "Entrar"}</Link>
         </p>
       </div>
       <footer className="login-footer">
         <p>
-          Made by{" "}
+          {language === "en" ? "Created by" : "Criado por"}{" "}
           <a
             href="https://github.com/kevincontri"
             target="_blank"

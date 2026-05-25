@@ -1,7 +1,10 @@
 import { useState } from "react";
 import "./ProjectModal.css";
+import { useContext } from "react";
+import LanguageContext from "../contexts/LanguageContext";
 
 export default function ProjectModal({ project, onSave, onClose }) {
+  const { language } = useContext(LanguageContext);
   const [name, setName] = useState(project?.name || "");
   const [description, setDescription] = useState(project?.description || "");
   const [err, setError] = useState("");
@@ -14,7 +17,11 @@ export default function ProjectModal({ project, onSave, onClose }) {
       description.length < 3 ||
       description.length > 256
     ) {
-      setError("Project name must be 3-32 chars and description 3-256 chars");
+      setError(
+        language === "en"
+          ? "Project name must be 3-32 chars and description 3-256 chars"
+          : "O nome do projeto deve ter entre 3 e 32 caracteres e a descrição entre 3 e 256 caracteres",
+      );
       return;
     }
 
@@ -26,7 +33,9 @@ export default function ProjectModal({ project, onSave, onClose }) {
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2 className="modal-title">
-            {project ? `Edit Project: ${project.name}` : "New Project"}
+            {project
+              ? `${language === "en" ? "Edit Project" : "Editar Projeto"}: ${project.name}`
+              : `${language === "en" ? "New Project" : "Novo Projeto"}`}
           </h2>
           <button className="modal-close" onClick={onClose}>
             ×
@@ -41,24 +50,34 @@ export default function ProjectModal({ project, onSave, onClose }) {
 
         <form onSubmit={handleSubmit} className="modal-form">
           <div className="field-group">
-            <label htmlFor="proj-name">Name</label>
+            <label htmlFor="proj-name">
+              {language === "en" ? "Name" : "Nome"}
+            </label>
             <input
               id="proj-name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Project name"
+              placeholder={
+                language === "en" ? "Project name" : "Nome do projeto"
+              }
               required
             />
           </div>
 
           <div className="field-group">
-            <label htmlFor="proj-desc">Description</label>
+            <label htmlFor="proj-desc">
+              {language === "en" ? "Description" : "Descrição"}
+            </label>
             <textarea
               id="proj-desc"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Brief description..."
+              placeholder={
+                language === "en"
+                  ? "Brief description..."
+                  : "Descrição breve..."
+              }
               rows={3}
             />
           </div>
@@ -69,10 +88,10 @@ export default function ProjectModal({ project, onSave, onClose }) {
               className="btn-modal-cancel"
               onClick={onClose}
             >
-              Cancel
+              {language === "en" ? "Cancel" : "Cancelar"}
             </button>
             <button type="submit" className="btn-modal-save">
-              Save
+              {language === "en" ? "Save" : "Salvar"}
             </button>
           </div>
         </form>

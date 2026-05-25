@@ -36,6 +36,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-right: auto;
 }
 
 .dash-brand-icon {
@@ -67,11 +68,63 @@
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .btn-logout:hover {
   background: rgba(255, 255, 255, 0.12);
   color: #fff;
+}
+
+.language-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 22px;
+
+  .button-toggle {
+    width: 40px;
+    height: 20px;
+    background: rgba(246, 155, 155, 0.285);
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &::before {
+      position: absolute;
+      content: "";
+      width: 18px;
+      height: 18px;
+      background-image: url("../assets/us.png");
+      background-size: cover;
+      border-radius: 100px;
+      margin: 1px;
+      transition: transform 0.2s ease;
+    }
+  }
+
+  input:checked + .button-toggle {
+    background: rgba(104, 197, 106, 0.334);
+  }
+
+  input:checked + .button-toggle::before {
+    background-image: url("../assets/br.png");
+    background-size: cover;
+    transform: translateX(20px);
+  }
+
+  input {
+    display: none;
+  }
+
+  .language-label-en,
+  .language-label-pt {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.38);
+    font-weight: 500;
+    font-family: "DM Sans", sans-serif;
+  }
 }
 
 /* ── Main ── */
@@ -140,7 +193,6 @@
 
   &:hover {
     color: #ffffff5c;
-
 
     button {
       opacity: 1;

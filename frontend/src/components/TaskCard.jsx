@@ -4,8 +4,11 @@ import "./TaskCard.css";
 import commentIcon from "../assets/comment.png";
 import { getComments } from "../api/comments";
 import { useState, useEffect } from "react";
+import { useContext } from "react";
+import LanguageContext from "../contexts/LanguageContext";
 
 export default function TaskCard({ task, onEdit, onDelete, onOpenComments }) {
+  const { language } = useContext(LanguageContext);
   const [commentsCount, setCommentsCount] = useState(0);
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
@@ -17,11 +20,14 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments }) {
 
   const deadline = new Date(task.deadline);
   deadline.setDate(deadline.getDate() + 1);
-  const deadlineDate = deadline.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  const deadlineDate = deadline.toLocaleDateString(
+    `${language === "en" ? "en-US" : "pt-BR"}`,
+    {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    },
+  );
 
   const fetchCommentsLength = async () => {
     const comments = await getComments(task.project_id, task.id);
@@ -52,12 +58,14 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments }) {
       <div className="task-card-footer">
         {task.deadline && (
           <p className="task-card-deadline">
-            Deadline - <span>{deadlineDate}</span>
+            {language === "en" ? "Deadline: " : "Prazo: "} -{" "}
+            <span>{deadlineDate}</span>
           </p>
         )}
 
         <div onPointerDown={(e) => e.stopPropagation()}>
           <button
+            title="Open Notes"
             className="btn-task-comment"
             onClick={() => onOpenComments(task)}
           >
@@ -74,11 +82,19 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments }) {
         className="task-card-actions"
         onPointerDown={(e) => e.stopPropagation()}
       >
-        <button className="btn-task-edit" onClick={() => onEdit(task)}>
-          Edit
+        <button
+          title="Edit Task"
+          className="btn-task-edit"
+          onClick={() => onEdit(task)}
+        >
+          {language === "en" ? "Edit" : "Editar"}
         </button>
-        <button className="btn-task-delete" onClick={() => onDelete(task.id)}>
-          Delete
+        <button
+          title="Delete Task"
+          className="btn-task-delete"
+          onClick={() => onDelete(task.id)}
+        >
+          {language === "en" ? "Delete" : "Excluir"}
         </button>
       </div>
     </div>

@@ -1,5 +1,7 @@
 import "./CommentsModal.css";
 import "./ProjectModal.css";
+import { useContext } from "react";
+import LanguageContext from "../contexts/LanguageContext";
 
 export default function CommentModal({
   onClose,
@@ -10,11 +12,15 @@ export default function CommentModal({
   handleDeleteComment,
   commentError,
 }) {
+  const { language } = useContext(LanguageContext);
+
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3 className="modal-title">Notes</h3>
+          <h3 className="modal-title">
+            {language === "en" ? "Notes" : "Notas"}
+          </h3>
           <button className="modal-close" onClick={onClose}>
             ×
           </button>
@@ -25,7 +31,11 @@ export default function CommentModal({
           </div>
         )}
         {comments.length === 0 && (
-          <p className="no-comments">No notes yet. Add one!</p>
+          <p className="no-comments">
+            {language === "en"
+              ? "No notes yet. Add one!"
+              : "Ainda não há notas. Adicione uma!"}
+          </p>
         )}
         {comments.map((c) => (
           <div key={c.id} className="comment">
@@ -37,7 +47,7 @@ export default function CommentModal({
                 className="btn-delete-comment"
                 onClick={() => handleDeleteComment(c.id)}
               >
-                Delete
+                {language === "en" ? "Delete" : "Excluir"}
               </button>
             </div>
             <div className="comment-body">
@@ -47,7 +57,11 @@ export default function CommentModal({
         ))}
         <div className="new-comment">
           <textarea
-            placeholder="Add a comment..."
+            placeholder={
+              language === "en"
+                ? "Add a comment..."
+                : "Adicione um comentário..."
+            }
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             onKeyDown={(e) => {
@@ -61,7 +75,7 @@ export default function CommentModal({
             className="btn-add-comment"
             onClick={() => handleAddComment()}
           >
-            Add Note
+            {language === "en" ? "Add Note" : "Adicionar Nota"}
           </button>
         </div>
       </div>

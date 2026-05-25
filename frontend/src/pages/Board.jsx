@@ -14,13 +14,18 @@ import TaskModal from "../components/TaskModal";
 import "./Board.css";
 import { getComments, createComment, deleteComment } from "../api/comments";
 import CommentsModal from "../components/CommentModal";
+import { useContext } from "react";
+import LanguageContext from "../contexts/LanguageContext";
 
 const STATUSES = ["todo", "in_progress", "done"];
 
 export default function Board() {
+  const { language } = useContext(LanguageContext);
   const { projectId } = useParams(); // Get projectId from URL params
   const location = useLocation(); // Get projectName from location state (passed from Dashboard (ProjectCard))
-  const projectName = location.state?.projectName || "Project Board";
+  const projectName =
+    location.state?.projectName ||
+    `${language === "en" ? "Project Board" : "Quadro de Projeto"} ${projectId}`;
 
   const [tasks, setTasks] = useState([]);
   const [activeTask, setActiveTask] = useState(null);
@@ -91,10 +96,14 @@ export default function Board() {
 
   const handleAddComment = async () => {
     if (newComment.trim() === "") {
-      setCommentError("Comment cannot be empty.");
+      setCommentError(
+        `${language === "en" ? "Comment cannot be empty." : "O comentário não pode estar vazio."}`,
+      );
       return;
     } else if (newComment.length < 3 || newComment.length > 256) {
-      setCommentError("Comment must be between 3 and 256 characters.");
+      setCommentError(
+        `${language === "en" ? "Comment must be between 3 and 256 characters." : "O comentário deve ter entre 3 e 256 caracteres."}`,
+      );
       return;
     }
 
@@ -112,20 +121,20 @@ export default function Board() {
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (!window.confirm("Delete Comment?")) return;
+    if (!window.confirm(`${language === "en" ? "Delete Comment?" : "Excluir Comentário?"}`)) return;
     await deleteComment(commentTask.project_id, commentTask.id, commentId);
     setComments(comments.filter((c) => c.id !== commentId));
     window.location.reload();
   };
 
   const handleDelete = async (taskId) => {
-    if (!window.confirm("Delete Task?")) return;
+    if (!window.confirm(`${language === "en" ? "Delete Task?" : "Excluir Tarefa?"}`)) return;
     try {
       await deleteTask(projectId, taskId);
       setTasks((prev) => prev.filter((t) => t.id !== taskId));
     } catch (err) {
       alert(
-        "Failed to delete task: " + (err.response?.data?.detail || err.message),
+        `${language === "en" ? "Failed to delete task: " : "Falha ao excluir tarefa: "}` + (err.response?.data?.detail || err.message),
       );
     }
   };
@@ -173,13 +182,13 @@ export default function Board() {
         <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
           {tasks.length === 0 && (
             <div className="board-message">
-              <p>No tasks yet. Add your first task!</p>
+              <p>{language === "en" ? "No tasks yet. Add your first task!" : "Nenhuma tarefa ainda. Adicione sua primeira tarefa!"}</p>
             </div>
           )}
 
           {tasks.length > 0 && tasks.every((t) => t.status === "done") && (
             <div className="board-message">
-              <p>All tasks are done! Great job!</p>
+              <p>{language === "en" ? "All tasks are done! Great job!" : "Todas as tarefas estão concluídas! Bom trabalho!"}</p>
             </div>
           )}
 

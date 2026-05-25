@@ -11,8 +11,11 @@ import ProjectModal from "../components/ProjectModal";
 import "./Dashboard.css";
 import editIcon from "../assets/edit.png";
 import QuoteModal from "../components/QuoteModal";
+import { useContext } from "react";
+import LanguageContext from "../contexts/LanguageContext";
 
 export default function Dashboard() {
+  const { language, setLanguage } = useContext(LanguageContext);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -94,8 +97,19 @@ export default function Dashboard() {
           </div>
           <span className="dash-brand-name">TaskFlow</span>
         </div>
+        <div className="language-toggle">
+          <span className="language-label-en">EN</span>
+          <input
+            type="checkbox"
+            id="lang-toggle"
+            checked={language === "pt"}
+            onChange={() => setLanguage(language === "en" ? "pt" : "en")}
+          />
+          <label for="lang-toggle" class="button-toggle"></label>
+          <span className="language-label-pt">PT</span>
+        </div>
         <button className="btn-logout" onClick={logout}>
-          Sign Out
+          {language === "en" ? "Logout" : "Sair"}
         </button>
       </header>
 
@@ -114,17 +128,24 @@ export default function Dashboard() {
         )}
 
         <div className="dash-date">
-          <span>{new Date().toLocaleDateString("en-US")}</span>
+          <span>
+            {new Date().toLocaleDateString(
+              language === "en" ? "en-US" : "pt-BR",
+            )}
+          </span>
         </div>
         <div className="dash-section-header">
           <div>
-            <h1 className="dash-title">My Projects</h1>
+            <h1 className="dash-title">
+              {language === "en" ? "My Projects" : " Meus Projetos"}
+            </h1>
             <p className="dash-subtitle">
-              {projects.length} project{projects.length !== 1 ? "s" : ""}
+              {projects.length} {language === "en" ? "project" : "projeto"}
+              {projects.length !== 1 ? "s" : ""}
             </p>
           </div>
           <button className="btn-new-project" onClick={handleNewProject}>
-            <span>+</span> New Project
+            <span>+</span> {language === "en" ? "New Project" : "Novo Projeto"}
           </button>
         </div>
 
@@ -138,7 +159,11 @@ export default function Dashboard() {
 
         {!loading && projects.length === 0 && (
           <div className="dash-empty">
-            <p>No projects yet. Create your first one!</p>
+            <p>
+              {language === "en"
+                ? "No projects yet. Create your first one!"
+                : "Não há projetos ainda. Crie seu primeiro!"}
+            </p>
           </div>
         )}
 

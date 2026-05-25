@@ -2,8 +2,11 @@ import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
 import "./Login.css";
+import { useContext } from "react";
+import LanguageContext from "../contexts/LanguageContext";
 
 export default function Login() {
+  const { language } = useContext(LanguageContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -50,7 +53,11 @@ export default function Login() {
             </svg>
           </div>
           <h1 className="brand-name">TaskFlow</h1>
-          <p className="brand-tagline">Start tracking your tasks!</p>
+          <p className="brand-tagline">
+            {language === "en"
+              ? "Start tracking your tasks!"
+              : "Comece a rastrear suas tarefas!"}
+          </p>
         </div>
 
         {error && <div className="error-alert">{error}</div>}
@@ -69,7 +76,9 @@ export default function Login() {
           </div>
 
           <div className="field-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">
+              {language === "en" ? "Password" : "Senha"}
+            </label>
             <input
               id="password"
               type="password"
@@ -81,17 +90,27 @@ export default function Login() {
           </div>
 
           <button type="submit" className="btn-signin">
-            Sign In
+            {language === "en" ? "Sign In" : "Entrar"}
           </button>
         </form>
 
         <p className="register-prompt">
-          Don&apos;t have an account? <Link to="/register">Create one</Link>
+          {language === "en" ? "Don't have an account?" : "Não tem uma conta?"}{" "}
+          <Link to="/register">
+            {language === "en" ? "Create one" : "Crie uma"}
+          </Link>
         </p>
       </div>
       <footer className="login-footer">
         <p>
-          Made by <a href="https://github.com/kevincontri" target="_blank" rel="noopener noreferrer">Kevin Contri</a>
+          {language === "en" ? "Made by" : "Feito por"}{" "}
+          <a
+            href="https://github.com/kevincontri"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Kevin Contri
+          </a>
         </p>
       </footer>
     </div>

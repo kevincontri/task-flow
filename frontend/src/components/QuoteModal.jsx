@@ -1,12 +1,18 @@
 import "./ProjectModal.css";
 import "./QuoteModal.css";
+import { useContext } from "react";
+import LanguageContext from "../contexts/LanguageContext";
 
 export default function QuoteModal({ quote, setQuote, onClose, onSave }) {
+  const { language } = useContext(LanguageContext);
+
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2 className="modal-title">Edit Quote</h2>
+          <h2 className="modal-title">
+            {language === "en" ? "Edit Quote" : "Editar Citação"}
+          </h2>
           <button className="modal-close" onClick={onClose}>
             ×
           </button>
@@ -19,9 +25,15 @@ export default function QuoteModal({ quote, setQuote, onClose, onSave }) {
               value={quote}
               maxLength={256}
               onChange={(e) => setQuote(e.target.value)}
-              placeholder="Enter your daily quote (256 chars max)"
+              placeholder={
+                language === "en"
+                  ? "Enter your daily quote (256 chars max)"
+                  : "Digite sua citação diária (máx. 256 caracteres)"
+              }
             />
-            <button onClick={() => onSave(quote)}>Save</button>
+            <button onClick={() => onSave(quote)}>
+              {language === "en" ? "Save" : "Salvar"}
+            </button>
           </div>
         </div>
       </div>

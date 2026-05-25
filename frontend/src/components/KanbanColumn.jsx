@@ -1,12 +1,8 @@
 import { useDroppable } from "@dnd-kit/core";
 import TaskCard from "./TaskCard";
 import "./KanbanColumn.css";
-
-const columnLabels = {
-  todo: "To Do",
-  in_progress: "In Progress",
-  done: "Done",
-};
+import { useContext } from "react";
+import LanguageContext from "../contexts/LanguageContext";
 
 export default function KanbanColumn({
   status,
@@ -16,7 +12,14 @@ export default function KanbanColumn({
   onNewTask,
   onOpenComments,
 }) {
+  const { language } = useContext(LanguageContext);
   const { isOver, setNodeRef } = useDroppable({ id: status });
+
+  const columnLabels = {
+    todo: `${language === "en" ? "To Do" : "A Fazer"}`,
+    in_progress: `${language === "en" ? "In Progress" : "Em Progresso"}`,
+    done: `${language === "en" ? "Done" : "Concluído"}`,
+  };
 
   return (
     <div className="kanban-column">
@@ -42,7 +45,7 @@ export default function KanbanColumn({
 
       <div className="column-footer">
         <button className="btn-new-task" onClick={() => onNewTask(status)}>
-          + New Task
+          + {language === "en" ? "New Task" : "Nova Tarefa"}
         </button>
       </div>
     </div>

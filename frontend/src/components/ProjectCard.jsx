@@ -2,9 +2,12 @@ import { useNavigate } from "react-router-dom";
 import "./ProjectCard.css";
 import { getTasks } from "../api/tasks";
 import { useState, useEffect } from "react";
+import { useContext } from "react";
+import LanguageContext from "../contexts/LanguageContext";
 
 export default function ProjectCard({ project, onEdit, onDelete }) {
   const navigate = useNavigate();
+  const { language } = useContext(LanguageContext);
 
   const handleFetchTasksCount = async () => {
     try {
@@ -39,13 +42,15 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
         <div className="project-header">
           <div>
             <p>
-              Created:{" "}
-              {new Date(project.created_at).toLocaleDateString("en-US")}
+              {language === "en" ? "Created: " : "Criado:"}{" "}
+              {new Date(project.created_at).toLocaleDateString(
+                language === "en" ? "en-US" : "pt-BR"
+              )}
             </p>
           </div>
           <div>
             <p>
-              <span>Tasks: {tasksCount >= 0 ? tasksCount : "Loading..."}</span>
+              <span>{language === "en" ? "Tasks: " : "Tarefas: "} {tasksCount >= 0 ? tasksCount : "Loading..."}</span>
             </p>
           </div>
         </div>
@@ -55,13 +60,13 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
 
       <div className="project-card-footer">
         <button className="btn-card-edit" onClick={() => onEdit(project)}>
-          Edit
+          {language === "en" ? "Edit" : "Editar"}
         </button>
         <button
           className="btn-card-delete"
           onClick={() => onDelete(project.id)}
         >
-          Delete
+          {language === "en" ? "Delete" : "Excluir"}
         </button>
       </div>
     </div>
