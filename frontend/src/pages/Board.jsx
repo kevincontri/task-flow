@@ -140,17 +140,22 @@ export default function Board() {
   };
 
   const handleSave = async (data) => {
-    if (editingTask) {
-      const updated = await updateTask(projectId, editingTask.id, data);
-      setTasks(tasks.map((t) => (t.id === editingTask.id ? updated : t)));
-    } else {
-      const created = await createTask(projectId, {
-        ...data,
-        status: initialStatus,
-      });
-      setTasks([...tasks, created]);
+    try {
+      if (editingTask) {
+        const updated = await updateTask(projectId, editingTask.id, data);
+        setTasks(tasks.map((t) => (t.id === editingTask.id ? updated : t)));
+      } else {
+        const created = await createTask(projectId, {
+          ...data,
+          status: initialStatus,
+        });
+        setTasks([...tasks, created]);
+      }
+      setShowModal(false);
+    } catch (err) {
+      console.error("Failed to save task:", err);
+      alert(err?.response?.data?.detail || "Failed to save task. Check console for details.");
     }
-    setShowModal(false);
   };
 
   return (
