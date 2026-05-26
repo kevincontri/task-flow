@@ -78,10 +78,10 @@
 .btn-new-task {
   width: 100%;
   padding: 10px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.059);
   border: 1px dashed rgba(255, 255, 255, 0.18);
   border-radius: 10px;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.545);
   font-family: 'DM Sans', sans-serif;
   font-size: 0.83rem;
   cursor: pointer;
@@ -90,10 +90,23 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
+  transform: translateY(0);
 }
 
 .btn-new-task:hover {
   background: rgba(134, 239, 172, 0.07);
   border-color: rgba(134, 239, 172, 0.32);
   color: #a7f3b4;
+  transition: all 0.15s ease;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 500px) {
+  .kanban-column {
+    width: 100%;
+  }
+  .column-header {
+    justify-content: center;
+    gap: 12px;
+  }
 }

@@ -112,7 +112,7 @@
   margin-top: -10px;
   margin-bottom: 4px;
 
-    span {
+  span {
     font-size: 0.7rem;
     color: rgba(255, 255, 255, 0.5);
     padding-inline: 6px 3px;
@@ -264,4 +264,15 @@
 .btn-task-delete:hover {
   background: rgba(239, 68, 68, 0.14);
   color: #fca5a5;
+}
+
+@media (max-width: 500px) {
+  .task-card {
+    padding: 12px 12px 8px;
+    min-width: 350px;
+    margin-inline: auto;
+  }
+  .task-card-header {
+    gap: 6px;
+  }
 }

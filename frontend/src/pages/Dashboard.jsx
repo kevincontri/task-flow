@@ -21,7 +21,10 @@ export default function Dashboard() {
   const [showModal, setShowModal] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
   const [quote, setQuote] = useState(() => {
-    return localStorage.getItem("quote") || "Add a quote to start your day!";
+    return (
+      localStorage.getItem("quote") ||
+      `${language === "en" ? "Your motivational quote here!" : "Sua citação motivacional aqui!"}`
+    );
   });
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
 
@@ -116,14 +119,7 @@ export default function Dashboard() {
       <main className="dash-main">
         {quote.length > 0 && (
           <div className="dash-quote">
-            <span>{quote}</span>
-            <button
-              onClick={() => {
-                setQuoteModalOpen(true);
-              }}
-            >
-              <img src={editIcon} alt="Edit Icon" />
-            </button>
+            <span onClick={() => setQuoteModalOpen(true)}>{quote}</span>
           </div>
         )}
 

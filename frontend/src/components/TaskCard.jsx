@@ -11,12 +11,18 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments }) {
   const { language } = useContext(LanguageContext);
   const [commentsCount, setCommentsCount] = useState(0);
 
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: task.id,
-    data: { task },
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: task.id,
+      data: { task },
+    });
 
-  const style = { transform: CSS.Translate.toString(transform) };
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    touchAction: "none",
+    opacity: isDragging ? 0 : 1,
+    pointerEvents: isDragging ? "none" : undefined,
+  };
 
   const deadline = new Date(task.deadline);
   deadline.setDate(deadline.getDate() + 1);

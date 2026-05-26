@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { DndContext, DragOverlay } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragOverlay,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { useParams, useLocation, Link } from "react-router-dom";
 import {
   getTasks,
@@ -42,6 +49,20 @@ export default function Board() {
   useEffect(() => {
     fetchTasks();
   }, [projectId]);
+
+  useEffect(() => {
+    if (activeTask) {
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+    };
+  }, [activeTask]);
 
   const fetchTasks = async () => {
     const data = await getTasks(projectId);
@@ -121,20 +142,31 @@ export default function Board() {
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (!window.confirm(`${language === "en" ? "Delete Comment?" : "Excluir Comentário?"}`)) return;
+    if (
+      !window.confirm(
+        `${language === "en" ? "Delete Comment?" : "Excluir Comentário?"}`,
+      )
+    )
+      return;
     await deleteComment(commentTask.project_id, commentTask.id, commentId);
     setComments(comments.filter((c) => c.id !== commentId));
     window.location.reload();
   };
 
   const handleDelete = async (taskId) => {
-    if (!window.confirm(`${language === "en" ? "Delete Task?" : "Excluir Tarefa?"}`)) return;
+    if (
+      !window.confirm(
+        `${language === "en" ? "Delete Task?" : "Excluir Tarefa?"}`,
+      )
+    )
+      return;
     try {
       await deleteTask(projectId, taskId);
       setTasks((prev) => prev.filter((t) => t.id !== taskId));
     } catch (err) {
       alert(
-        `${language === "en" ? "Failed to delete task: " : "Falha ao excluir tarefa: "}` + (err.response?.data?.detail || err.message),
+        `${language === "en" ? "Failed to delete task: " : "Falha ao excluir tarefa: "}` +
+          (err.response?.data?.detail || err.message),
       );
     }
   };
@@ -154,9 +186,21 @@ export default function Board() {
       setShowModal(false);
     } catch (err) {
       console.error("Failed to save task:", err);
-      alert(err?.response?.data?.detail || "Failed to save task. Check console for details.");
+      alert(
+        err?.response?.data?.detail ||
+          "Failed to save task. Check console for details.",
+      );
     }
   };
+
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: { distance: 8 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 250, tolerance: 5 },
+    }),
+  );
 
   return (
     <div className="board-page">
@@ -184,16 +228,28 @@ export default function Board() {
       </header>
 
       <main className="board-main">
-        <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        <DndContext
+          sensors={sensors}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
           {tasks.length === 0 && (
             <div className="board-message">
-              <p>{language === "en" ? "No tasks yet. Add your first task!" : "Nenhuma tarefa ainda. Adicione sua primeira tarefa!"}</p>
+              <p>
+                {language === "en"
+                  ? "No tasks yet. Add your first task!"
+                  : "Nenhuma tarefa ainda. Adicione sua primeira tarefa!"}
+              </p>
             </div>
           )}
 
           {tasks.length > 0 && tasks.every((t) => t.status === "done") && (
             <div className="board-message">
-              <p>{language === "en" ? "All tasks are done! Great job!" : "Todas as tarefas estão concluídas! Bom trabalho!"}</p>
+              <p>
+                {language === "en"
+                  ? "All tasks are done! Great job!"
+                  : "Todas as tarefas estão concluídas! Bom trabalho!"}
+              </p>
             </div>
           )}
 

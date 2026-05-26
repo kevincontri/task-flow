@@ -137,3 +137,34 @@
   align-items: flex-start;
   min-width: fit-content;
 }
+
+@media (max-width: 768px) {
+  .board-navbar {
+    padding: 0 24px;
+
+    .board-nav-left {
+      gap: 12px;
+
+      .board-brand-name, .board-brand-icon {
+        display: none;
+    }
+
+      .btn-back {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  .board-message {
+    p {
+      text-align: center;
+    }
+  }
+
+  .board-columns {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+}

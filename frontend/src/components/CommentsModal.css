@@ -91,15 +91,19 @@
 }
 
 .btn-add-comment {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  border-radius: 6px;
-  padding: 6px 12px;
+  padding: 12px;
+  background: #fff;
+  color: #2a6b30;
   font-family: "DM Sans", sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   font-weight: 500;
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.51);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
 }
 
 .btn-add-comment:hover {
@@ -120,5 +124,20 @@
     font-size: 0.75rem;
     font-family: "DM Sans", sans-serif;
     margin: 0;
+  }
+}
+
+@media (max-width: 500px) {
+  .no-comments {
+    font-size: 0.85rem;
+  }
+
+  .new-comment {
+    flex-direction: column;
+
+    .btn-add-comment {
+      width: 100%;
+      padding: 8px;
+    }
   }
 }
