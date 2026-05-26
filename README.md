@@ -18,6 +18,7 @@
 - Language toggle (English / Portuguese) — persisted in localStorage, all UI text updates dynamically
 - Redis caching layer with async integration and robust connection/error handling; `fakeredis` used in pytest fixtures for isolated test runs
 - RedisInsight UI for Redis database visualization
+- Responsive design via CSS media queries — layout adapts for mobile devices (stacked columns, touch-friendly spacing, condensed task cards)
 - Form validation on all inputs
 - Empty-state and loading indicators throughout the UI
 
