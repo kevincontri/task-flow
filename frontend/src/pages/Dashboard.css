@@ -170,7 +170,7 @@
   cursor: pointer;
   margin-bottom: 20px;
   margin-top: -25px;
-  
+
   &:hover {
     color: #ffffff5c;
 
@@ -302,5 +302,19 @@
         font-size: 1rem;
       }
     }
+  }
+}
+
+@media (max-width: 340px) {
+  .dash-navbar {
+    padding: 0 16px;
+    justify-content: center;
+  }
+  .language-toggle {
+    margin-left: 20px;
+  }
+  .btn-logout {
+    padding: 6px 14px;
+    font-size: 0.85rem;
   }
 }

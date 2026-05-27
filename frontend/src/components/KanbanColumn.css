@@ -6,12 +6,22 @@
   animation: colIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.kanban-column:nth-child(2) { animation-delay: 0.07s; }
-.kanban-column:nth-child(3) { animation-delay: 0.14s; }
+.kanban-column:nth-child(2) {
+  animation-delay: 0.07s;
+}
+.kanban-column:nth-child(3) {
+  animation-delay: 0.14s;
+}
 
 @keyframes colIn {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ── Header ── */
@@ -27,7 +37,7 @@
 }
 
 .column-label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 0.78rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.75);
@@ -43,7 +53,7 @@
   padding: 2px 9px;
   border-radius: 20px;
   border: 1px solid rgba(134, 239, 172, 0.22);
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 /* ── Drop zone ── */
@@ -58,7 +68,9 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .column-droppable--over {
@@ -82,7 +94,7 @@
   border: 1px dashed rgba(255, 255, 255, 0.18);
   border-radius: 10px;
   color: rgba(255, 255, 255, 0.545);
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 0.83rem;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -101,12 +113,32 @@
   transform: translateY(-2px);
 }
 
-@media (max-width: 500px) {
+@media (max-width: 821px) {
   .kanban-column {
-    width: 100%;
+    width: 480px;
   }
+
   .column-header {
     justify-content: center;
     gap: 12px;
+  }
+}
+
+/* Ipad Viewport/*/
+@media (max-width: 768px) {
+  .kanban-column {
+    width: 480px;
+  }
+}
+
+@media (max-width: 500px) {
+  .kanban-column {
+    width: 300px;
+  }
+}
+
+@media (max-width: 340px) {
+  .kanban-column {
+    width: 260px;
   }
 }

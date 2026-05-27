@@ -269,8 +269,6 @@
 @media (max-width: 500px) {
   .task-card {
     padding: 12px 12px 8px;
-    min-width: 350px;
-    margin-inline: auto;
   }
   .task-card-header {
     gap: 6px;

@@ -207,7 +207,7 @@ export default function Board() {
       <header className="board-navbar">
         <div className="board-nav-left">
           <Link to="/dashboard" className="btn-back">
-            ← Dashboard
+            {language === "en" ? "← Projects" : "← Projetos"}
           </Link>
           <div className="board-brand">
             <div className="board-brand-icon">
