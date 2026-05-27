@@ -1,10 +1,16 @@
 # TaskFlow
 
- A **Kanban-style project** and **task management app** — FastAPI backend, React frontend.
+A **Kanban-style project** and **task management app** — FastAPI backend, React frontend.
 
-## Check the website Here: 
+## Check the deployed website here: **https://task-flow-1-vuz1.onrender.com/login**
 
 ## Video Demo:
+
+> Soon project video demo
+
+## Project Mapped System Diagram:
+
+> Soon project diagram
 
 ## Features
 
@@ -15,16 +21,18 @@
 - Task fields: name, description, priority (low / medium / high), deadline
 - Notes on tasks — add, view, and delete notes via a modal opened from each task card (Enter to submit, Shift+Enter for newline); note count shown directly on the task card
 - Customizable motivational quote on the dashboard — editable via a modal, persisted in localStorage
-- Language toggle (English / Portuguese) — persisted in localStorage, all UI text updates dynamically
+- Language toggle (English / Portuguese) — auto-detected from browser locale on first visit, persisted in localStorage, all UI text updates dynamically
 - Redis caching layer with async integration and robust connection/error handling; `fakeredis` used in pytest fixtures for isolated test runs
 - RedisInsight UI for Redis database visualization
 - Responsive design via CSS media queries — layout adapts for mobile devices (stacked columns, touch-friendly spacing, condensed task cards)
 - Form validation on all inputs
 - Empty-state and loading indicators throughout the UI
+- Animated hint buttons — the "New Project" button pulses when no projects exist and the "New Task" button pulses when a board has no tasks, guiding new users toward the next action
 
 ## Tech Stack
 
 **Backend**
+
 - FastAPI 0.136
 - SQLAlchemy 2.0 (async) + asyncpg
 - Alembic (migrations)
@@ -35,12 +43,14 @@
 - pytest + pytest-asyncio
 
 **Frontend**
+
 - React 19 + Vite
 - React Router v7
 - Axios
 - @dnd-kit (drag-and-drop)
 
 **Infrastructure**
+
 - PostgreSQL 16
 - Redis 7 (Alpine) — caching layer
 - RedisInsight — Redis GUI at `http://localhost:5540`
@@ -139,15 +149,15 @@ Covers auth, projects, tasks, and comments via fixtures in `conftest.py` with a 
 
 ## API Overview
 
-| Method | Route | Description |
-|--------|-------|-------------|
-| POST | `/auth/register` | Create account |
-| POST | `/auth/login` | Login, returns JWT |
-| GET | `/health` | DB liveness probe |
-| GET/POST | `/projects` | List / create projects |
-| GET/PUT/DELETE | `/projects/{id}` | Read / update / delete project |
-| GET/POST | `/projects/{id}/tasks` | List / create tasks |
-| GET/PUT/DELETE | `/projects/{id}/tasks/{task_id}` | Read / update / delete task |
-| PATCH | `/projects/{id}/tasks/{task_id}/move` | Move task to new status column |
-| GET/POST | `/projects/{id}/tasks/{task_id}/comments` | List / add comments |
-| PUT/DELETE | `/projects/{id}/tasks/{task_id}/comments/{comment_id}` | Update / delete comment |
+| Method         | Route                                                  | Description                    |
+| -------------- | ------------------------------------------------------ | ------------------------------ |
+| POST           | `/auth/register`                                       | Create account                 |
+| POST           | `/auth/login`                                          | Login, returns JWT             |
+| GET            | `/health`                                              | DB liveness probe              |
+| GET/POST       | `/projects`                                            | List / create projects         |
+| GET/PUT/DELETE | `/projects/{id}`                                       | Read / update / delete project |
+| GET/POST       | `/projects/{id}/tasks`                                 | List / create tasks            |
+| GET/PUT/DELETE | `/projects/{id}/tasks/{task_id}`                       | Read / update / delete task    |
+| PATCH          | `/projects/{id}/tasks/{task_id}/move`                  | Move task to new status column |
+| GET/POST       | `/projects/{id}/tasks/{task_id}/comments`              | List / add comments            |
+| PUT/DELETE     | `/projects/{id}/tasks/{task_id}/comments/{comment_id}` | Update / delete comment        |

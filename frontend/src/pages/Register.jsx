@@ -6,6 +6,7 @@ import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
 
 export default function Register() {
+  const [loading, setLoading] = useState(false);
   const { language } = useContext(LanguageContext);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -34,6 +35,7 @@ export default function Register() {
     }
 
     try {
+      setLoading(true);
       await api.post("/auth/register", { email, username, password });
       navigate("/login");
     } catch (err) {
@@ -46,6 +48,8 @@ export default function Register() {
             `${language === "en" ? "Registration failed" : "Falha no registro"}: ${err.response?.status || err.message}`,
         );
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -55,7 +59,7 @@ export default function Register() {
       <div className="hill hill-mid" />
       <div className="hill hill-near" />
 
-      <div className="login-card">
+      <div className={`login-card ${loading ? "margin-top" : ""}`}>
         <div className="login-header">
           <div className="brand-icon">
             <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
@@ -127,6 +131,13 @@ export default function Register() {
           <Link to="/login">{language === "en" ? "Sign in" : "Entrar"}</Link>
         </p>
       </div>
+      {loading && (
+        <div className="login-loading">
+          <div className="login-loading-dot" />
+          <div className="login-loading-dot" />
+          <div className="login-loading-dot" />
+        </div>
+      )}
       <footer className="login-footer">
         <p>
           {language === "en" ? "Created by" : "Criado por"}{" "}

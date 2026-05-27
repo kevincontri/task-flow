@@ -6,6 +6,7 @@ import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
 
 export default function Login() {
+  const [loading, setLoading] = useState(false);
   const { language } = useContext(LanguageContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,6 +15,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await login(email, password);
     } catch (err) {
@@ -30,6 +32,7 @@ export default function Login() {
         setError(err.message || "Unexpected error");
       }
     }
+    setLoading(false);
   };
 
   return (
@@ -101,6 +104,15 @@ export default function Login() {
           </Link>
         </p>
       </div>
+
+      {loading && (
+        <div className="login-loading">
+          <div className="login-loading-dot" />
+          <div className="login-loading-dot" />
+          <div className="login-loading-dot" />
+        </div>
+      )}
+
       <footer className="login-footer">
         <p>
           {language === "en" ? "Made by" : "Feito por"}{" "}
