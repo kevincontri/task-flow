@@ -11,6 +11,7 @@ export default function KanbanColumn({
   onDelete,
   onNewTask,
   onOpenComments,
+  taskLength,
 }) {
   const { language } = useContext(LanguageContext);
   const { isOver, setNodeRef } = useDroppable({ id: status });
@@ -44,7 +45,10 @@ export default function KanbanColumn({
       </div>
 
       <div className="column-footer">
-        <button className="btn-new-task" onClick={() => onNewTask(status)}>
+        <button
+          className={`btn-new-task ${taskLength == 0 && status == "todo" ? "btn-jumping-kc" : ""}`}
+          onClick={() => onNewTask(status)}
+        >
           + {language === "en" ? "New Task" : "Nova Tarefa"}
         </button>
       </div>

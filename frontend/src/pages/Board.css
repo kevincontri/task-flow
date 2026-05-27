@@ -50,6 +50,14 @@
   cursor: pointer;
   text-decoration: none;
   transition: all 0.2s ease;
+
+  img {
+    width: 11px;
+    height: 11px;
+    filter: invert(1) brightness(100%) sepia(100%) hue-rotate(180deg)
+      saturate(200%);
+    opacity: 0.55;
+  }
 }
 
 .btn-back:hover {
@@ -113,6 +121,7 @@
     font-size: 1.08rem;
     background: linear-gradient(135deg, #95c295, #439848);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
@@ -125,6 +134,7 @@
     p {
       background: linear-gradient(135deg, #c6efc6, #80ea87);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
       font-weight: 600;
     }
@@ -145,9 +155,10 @@
     .board-nav-left {
       gap: 12px;
 
-      .board-brand-name, .board-brand-icon {
+      .board-brand-name,
+      .board-brand-icon {
         display: none;
-    }
+      }
 
       .btn-back {
         padding: 6px 12px;

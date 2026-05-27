@@ -23,6 +23,7 @@ import { getComments, createComment, deleteComment } from "../api/comments";
 import CommentsModal from "../components/CommentModal";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
+import back from "../assets/arrow.png";
 
 const STATUSES = ["todo", "in_progress", "done"];
 
@@ -207,7 +208,8 @@ export default function Board() {
       <header className="board-navbar">
         <div className="board-nav-left">
           <Link to="/dashboard" className="btn-back">
-            {language === "en" ? "← Projects" : "← Projetos"}
+            <img src={back} alt="Voltar" />
+            <span>{language === "en" ? "Projects" : "Projetos"}</span>
           </Link>
           <div className="board-brand">
             <div className="board-brand-icon">
@@ -263,6 +265,7 @@ export default function Board() {
                 onDelete={handleDelete}
                 onNewTask={handleNewTask}
                 onOpenComments={handleOpenComments}
+                taskLength={tasks.length}
               />
             ))}
           </div>

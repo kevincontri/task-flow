@@ -140,7 +140,7 @@ export default function Dashboard() {
               {projects.length !== 1 ? "s" : ""}
             </p>
           </div>
-          <button className="btn-new-project" onClick={handleNewProject}>
+          <button className={`btn-new-project ${projects.length == 0 && "btn-jumping-db"}`} onClick={handleNewProject}>
             <span>+</span> {language === "en" ? "New Project" : "Novo Projeto"}
           </button>
         </div>

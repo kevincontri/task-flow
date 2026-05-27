@@ -102,7 +102,42 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transform: translateY(0);
+}
+
+.btn-jumping-kc {
+  animation:
+    jump 2s ease-in-out infinite,
+    colorChange 2s ease-in-out infinite;
+}
+
+@keyframes colorChange {
+  0%,
+  100% {
+    color: rgba(255, 255, 255, 0.545);
+    border-color: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.059);
+  }
+  50% {
+    color: #a7f3b4;
+    border-color: rgba(134, 239, 172, 0.32);
+    background: rgba(134, 239, 173, 0.241);
+  }
+}
+
+@keyframes jump {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-20px);
+  }
+  60% {
+    transform: translateY(-8px);
+  }
 }
 
 .btn-new-task:hover {
@@ -110,7 +145,6 @@
   border-color: rgba(134, 239, 172, 0.32);
   color: #a7f3b4;
   transition: all 0.15s ease;
-  transform: translateY(-2px);
 }
 
 @media (max-width: 821px) {
