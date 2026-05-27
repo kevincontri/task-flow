@@ -8,7 +8,7 @@ A **Kanban-style project** and **task management app** — FastAPI backend, Reac
 
 > Soon project video demo
 
-## Project Mapped System Diagram:
+## Project Architecture Diagram:
 
 ![TaskFlow System Architecture](./taskflow-architecture.png)
 
