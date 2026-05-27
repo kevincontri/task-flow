@@ -14,15 +14,15 @@ A **Kanban-style project** and **task management app** — FastAPI backend, Reac
 
 ## Features
 
-- User registration and JWT authentication (creator name shown on login/register pages)
+- User registration and **JWT** authentication
 - Project CRUD with a dashboard overview — each project card shows task count and creation date
 - Kanban board per project (To Do / In Progress / Done columns)
-- Drag-and-drop task reordering across columns
+- **Drag-and-drop task** reordering across columns
 - Task fields: name, description, priority (low / medium / high), deadline
 - Notes on tasks — add, view, and delete notes via a modal opened from each task card (Enter to submit, Shift+Enter for newline); note count shown directly on the task card
 - Customizable motivational quote on the dashboard — editable via a modal, persisted in localStorage
 - Language toggle (English / Portuguese) — auto-detected from browser locale on first visit, persisted in localStorage, all UI text updates dynamically
-- Redis caching layer with async integration and robust connection/error handling; `fakeredis` used in pytest fixtures for isolated test runs
+- **Redis caching layer** with async integration and robust connection/error handling; `fakeredis` used in pytest fixtures for isolated test runs
 - RedisInsight UI for Redis database visualization
 - Responsive design via CSS media queries — layout adapts for mobile devices (stacked columns, touch-friendly spacing, condensed task cards)
 - Form validation on all inputs
