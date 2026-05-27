@@ -2,7 +2,7 @@
 
 A **Kanban-style project** and **task management app** — FastAPI backend, React frontend.
 
-## Check the deployed website <a href=https://task-flow-1-vuz1.onrender.com/login target="_blank">Here</a>: 
+## Check the deployed website [Here](https://task-flow-1-vuz1.onrender.com/login): 
 
 ## Video Demo:
 
