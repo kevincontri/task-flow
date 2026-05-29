@@ -11,6 +11,14 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments }) {
   const { language } = useContext(LanguageContext);
   const [commentsCount, setCommentsCount] = useState(0);
 
+  if (task.priority === "high") {
+    task.priority = language === "en" ? "high" : "alta";
+  } else if (task.priority === "medium") {
+    task.priority = language === "en" ? "medium" : "média";
+  } else if (task.priority === "low") {
+    task.priority = language === "en" ? "low" : "baixa";
+  }
+
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: task.id,

@@ -51,19 +51,20 @@
   border: 1px solid;
 }
 
-.priority-badge--low {
+.priority-badge--low,
+.priority-badge--baixa {
   background: rgba(134, 239, 172, 0.14);
   color: #86efac;
   border-color: rgba(134, 239, 172, 0.25);
 }
 
-.priority-badge--medium {
+.priority-badge--medium, .priority-badge--média {
   background: rgba(251, 191, 36, 0.14);
   color: #fbbf24;
   border-color: rgba(251, 191, 36, 0.25);
 }
 
-.priority-badge--high {
+.priority-badge--high, .priority-badge--alta {
   background: rgba(239, 68, 68, 0.14);
   color: #f87171;
   border-color: rgba(239, 68, 68, 0.25);
