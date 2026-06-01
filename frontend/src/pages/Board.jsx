@@ -46,6 +46,7 @@ export default function Board() {
   const [newComment, setNewComment] = useState("");
   const [showCommentsModal, setShowCommentsModal] = useState(false);
   const [commentError, setCommentError] = useState("");
+  const [commentCounts, setCommentCounts] = useState({});
 
   useEffect(() => {
     fetchTasks();
@@ -113,6 +114,7 @@ export default function Board() {
     const data = await getComments(task.project_id, task.id);
     setComments(data);
     setCommentTask(task);
+    setCommentCounts((prev) => ({ ...prev, [task.id]: data.length }));
     setShowCommentsModal(true);
   };
 
@@ -137,9 +139,12 @@ export default function Board() {
       newComment,
     );
 
-    setComments([...comments, comment]);
+    setComments((prev) => [...prev, comment]);
+    setCommentCounts((prev) => ({
+      ...prev,
+      [commentTask.id]: (prev[commentTask.id] ?? 0) + 1,
+    }));
     setNewComment("");
-    window.location.reload();
   };
 
   const handleDeleteComment = async (commentId) => {
@@ -150,8 +155,11 @@ export default function Board() {
     )
       return;
     await deleteComment(commentTask.project_id, commentTask.id, commentId);
-    setComments(comments.filter((c) => c.id !== commentId));
-    window.location.reload();
+    setComments((prev) => prev.filter((c) => c.id !== commentId));
+    setCommentCounts((prev) => ({
+      ...prev,
+      [commentTask.id]: Math.max(0, (prev[commentTask.id] ?? 1) - 1),
+    }));
   };
 
   const handleDelete = async (taskId) => {
@@ -266,6 +274,7 @@ export default function Board() {
                 onNewTask={handleNewTask}
                 onOpenComments={handleOpenComments}
                 taskLength={tasks.length}
+                commentCounts={commentCounts}
               />
             ))}
           </div>

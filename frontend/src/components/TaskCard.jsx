@@ -7,9 +7,10 @@ import { useState, useEffect } from "react";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
 
-export default function TaskCard({ task, onEdit, onDelete, onOpenComments }) {
+export default function TaskCard({ task, onEdit, onDelete, onOpenComments, commentCount }) {
   const { language } = useContext(LanguageContext);
-  const [commentsCount, setCommentsCount] = useState(0);
+  const [fetchedCount, setFetchedCount] = useState(0);
+  const commentsCount = commentCount !== undefined ? commentCount : fetchedCount;
 
   if (task.priority === "high") {
     task.priority = language === "en" ? "high" : "alta";
@@ -45,7 +46,7 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments }) {
 
   const fetchCommentsLength = async () => {
     const comments = await getComments(task.project_id, task.id);
-    setCommentsCount(comments.length);
+    setFetchedCount(comments.length);
   };
 
   useEffect(() => {
