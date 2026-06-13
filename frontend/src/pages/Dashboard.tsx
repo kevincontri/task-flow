@@ -8,18 +8,19 @@ import {
 } from "../api/projects";
 import ProjectCard from "../components/ProjectCard";
 import ProjectModal from "../components/ProjectModal";
+// @ts-ignore
 import "./Dashboard.css";
-import editIcon from "../assets/edit.png";
 import QuoteModal from "../components/QuoteModal";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
+import { ProjectBase, ProjectUpdate, ProjectCreate } from "../types/types";
 
 export default function Dashboard() {
   const { language, setLanguage } = useContext(LanguageContext);
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState<ProjectBase[]>([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [editingProject, setEditingProject] = useState(null);
+  const [editingProject, setEditingProject] = useState<ProjectBase | null>(null);
   const [quote, setQuote] = useState(() => {
     return (
       localStorage.getItem("quote") ||
@@ -30,38 +31,38 @@ export default function Dashboard() {
 
   const { logout } = useAuth();
 
-  useEffect(() => {
+  useEffect((): void => {
     fetchProjects();
   }, []);
 
-  const fetchProjects = async () => {
+  const fetchProjects = async (): Promise<void> => {
     setLoading(true);
     try {
       const data = await getProjects();
       setProjects(data);
-    } catch (err) {
+    } catch (err: any) {
       console.log("Erro ao buscar projetos", err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleNewProject = () => {
+  const handleNewProject = (): void => {
     setEditingProject(null);
     setShowModal(true);
   };
 
-  const handleEdit = (project) => {
+  const handleEdit = (project: ProjectBase): void => {
     setEditingProject(project);
     setShowModal(true);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: number): Promise<void> => {
     if (!window.confirm("Deletar projeto?")) return;
     try {
       await deleteProject(id);
       setProjects((prev) => prev.filter((p) => p.id !== id));
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to delete project:", err);
       alert(
         "Failed to delete project: " +
@@ -70,14 +71,14 @@ export default function Dashboard() {
     }
   };
 
-  const handleSave = async (data) => {
+  const handleSave = async (data: ProjectCreate | ProjectUpdate): Promise<void> => {
     if (editingProject) {
-      const updated = await updateProject(editingProject.id, data);
+      const updated = await updateProject(editingProject.id, data as ProjectUpdate);
       setProjects(
         projects.map((p) => (p.id === editingProject.id ? updated : p)),
       );
     } else {
-      const created = await createProject(data);
+      const created = await createProject(data as ProjectCreate);
       setProjects([...projects, created]);
     }
     setShowModal(false);
@@ -108,7 +109,7 @@ export default function Dashboard() {
             checked={language === "pt"}
             onChange={() => setLanguage(language === "en" ? "pt" : "en")}
           />
-          <label for="lang-toggle" class="button-toggle"></label>
+          <label htmlFor="lang-toggle" className="button-toggle"></label>
           <span className="language-label-pt">PT</span>
         </div>
         <button className="btn-logout" onClick={logout}>
@@ -182,7 +183,7 @@ export default function Dashboard() {
           onClose={() => {
             setQuoteModalOpen(false);
           }}
-          onSave={(newQuote) => {
+          onSave={(newQuote: string) => {
             setQuote(newQuote);
             localStorage.setItem("quote", newQuote);
             setQuoteModalOpen(false);

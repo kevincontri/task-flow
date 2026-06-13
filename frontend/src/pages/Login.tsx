@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
+// @ts-ignore
 import "./Login.css";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
@@ -13,12 +14,12 @@ export default function Login() {
   const [error, setError] = useState("");
   const { login } = useAuth();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setLoading(true);
     try {
       await login(email, password);
-    } catch (err) {
+    } catch (err: any) {
       const detail = err.response?.data?.detail;
       if (Array.isArray(detail)) {
         setError(detail.map((d) => `${d.loc?.join(".")}: ${d.msg}`).join("; "));

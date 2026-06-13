@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
+// @ts-ignore
 import "./Login.css";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
+import { UserRegister } from "../types/types";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
@@ -14,7 +16,7 @@ export default function Register() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
 
     if (username.length < 3 || username.length > 32) {
@@ -36,9 +38,10 @@ export default function Register() {
 
     try {
       setLoading(true);
-      await api.post("/auth/register", { email, username, password });
+      const payload: UserRegister = { email, username, password };
+      await api.post("/auth/register", payload);
       navigate("/login");
-    } catch (err) {
+    } catch (err: any) {
       const detail = err.response?.data?.detail;
       if (Array.isArray(detail)) {
         setError(detail.map((d) => d.msg).join("; "));
