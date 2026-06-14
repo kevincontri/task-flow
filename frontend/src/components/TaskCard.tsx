@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
 
-export default function TaskCard({ task, onEdit, onDelete, onOpenComments, commentCount }) {
+export default function TaskCard({ task, onEdit, onDelete, onOpenComments, commentCount }: { task: TaskBase; onEdit: (task: TaskBase) => void; onDelete: (taskId: number) => void; onOpenComments: (task: TaskBase) => void; commentCount?: number }) {
   const { language } = useContext(LanguageContext);
   const [fetchedCount, setFetchedCount] = useState(0);
   const commentsCount = commentCount !== undefined ? commentCount : fetchedCount;

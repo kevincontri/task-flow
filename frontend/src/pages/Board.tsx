@@ -26,6 +26,9 @@ import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
 // @ts-ignore
 import back from "../assets/arrow.png";
+import { TaskBase, TaskCreate, TaskUpdate } from "../types/task_types";
+import { CommentBase } from "../types/comment_types";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const STATUSES = ["todo", "in_progress", "done"];
 
@@ -37,23 +40,68 @@ export default function Board() {
     location.state?.projectName ||
     `${language === "en" ? "Project Board" : "Quadro de Projeto"} ${projectId}`;
 
-  const [tasks, setTasks] = useState([]);
-  const [activeTask, setActiveTask] = useState(null);
+  const [activeTask, setActiveTask] = useState<TaskBase | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [editingTask, setEditingTask] = useState(null);
+  const [editingTask, setEditingTask] = useState<TaskBase | null>(null);
   const [initialStatus, setInitialStatus] = useState("todo");
 
-  const [commentTask, setCommentTask] = useState(null);
-  const [comments, setComments] = useState(null);
+  const [commentTask, setCommentTask] = useState<TaskBase | null>(null);
+  const [comments, setComments] = useState<CommentBase[]>([]);
   const [newComment, setNewComment] = useState("");
   const [showCommentsModal, setShowCommentsModal] = useState(false);
   const [commentError, setCommentError] = useState("");
-  const [commentCounts, setCommentCounts] = useState({});
+  const [commentCounts, setCommentCounts] = useState<Record<number, number>>({});
 
-  useEffect(() => {
-    fetchTasks();
-  }, [projectId]);
+  const queryClient = useQueryClient();
 
+  const fetchTasks = async (): Promise<TaskBase[]> => await getTasks(projectId);
+
+  // Fetch tasks from server
+  const {data: tasks = [] } = useQuery({
+    queryKey: ["tasks"],
+    queryFn: fetchTasks,
+    staleTime: 5 * 60 * 1000 // 5 minutes to stale cache
+  })
+
+  // Mutations for creating/updating tasks
+  const { mutate: saveTask, isPending: isSaving } = useMutation({
+    mutationFn: (taskData: TaskCreate | TaskUpdate) =>{
+      if (editingTask) {
+        return updateTask(projectId, editingTask.id, taskData as TaskUpdate);
+      } else {
+        return createTask(projectId, taskData as TaskCreate);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] })
+      setShowModal(false);
+    },
+    onError: (err: any) => {
+      console.error("Failed to save task:", err);
+      alert(
+        `${language === "en" ? "Failed to save task: " : "Falha ao salvar tarefa: "}` +
+          (err.response?.data?.detail || err.message),
+      );
+    }
+  });
+
+  // Mutation for moving tasks
+  const { mutate: moveTaskMutation, isPending: isMoving } = useMutation({
+    mutationFn: ({ taskId, newStatus }: { taskId: number; newStatus: string }) =>
+      moveTask(projectId, taskId, newStatus),
+    onError: (err: any) => {
+      console.error("Failed to move task:", err);
+      alert(
+        `${language === "en" ? "Failed to move task: " : "Falha ao mover tarefa: "}` +
+          (err.response?.data?.detail || err.message),
+      );
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+
+  // TODO : Add mutation for deleting tasks, adding comments and deleting comments, and invalidate queries on success to refetch data
+
+  // Fixing body overflow when dragging taskcards on mobile
   useEffect(() => {
     if (activeTask) {
       document.body.style.overflow = "hidden";
@@ -67,11 +115,6 @@ export default function Board() {
       document.body.style.touchAction = "";
     };
   }, [activeTask]);
-
-  const fetchTasks = async () => {
-    const data = await getTasks(projectId);
-    setTasks(data);
-  };
 
   const getTasksByStatus = (status: string) => tasks.filter((t) => t.status === status);
 
@@ -88,31 +131,23 @@ export default function Board() {
     const newStatus = over.id;
     const task = tasks.find((t) => t.id === taskId);
 
-    if (task.status === newStatus) return;
+    if (!task || task.status === newStatus) return;
 
-    setTasks(
-      tasks.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t)),
-    );
-
-    try {
-      await moveTask(projectId, taskId, newStatus);
-    } catch {
-      fetchTasks();
-    }
+    moveTaskMutation({ taskId, newStatus });
   };
 
-  const handleNewTask = (status: ) => {
+  const handleNewTask = (status: string) => {
     setEditingTask(null);
     setInitialStatus(status);
     setShowModal(true);
   };
 
-  const handleEdit = (task) => {
+  const handleEdit = (task: TaskBase) => {
     setEditingTask(task);
     setShowModal(true);
   };
 
-  const handleOpenComments = async (task) => {
+  const handleOpenComments = async (task: TaskBase) => {
     const data = await getComments(task.project_id, task.id);
     setComments(data);
     setCommentTask(task);
@@ -135,6 +170,7 @@ export default function Board() {
 
     setCommentError("");
 
+    if (!commentTask) return;
     const comment = await createComment(
       commentTask.project_id,
       commentTask.id,
@@ -149,13 +185,15 @@ export default function Board() {
     setNewComment("");
   };
 
-  const handleDeleteComment = async (commentId) => {
+  const handleDeleteComment = async (commentId: number) => {
     if (
       !window.confirm(
         `${language === "en" ? "Delete Comment?" : "Excluir Comentário?"}`,
       )
     )
       return;
+
+    if (!commentTask) return;
     await deleteComment(commentTask.project_id, commentTask.id, commentId);
     setComments((prev) => prev.filter((c) => c.id !== commentId));
     setCommentCounts((prev) => ({
@@ -164,7 +202,7 @@ export default function Board() {
     }));
   };
 
-  const handleDelete = async (taskId) => {
+  const handleDelete = async (taskId: number) => {
     if (
       !window.confirm(
         `${language === "en" ? "Delete Task?" : "Excluir Tarefa?"}`,
@@ -173,8 +211,7 @@ export default function Board() {
       return;
     try {
       await deleteTask(projectId, taskId);
-      setTasks((prev) => prev.filter((t) => t.id !== taskId));
-    } catch (err) {
+    } catch (err: any) {
       alert(
         `${language === "en" ? "Failed to delete task: " : "Falha ao excluir tarefa: "}` +
           (err.response?.data?.detail || err.message),
@@ -182,24 +219,19 @@ export default function Board() {
     }
   };
 
-  const handleSave = async (data) => {
+  const handleSave = async (data: TaskCreate | TaskUpdate) => {
     try {
       if (editingTask) {
-        const updated = await updateTask(projectId, editingTask.id, data);
-        setTasks(tasks.map((t) => (t.id === editingTask.id ? updated : t)));
+        saveTask({ ...editingTask, ...data });
       } else {
-        const created = await createTask(projectId, {
-          ...data,
-          status: initialStatus,
-        });
-        setTasks([...tasks, created]);
+        saveTask(data);
       }
       setShowModal(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to save task:", err);
       alert(
-        err?.response?.data?.detail ||
-          "Failed to save task. Check console for details.",
+        `${language === "en" ? "Failed to save task: " : "Falha ao salvar tarefa: "}` +
+          (err.response?.data?.detail || err.message),
       );
     }
   };
@@ -287,6 +319,8 @@ export default function Board() {
                 task={activeTask}
                 onEdit={() => {}}
                 onDelete={() => {}}
+                onOpenComments={() => {}}
+                commentCount={0}
               />
             )}
           </DragOverlay>
@@ -295,7 +329,6 @@ export default function Board() {
 
       {showCommentsModal && (
         <CommentsModal
-          task={commentTask}
           onClose={() => setShowCommentsModal(false)}
           comments={comments}
           newComment={newComment}
