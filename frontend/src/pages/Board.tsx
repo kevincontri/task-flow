@@ -18,11 +18,13 @@ import {
 import KanbanColumn from "../components/KanbanColumn";
 import TaskCard from "../components/TaskCard";
 import TaskModal from "../components/TaskModal";
+// @ts-ignore
 import "./Board.css";
 import { getComments, createComment, deleteComment } from "../api/comments";
 import CommentsModal from "../components/CommentModal";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
+// @ts-ignore
 import back from "../assets/arrow.png";
 
 const STATUSES = ["todo", "in_progress", "done"];
@@ -71,13 +73,13 @@ export default function Board() {
     setTasks(data);
   };
 
-  const getTasksByStatus = (status) => tasks.filter((t) => t.status === status);
+  const getTasksByStatus = (status: string) => tasks.filter((t) => t.status === status);
 
-  const handleDragStart = (event) => {
+  const handleDragStart = (event: any) => {
     setActiveTask(event.active.data.current.task);
   };
 
-  const handleDragEnd = async (event) => {
+  const handleDragEnd = async (event: any) => {
     const { active, over } = event;
     setActiveTask(null);
     if (!over) return;
@@ -99,7 +101,7 @@ export default function Board() {
     }
   };
 
-  const handleNewTask = (status) => {
+  const handleNewTask = (status: ) => {
     setEditingTask(null);
     setInitialStatus(status);
     setShowModal(true);
@@ -264,7 +266,7 @@ export default function Board() {
           )}
 
           <div className="board-columns">
-            {STATUSES.map((status) => (
+            {STATUSES.map((status: string) => (
               <KanbanColumn
                 key={status}
                 status={status}

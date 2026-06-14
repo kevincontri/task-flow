@@ -1,15 +1,17 @@
 import { useState } from "react";
+// @ts-ignore
 import "./ProjectModal.css";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
+import { ProjectModalProps } from "../types/user_types";
 
-export default function ProjectModal({ project, onSave, onClose }) {
+export default function ProjectModal({ project, onSave, onClose, isSaving = false }: ProjectModalProps) {
   const { language } = useContext(LanguageContext);
   const [name, setName] = useState(project?.name || "");
   const [description, setDescription] = useState(project?.description || "");
   const [err, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (
       name.length < 3 ||
@@ -90,8 +92,10 @@ export default function ProjectModal({ project, onSave, onClose }) {
             >
               {language === "en" ? "Cancel" : "Cancelar"}
             </button>
-            <button type="submit" className="btn-modal-save">
-              {language === "en" ? "Save" : "Salvar"}
+            <button type="submit" className="btn-modal-save" disabled={isSaving}>
+              { isSaving 
+                ? (language === "en" ? "Saving..." : "Salvando...") 
+                : (language === "en" ? "Save" : "Salvar") }
             </button>
           </div>
         </form>

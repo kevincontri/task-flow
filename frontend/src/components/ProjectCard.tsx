@@ -1,33 +1,27 @@
 import { useNavigate } from "react-router-dom";
+// @ts-ignore
 import "./ProjectCard.css";
 import { getTasks } from "../api/tasks";
-import { useState, useEffect } from "react";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
+import { ProjectCardProps } from "../types/project_types";
+import { useQuery } from "@tanstack/react-query";
 
-export default function ProjectCard({ project, onEdit, onDelete }) {
+export default function ProjectCard({ project, onEdit, onDelete, isDeleting }: ProjectCardProps) {
   const navigate = useNavigate();
   const { language } = useContext(LanguageContext);
 
-  const handleFetchTasksCount = async () => {
-    try {
-      const tasks = await getTasks(project.id);
-      return tasks.length;
-    } catch (err) {
-      console.error("Failed to fetch tasks count:", err);
-      return -1; // Indicate error
-    }
-  };
+  const { data: tasks, isError } = useQuery({
+    queryKey: ["tasks", project.id],
+    queryFn: () => getTasks(project.id),
+    staleTime: 5 * 60 * 1000, // 5 minutes to stale cache
+  });
 
-  const [tasksCount, setTasksCount] = useState(-1);
+  if (isError) {
+    console.error("Failed to fetch tasks count for project:", project.id);
+  }
 
-  useEffect(() => {
-    const fetchTasksCount = async () => {
-      const count = await handleFetchTasksCount();
-      setTasksCount(count);
-    };
-    fetchTasksCount();
-  }, [project.id]);
+  const tasksCount = tasks?.length || -1;
 
   return (
     <div className="project-card">
@@ -65,8 +59,9 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
         <button
           className="btn-card-delete"
           onClick={() => onDelete(project.id)}
+          disabled={isDeleting}
         >
-          {language === "en" ? "Delete" : "Excluir"}
+        {isDeleting ? (language === "en" ? "Deleting..." : "Excluindo...") : (language === "en" ? "Delete" : "Excluir")}
         </button>
       </div>
     </div>

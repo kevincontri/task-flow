@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import {
   getProjects,
@@ -13,12 +13,11 @@ import "./Dashboard.css";
 import QuoteModal from "../components/QuoteModal";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
-import { ProjectBase, ProjectUpdate, ProjectCreate } from "../types/types";
+import { ProjectBase, ProjectUpdate, ProjectCreate } from "../types/project_types";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 
 export default function Dashboard() {
   const { language, setLanguage } = useContext(LanguageContext);
-  const [projects, setProjects] = useState<ProjectBase[]>([]);
-  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingProject, setEditingProject] = useState<ProjectBase | null>(null);
   const [quote, setQuote] = useState(() => {
@@ -31,57 +30,62 @@ export default function Dashboard() {
 
   const { logout } = useAuth();
 
-  useEffect((): void => {
-    fetchProjects();
-  }, []);
+  const queryClient = useQueryClient();
+  
+  const fetchProjects = async (): Promise<ProjectBase[]> => await getProjects();
 
-  const fetchProjects = async (): Promise<void> => {
-    setLoading(true);
-    try {
-      const data = await getProjects();
-      setProjects(data);
-    } catch (err: any) {
-      console.log("Erro ao buscar projetos", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleNewProject = (): void => {
-    setEditingProject(null);
-    setShowModal(true);
-  };
+  // Fetch projects from server
+  const { data: projects = [], isLoading } = useQuery<ProjectBase[]>({
+    queryKey: ["projects"],
+    queryFn: fetchProjects,
+    staleTime: 5 * 60 * 1000, // 5 minutes to stale cache
+  });
 
   const handleEdit = (project: ProjectBase): void => {
     setEditingProject(project);
     setShowModal(true);
   };
 
-  const handleDelete = async (id: number): Promise<void> => {
-    if (!window.confirm("Deletar projeto?")) return;
-    try {
-      await deleteProject(id);
-      setProjects((prev) => prev.filter((p) => p.id !== id));
-    } catch (err: any) {
-      console.error("Failed to delete project:", err);
-      alert(
-        "Failed to delete project: " +
-          (err.response?.data?.detail || err.message),
-      );
+  // Project removal
+  const { mutate: removeProject, isPending: isDeleting } = useMutation({
+    mutationFn: (id: number) => deleteProject(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["projects"]}),
+    onError: (err: any) => {
+      console.log("Failed to delete project:", err);
+      alert("Failed to delete project: " + (err.response?.data?.detail ||err.message));
     }
-  };
+  });
 
-  const handleSave = async (data: ProjectCreate | ProjectUpdate): Promise<void> => {
-    if (editingProject) {
-      const updated = await updateProject(editingProject.id, data as ProjectUpdate);
-      setProjects(
-        projects.map((p) => (p.id === editingProject.id ? updated : p)),
+  const handleDelete = (id: number): void => {
+    if (!window.confirm("Deletar projeto?")) return;
+    removeProject(id);
+  }
+
+  // Project creation
+  const { mutate: saveProject, isPending: isSaving } = useMutation({
+    mutationFn: (projectData: ProjectCreate | ProjectUpdate) => {
+      if (editingProject) {
+        return updateProject(editingProject.id, projectData as ProjectUpdate);
+      } else {
+        return createProject(projectData as ProjectCreate);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ["projects"]});
+      setShowModal(false);
+    },
+    onError: (error: any) => {
+      console.error("Failed to save project:", error);
+      alert(
+        "Failed to save project: " +
+          (error.response?.data?.detail || error.message),
       );
-    } else {
-      const created = await createProject(data as ProjectCreate);
-      setProjects([...projects, created]);
-    }
-    setShowModal(false);
+    },
+  });
+
+  const handleNewProject = (): void => {
+    setEditingProject(null);
+    setShowModal(true);
   };
 
   return (
@@ -146,7 +150,7 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {loading && (
+        {isLoading && (
           <div className="dash-loading">
             <div className="loading-dot" />
             <div className="loading-dot" />
@@ -154,12 +158,12 @@ export default function Dashboard() {
           </div>
         )}
 
-        {!loading && projects.length === 0 && (
+        {!isLoading && projects.length === 0 && (
           <div className="dash-empty">
             <p>
               {language === "en"
                 ? "No projects yet. Create your first one!"
-                : "Não há projetos ainda. Crie seu primeiro!"}
+                : "Não há projetos ainda. Crie seu primeiro!"}
             </p>
           </div>
         )}
@@ -171,6 +175,7 @@ export default function Dashboard() {
               project={project}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              isDeleting={isDeleting}
             />
           ))}
         </div>
@@ -193,8 +198,9 @@ export default function Dashboard() {
       {showModal && (
         <ProjectModal
           project={editingProject}
-          onSave={handleSave}
+          onSave={saveProject}
           onClose={() => setShowModal(false)}
+          isSaving={isSaving}
         />
       )}
     </div>
