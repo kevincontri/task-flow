@@ -94,7 +94,7 @@ export default function Board() {
   });
 
   // Mutation for moving tasks
-  const { mutate: moveTaskMutation } = useMutation<TaskBase, any, { taskId: number, newStatus: string}>({
+  const { mutate: moveTaskMutation, isPending: isMovingTask } = useMutation<TaskBase, any, { taskId: number, newStatus: string}>({
     mutationFn: ({ taskId, newStatus }) => moveTask(Number(projectId), taskId, newStatus),
     onError: (err: any) => {
       console.error("Failed to move task:", err);
@@ -328,6 +328,15 @@ export default function Board() {
               </p>
             </div>
           )}
+        
+        {/* Loading animation when moving tasks */}
+        {isMovingTask && (
+        <div className="login-loading">
+          <div className="login-loading-dot" />
+          <div className="login-loading-dot" />
+          <div className="login-loading-dot" />
+        </div>
+        )}
 
           <div className="board-columns">
             {STATUSES.map((status: TaskStatus) => (
@@ -378,6 +387,7 @@ export default function Board() {
           onClose={() => setShowModal(false)}
         />
       )}
+
     </div>
   );
 }
