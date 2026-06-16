@@ -6,6 +6,7 @@ export const getComments = async (projectId, taskId) => {
 };
 
 export const createComment = async (projectId, taskId, content) => {
+  console.log(projectId, taskId, content);
   const response = await api.post(`/projects/${projectId}/tasks/${taskId}/comments`, { content });
   return response.data;
 }

@@ -1,6 +1,6 @@
 type TaskStatus = 'todo' | 'in_progress' | 'done';
 
-type TaskPriority = 'low' | 'medium' | 'high';
+type TaskPriority = 'low' | 'medium' | 'high' | 'baixa' | 'média' | 'alta';
 
 export interface TaskBase {
   id: number;

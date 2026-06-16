@@ -5,3 +5,5 @@ export interface CommentBase {
   task_id: number;
   author_id: number;
 }
+
+export type CommentCreate = Omit<CommentBase, 'id' | 'created_at' | 'task_id' | 'author_id'>;

@@ -14,7 +14,7 @@ export default function ProjectCard({ project, onEdit, onDelete, isDeleting }: P
   const { data: tasks, isError } = useQuery({
     queryKey: ["tasks", project.id],
     queryFn: () => getTasks(project.id),
-    staleTime: 5 * 60 * 1000, // 5 minutes to stale cache
+    staleTime: 5 * 60 * 1000, // 1 minute to stale cache
   });
 
   if (isError) {
@@ -44,7 +44,7 @@ export default function ProjectCard({ project, onEdit, onDelete, isDeleting }: P
           </div>
           <div>
             <p>
-              <span>{language === "en" ? "Tasks: " : "Tarefas: "} {tasksCount >= 0 ? tasksCount : "Loading..."}</span>
+              <span>{language === "en" ? "Tasks: " : "Tarefas: "} {tasksCount >= 0 ? tasksCount : "0"}</span>
             </p>
           </div>
         </div>

@@ -1,11 +1,14 @@
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
+// @ts-ignore
 import "./TaskCard.css";
+// @ts-ignore
 import commentIcon from "../assets/comment.png";
 import { getComments } from "../api/comments";
 import { useState, useEffect } from "react";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
+import { TaskBase } from "../types/task_types";
 
 export default function TaskCard({ task, onEdit, onDelete, onOpenComments, commentCount }: { task: TaskBase; onEdit: (task: TaskBase) => void; onDelete: (taskId: number) => void; onOpenComments: (task: TaskBase) => void; commentCount?: number }) {
   const { language } = useContext(LanguageContext);
@@ -26,7 +29,7 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments, comme
       data: { task },
     });
 
-  const style = {
+  const style:React.CSSProperties = {
     transform: CSS.Translate.toString(transform),
     touchAction: "none",
     opacity: isDragging ? 0 : 1,
@@ -50,7 +53,7 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments, comme
   };
 
   useEffect(() => {
-    fetchCommentsLength();
+    if (commentCount === undefined) fetchCommentsLength();
   }, [task.id]);
 
   return (

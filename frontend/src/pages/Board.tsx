@@ -27,7 +27,7 @@ import LanguageContext from "../contexts/LanguageContext";
 // @ts-ignore
 import back from "../assets/arrow.png";
 import { TaskBase, TaskCreate, TaskUpdate } from "../types/task_types";
-import { CommentBase } from "../types/comment_types";
+import { CommentBase, CommentCreate } from "../types/comment_types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const STATUSES = ["todo", "in_progress", "done"];
@@ -46,7 +46,6 @@ export default function Board() {
   const [initialStatus, setInitialStatus] = useState("todo");
 
   const [commentTask, setCommentTask] = useState<TaskBase | null>(null);
-  const [comments, setComments] = useState<CommentBase[]>([]);
   const [newComment, setNewComment] = useState("");
   const [showCommentsModal, setShowCommentsModal] = useState(false);
   const [commentError, setCommentError] = useState("");
@@ -56,15 +55,25 @@ export default function Board() {
 
   const fetchTasks = async (): Promise<TaskBase[]> => await getTasks(projectId);
 
+  const fetchComments = async ({taskId}: {taskId:number}): Promise<CommentBase[]> => await getComments(projectId, taskId);
+
   // Fetch tasks from server
   const {data: tasks = [] } = useQuery({
-    queryKey: ["tasks"],
+    queryKey: ["tasks", Number(projectId)],
     queryFn: fetchTasks,
     staleTime: 5 * 60 * 1000 // 5 minutes to stale cache
   })
 
+  // Fetch comments from server when a task is selected
+  const { data: comments = [] } = useQuery({
+    queryKey: ["comments", commentTask?.id],
+    queryFn: () => fetchComments({taskId: commentTask!.id}),
+    enabled: !!commentTask, // Only fetch comments when a task is selected
+    staleTime: 5 * 60 * 1000 // 5 minutes to stale cache
+  })
+
   // Mutations for creating/updating tasks
-  const { mutate: saveTask, isPending: isSaving } = useMutation({
+  const { mutate: saveTaskMutation } = useMutation({
     mutationFn: (taskData: TaskCreate | TaskUpdate) =>{
       if (editingTask) {
         return updateTask(projectId, editingTask.id, taskData as TaskUpdate);
@@ -73,7 +82,7 @@ export default function Board() {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] })
+      queryClient.invalidateQueries({ queryKey: ["tasks", Number(projectId)] })
       setShowModal(false);
     },
     onError: (err: any) => {
@@ -86,52 +95,82 @@ export default function Board() {
   });
 
   // Mutation for moving tasks
-  const { mutate: moveTaskMutation, isPending: isMoving } = useMutation({
-    mutationFn: ({ taskId, newStatus }: { taskId: number; newStatus: string }) =>
-      moveTask(projectId, taskId, newStatus),
+  const { mutate: moveTaskMutation } = useMutation<void, any, { taskId: number, newStatus: string}>({
+    mutationFn: ({ taskId, newStatus }) => moveTask(projectId, taskId, newStatus),
     onError: (err: any) => {
       console.error("Failed to move task:", err);
       alert(
         `${language === "en" ? "Failed to move task: " : "Falha ao mover tarefa: "}` +
           (err.response?.data?.detail || err.message),
       );
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ["tasks", Number(projectId)] }),
+  });
+
+  // Mutation for deleting tasks
+  const { mutate: deleteTaskMutation } = useMutation<void, any, {taskId: number}>({
+    mutationFn: ({ taskId }) => deleteTask(projectId, taskId),
+    onSuccess: () => queryClient.invalidateQueries({queryKey: ["tasks", Number(projectId)]}),
+    onError: (err) => {
+      console.error("Failed to delete task:", err);
+      alert(
+        `${language === "en" ? "Failed to delete task: " : "Falha ao deletar tarefa: "}` +
+          (err.response?.data?.detail || err.message),
+      );
     },
   });
 
-  // TODO : Add mutation for deleting tasks, adding comments and deleting comments, and invalidate queries on success to refetch data
-
-  // Fixing body overflow when dragging taskcards on mobile
-  useEffect(() => {
-    if (activeTask) {
-      document.body.style.overflow = "hidden";
-      document.body.style.touchAction = "none";
-    } else {
-      document.body.style.overflow = "";
-      document.body.style.touchAction = "";
+  // Mutation for adding comments
+  const { mutate: commentCreateMutation } = useMutation<CommentBase, any, {taskId: number, comment: string}>({
+    mutationFn: ({ taskId, comment }) => createComment(Number(projectId), taskId, comment),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["comments", commentTask?.id]}),
+    onError: (err) => {
+      console.error("Failed to create comment:", err);
+      alert(
+        `${language === "en" ? "Failed to create comment: " : "Falha ao criar comentário: "}` +
+          (err.response?.data?.detail || err.message),
+      );
     }
-    return () => {
-      document.body.style.overflow = "";
-      document.body.style.touchAction = "";
-    };
-  }, [activeTask]);
+  })
 
+  // Mutation for deleting comments
+  const { mutate: commentDeleteMutation } = useMutation<void, any, {taskId: number, commentId: number}>({
+    mutationFn: ({ taskId, commentId }) => deleteComment(Number(projectId), taskId, commentId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["comments", commentTask?.id]}),
+    onError: (err) => {
+      console.error("Failed to delete comment:", err);
+      alert(
+        `${language === "en" ? "Failed to delete comment: " : "Falha ao deletar comentário: "}` +
+          (err.response?.data?.detail || err.message),
+      );
+    }
+  })
+
+  // Filter tasks by status to properly send it to the KanbanColumn
   const getTasksByStatus = (status: string) => tasks.filter((t) => t.status === status);
 
+  // @dnd-kit trigger event for drag start, setting the current task as the active one
   const handleDragStart = (event: any) => {
     setActiveTask(event.active.data.current.task);
   };
 
+  // @dnd-kit trigger event for drag end. We can get the current task and where it's standing.
   const handleDragEnd = async (event: any) => {
     const { active, over } = event;
-    setActiveTask(null);
+    setActiveTask(null); // Reinitiate active task since now we have it in 'active' variable
     if (!over) return;
 
-    const taskId = active.id;
-    const newStatus = over.id;
+    const taskId = active.id; // taskId is stored in active.id because we set it in useDraggable data
+    const newStatus = over.id; // over.id is the id of the KanbanColumn which is the new status
     const task = tasks.find((t) => t.id === taskId);
 
     if (!task || task.status === newStatus) return;
+
+    // Optimistically move the card synchronously, in the same render flush as
+    // setActiveTask(null), so it lands in the new column without flashing back.
+    queryClient.setQueryData<TaskBase[]>(["tasks", Number(projectId)], (old) =>
+      old?.map((t) => (t.id === taskId ? { ...t, status: newStatus as TaskBase["status"] } : t)),
+    );
 
     moveTaskMutation({ taskId, newStatus });
   };
@@ -148,14 +187,13 @@ export default function Board() {
   };
 
   const handleOpenComments = async (task: TaskBase) => {
-    const data = await getComments(task.project_id, task.id);
-    setComments(data);
     setCommentTask(task);
-    setCommentCounts((prev) => ({ ...prev, [task.id]: data.length }));
+    setCommentCounts((prev) => ({ ...prev, [task.id]: comments.length }));
     setShowCommentsModal(true);
   };
 
   const handleAddComment = async () => {
+    // Validate comment
     if (newComment.trim() === "") {
       setCommentError(
         `${language === "en" ? "Comment cannot be empty." : "O comentário não pode estar vazio."}`,
@@ -168,20 +206,20 @@ export default function Board() {
       return;
     }
 
+    // Reset error message before attempting to create comment
     setCommentError("");
 
     if (!commentTask) return;
-    const comment = await createComment(
-      commentTask.project_id,
-      commentTask.id,
-      newComment,
+
+    await commentCreateMutation(
+      { taskId: commentTask.id, comment: newComment }
     );
 
-    setComments((prev) => [...prev, comment]);
     setCommentCounts((prev) => ({
       ...prev,
       [commentTask.id]: (prev[commentTask.id] ?? 0) + 1,
     }));
+
     setNewComment("");
   };
 
@@ -194,8 +232,9 @@ export default function Board() {
       return;
 
     if (!commentTask) return;
-    await deleteComment(commentTask.project_id, commentTask.id, commentId);
-    setComments((prev) => prev.filter((c) => c.id !== commentId));
+
+    commentDeleteMutation({ taskId: commentTask.id, commentId });
+
     setCommentCounts((prev) => ({
       ...prev,
       [commentTask.id]: Math.max(0, (prev[commentTask.id] ?? 1) - 1),
@@ -209,22 +248,15 @@ export default function Board() {
       )
     )
       return;
-    try {
-      await deleteTask(projectId, taskId);
-    } catch (err: any) {
-      alert(
-        `${language === "en" ? "Failed to delete task: " : "Falha ao excluir tarefa: "}` +
-          (err.response?.data?.detail || err.message),
-      );
-    }
+    deleteTaskMutation({ taskId });
   };
 
   const handleSave = async (data: TaskCreate | TaskUpdate) => {
     try {
       if (editingTask) {
-        saveTask({ ...editingTask, ...data });
+        saveTaskMutation({ ...editingTask, ...data });
       } else {
-        saveTask(data);
+        saveTaskMutation(data);
       }
       setShowModal(false);
     } catch (err: any) {
