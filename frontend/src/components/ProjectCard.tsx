@@ -61,7 +61,7 @@ export default function ProjectCard({ project, onEdit, onDelete, isDeleting }: P
           onClick={() => onDelete(project.id)}
           disabled={isDeleting}
         >
-        {isDeleting ? (language === "en" ? "Deleting..." : "Excluindo...") : (language === "en" ? "Delete" : "Excluir")}
+          {(language === "en" ? "Delete" : "Excluir")}
         </button>
       </div>
     </div>
