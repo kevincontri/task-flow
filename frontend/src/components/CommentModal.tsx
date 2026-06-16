@@ -1,7 +1,10 @@
+// @ts-ignore
 import "./CommentsModal.css";
+// @ts-ignore
 import "./ProjectModal.css";
 import { useContext } from "react";
-import LanguageContext from "../contexts/LanguageContext";
+import LanguageContext from "../contexts/LanguageContext.tsx";
+import { CommentBase } from "../types/comment_types.ts";
 
 export default function CommentModal({
   onClose,
@@ -11,6 +14,14 @@ export default function CommentModal({
   handleAddComment,
   handleDeleteComment,
   commentError,
+}:{
+  onClose: () => void;
+  comments: CommentBase[];
+  newComment: string;
+  setNewComment: React.Dispatch<React.SetStateAction<string>>;
+  handleAddComment: () => void;
+  handleDeleteComment: (id: number) => void;
+  commentError: string;
 }) {
   const { language } = useContext(LanguageContext);
 

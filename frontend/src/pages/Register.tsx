@@ -4,8 +4,8 @@ import api from "../api/axios";
 // @ts-ignore
 import "./Login.css";
 import { useContext } from "react";
-import LanguageContext from "../contexts/LanguageContext";
-import { UserRegister } from "../types/types";
+import LanguageContext from "../contexts/LanguageContext.tsx";
+import { RegisterRequest } from "../types/auth_types";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
@@ -38,7 +38,7 @@ export default function Register() {
 
     try {
       setLoading(true);
-      const payload: UserRegister = { email, username, password };
+      const payload: RegisterRequest = { email, username, password };
       await api.post("/auth/register", payload);
       navigate("/login");
     } catch (err: any) {

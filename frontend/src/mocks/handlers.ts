@@ -3,8 +3,9 @@ import { LoginRequest, TokenResponse, RegisterRequest, UserBase } from "../types
 import { ProjectBase } from "../types/project_types";
 import { TaskBase } from "../types/task_types";
 
-// Mock for login endpoint
+
 export const handlers = [
+  // Mock for login endpoint
   http.post<any, LoginRequest, TokenResponse>("*/auth/login", async () => {
     return HttpResponse.json({
       access_token: "FAKE_TOKEN",

@@ -1,8 +1,10 @@
 import { useDroppable } from "@dnd-kit/core";
-import TaskCard from "./TaskCard";
+import TaskCard from "./TaskCard.tsx";
+// @ts-ignore
 import "./KanbanColumn.css";
 import { useContext } from "react";
-import LanguageContext from "../contexts/LanguageContext";
+import LanguageContext from "../contexts/LanguageContext.tsx";
+import { TaskBase, TaskStatus } from "../types/task_types.ts";
 
 export default function KanbanColumn({
   status,
@@ -13,11 +15,20 @@ export default function KanbanColumn({
   onOpenComments,
   taskLength,
   commentCounts,
+}: {
+  status: TaskStatus;
+  tasks: TaskBase[];
+  onEdit: (task: TaskBase) => void;
+  onDelete: (task: TaskBase) => void;
+  onNewTask: (status: TaskStatus) => void;
+  onOpenComments: (task: TaskBase) => void;
+  taskLength: number;
+  commentCounts: Record<number, number>;
 }) {
   const { language } = useContext(LanguageContext);
   const { isOver, setNodeRef } = useDroppable({ id: status });
 
-  const columnLabels = {
+  const columnLabels: Record<TaskStatus, string> = {
     todo: `${language === "en" ? "To Do" : "A Fazer"}`,
     in_progress: `${language === "en" ? "In Progress" : "Em Progresso"}`,
     done: `${language === "en" ? "Done" : "Concluído"}`,
@@ -38,8 +49,8 @@ export default function KanbanColumn({
           <TaskCard
             key={task.id}
             task={task}
-            onEdit={onEdit}
-            onDelete={onDelete}
+            onEdit={() => onEdit(task)}
+            onDelete={() => onDelete(task)}
             onOpenComments={() => onOpenComments(task)}
             commentCount={commentCounts?.[task.id]}
           />

@@ -1,9 +1,11 @@
+// @ts-ignore
 import "./ProjectModal.css";
+// @ts-ignore
 import "./QuoteModal.css";
 import { useContext } from "react";
-import LanguageContext from "../contexts/LanguageContext";
+import LanguageContext from "../contexts/LanguageContext.tsx";
 
-export default function QuoteModal({ quote, setQuote, onClose, onSave }) {
+export default function QuoteModal({ quote, setQuote, onClose, onSave }: {quote: string; setQuote: (quote: string) => void; onClose: () => void; onSave: (quote: string) => void}) {
   const { language } = useContext(LanguageContext);
 
   return (

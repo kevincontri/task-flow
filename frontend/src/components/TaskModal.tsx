@@ -1,19 +1,22 @@
 import { useState } from "react";
+// @ts-ignore
 import "./ProjectModal.css";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
+import { TaskBase, TaskCreate, TaskUpdate, TaskStatus, TaskPriority } from "../types/task_types";
 
-export default function TaskModal({ task, initialStatus, onSave, onClose }) {
+export default function TaskModal({ task, onSave, onClose }: { task?: TaskBase | null, onSave: (data: TaskCreate | TaskUpdate) => void, onClose: () => void }) {
   const { language } = useContext(LanguageContext);
-  const toDateInput = (iso) => (iso ? iso.slice(0, 10) : "");
+  const toDateInput = (iso: string | null) => (iso ? iso.slice(0, 10) : "");
 
-  const [name, setName] = useState(task?.name || "");
-  const [description, setDescription] = useState(task?.description || "");
-  const [priority, setPriority] = useState(task?.priority || "low");
-  const [deadline, setDeadline] = useState(toDateInput(task?.deadline));
-  const [err, setError] = useState("");
+  const [name, setName] = useState<string>(task?.name || "");
+  const [description, setDescription] = useState<string>(task?.description || "");
+  const [priority, setPriority] = useState<TaskPriority>(task?.priority || "low");
+  // @ts-ignore
+  const [deadline, setDeadline] = useState<string>(toDateInput(task?.deadline));
+  const [err, setError] = useState<string>("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Append UTC midnight so AwareDatetime validation passes on the backend
 
@@ -48,6 +51,8 @@ export default function TaskModal({ task, initialStatus, onSave, onClose }) {
       );
       return;
     }
+
+    setError("");
     onSave({ name, description, priority, deadline: deadlineISO });
   };
 
@@ -73,7 +78,7 @@ export default function TaskModal({ task, initialStatus, onSave, onClose }) {
                 id="task-name"
                 type="text"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => setName(e.target.value as string)}
                 placeholder={language === "en" ? "Task title" : "Título da tarefa"}
                 required
               />
@@ -84,7 +89,7 @@ export default function TaskModal({ task, initialStatus, onSave, onClose }) {
               <textarea
                 id="task-desc"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(e) => setDescription(e.target.value as string)}
                 placeholder={language === "en" ? "What needs to be done..." : "O que precisa ser feito..."}
                 required
               />
@@ -95,7 +100,7 @@ export default function TaskModal({ task, initialStatus, onSave, onClose }) {
               <select
                 id="task-priority"
                 value={priority}
-                onChange={(e) => setPriority(e.target.value)}
+                onChange={(e) => setPriority(e.target.value as TaskPriority)}
               >
                 <option value="low">{language === "en" ? "Low" : "Baixa"}</option>
                 <option value="medium">{language === "en" ? "Medium" : "Média"}</option>
@@ -109,7 +114,7 @@ export default function TaskModal({ task, initialStatus, onSave, onClose }) {
                 id="task-deadline"
                 type="date"
                 value={deadline}
-                onChange={(e) => setDeadline(e.target.value)}
+                onChange={(e) => setDeadline(e.target.value as string)}
               />
             </div>
 

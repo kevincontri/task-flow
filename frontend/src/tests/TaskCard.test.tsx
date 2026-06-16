@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { ReactNode } from 'react';
-import TaskCard from './TaskCard';
+import '@testing-library/jest-dom';
+import TaskCard from '../components/TaskCard';
 import LanguageContext from '../contexts/LanguageContext';
 import { TaskBase } from '../types/task_types';
 

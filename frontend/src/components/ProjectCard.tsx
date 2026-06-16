@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 // @ts-ignore
 import "./ProjectCard.css";
-import { getTasks } from "../api/tasks";
+import { getTasks } from "../api/tasks.ts";
 import { useContext } from "react";
-import LanguageContext from "../contexts/LanguageContext";
+import LanguageContext from "../contexts/LanguageContext.tsx";
 import { ProjectCardProps } from "../types/project_types";
 import { useQuery } from "@tanstack/react-query";
 

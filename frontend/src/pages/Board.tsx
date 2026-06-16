@@ -14,23 +14,23 @@ import {
   updateTask,
   deleteTask,
   moveTask,
-} from "../api/tasks";
-import KanbanColumn from "../components/KanbanColumn";
+} from "../api/tasks.ts";
+import KanbanColumn from "../components/KanbanColumn.tsx";
 import TaskCard from "../components/TaskCard";
 import TaskModal from "../components/TaskModal";
 // @ts-ignore
 import "./Board.css";
-import { getComments, createComment, deleteComment } from "../api/comments";
-import CommentsModal from "../components/CommentModal";
+import { getComments, createComment, deleteComment } from "../api/comments.ts";
+import CommentsModal from "../components/CommentModal.tsx";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
 // @ts-ignore
 import back from "../assets/arrow.png";
-import { TaskBase, TaskCreate, TaskUpdate } from "../types/task_types";
+import { TaskBase, TaskCreate, TaskStatus, TaskUpdate } from "../types/task_types";
 import { CommentBase, CommentCreate } from "../types/comment_types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-const STATUSES = ["todo", "in_progress", "done"];
+const STATUSES: TaskStatus[] = ["todo", "in_progress", "done"];
 
 export default function Board() {
   const { language } = useContext(LanguageContext);
@@ -43,8 +43,7 @@ export default function Board() {
   const [activeTask, setActiveTask] = useState<TaskBase | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [editingTask, setEditingTask] = useState<TaskBase | null>(null);
-  const [initialStatus, setInitialStatus] = useState("todo");
-
+  const [statusSelected, setStatusSelected] = useState<TaskStatus>("todo");
   const [commentTask, setCommentTask] = useState<TaskBase | null>(null);
   const [newComment, setNewComment] = useState("");
   const [showCommentsModal, setShowCommentsModal] = useState(false);
@@ -53,9 +52,9 @@ export default function Board() {
 
   const queryClient = useQueryClient();
 
-  const fetchTasks = async (): Promise<TaskBase[]> => await getTasks(projectId);
+  const fetchTasks = async (): Promise<TaskBase[]> => await getTasks(Number(projectId));
 
-  const fetchComments = async ({taskId}: {taskId:number}): Promise<CommentBase[]> => await getComments(projectId, taskId);
+  const fetchComments = async ({taskId}: {taskId:number}): Promise<CommentBase[]> => await getComments(Number(projectId), taskId);
 
   // Fetch tasks from server
   const {data: tasks = [] } = useQuery({
@@ -76,9 +75,9 @@ export default function Board() {
   const { mutate: saveTaskMutation } = useMutation({
     mutationFn: (taskData: TaskCreate | TaskUpdate) =>{
       if (editingTask) {
-        return updateTask(projectId, editingTask.id, taskData as TaskUpdate);
+        return updateTask(Number(projectId), editingTask.id, taskData as TaskUpdate);
       } else {
-        return createTask(projectId, taskData as TaskCreate);
+        return createTask(Number(projectId), taskData as TaskCreate);
       }
     },
     onSuccess: () => {
@@ -95,8 +94,8 @@ export default function Board() {
   });
 
   // Mutation for moving tasks
-  const { mutate: moveTaskMutation } = useMutation<void, any, { taskId: number, newStatus: string}>({
-    mutationFn: ({ taskId, newStatus }) => moveTask(projectId, taskId, newStatus),
+  const { mutate: moveTaskMutation } = useMutation<TaskBase, any, { taskId: number, newStatus: string}>({
+    mutationFn: ({ taskId, newStatus }) => moveTask(Number(projectId), taskId, newStatus),
     onError: (err: any) => {
       console.error("Failed to move task:", err);
       alert(
@@ -109,7 +108,7 @@ export default function Board() {
 
   // Mutation for deleting tasks
   const { mutate: deleteTaskMutation } = useMutation<void, any, {taskId: number}>({
-    mutationFn: ({ taskId }) => deleteTask(projectId, taskId),
+    mutationFn: ({ taskId }) => deleteTask(Number(projectId), taskId),
     onSuccess: () => queryClient.invalidateQueries({queryKey: ["tasks", Number(projectId)]}),
     onError: (err) => {
       console.error("Failed to delete task:", err);
@@ -175,9 +174,9 @@ export default function Board() {
     moveTaskMutation({ taskId, newStatus });
   };
 
-  const handleNewTask = (status: string) => {
+  const handleNewTask = (status: TaskStatus) => {
     setEditingTask(null);
-    setInitialStatus(status);
+    setStatusSelected(status);
     setShowModal(true);
   };
 
@@ -241,14 +240,14 @@ export default function Board() {
     }));
   };
 
-  const handleDelete = async (taskId: number) => {
+  const handleDelete = async (task: TaskBase) => {
     if (
       !window.confirm(
         `${language === "en" ? "Delete Task?" : "Excluir Tarefa?"}`,
       )
     )
       return;
-    deleteTaskMutation({ taskId });
+    deleteTaskMutation({ taskId: task.id });
   };
 
   const handleSave = async (data: TaskCreate | TaskUpdate) => {
@@ -256,9 +255,10 @@ export default function Board() {
       if (editingTask) {
         saveTaskMutation({ ...editingTask, ...data });
       } else {
-        saveTaskMutation(data);
+        saveTaskMutation({ ...data, status: statusSelected });
       }
       setShowModal(false);
+      setStatusSelected("todo");
     } catch (err: any) {
       console.error("Failed to save task:", err);
       alert(
@@ -330,7 +330,7 @@ export default function Board() {
           )}
 
           <div className="board-columns">
-            {STATUSES.map((status: string) => (
+            {STATUSES.map((status: TaskStatus) => (
               <KanbanColumn
                 key={status}
                 status={status}
@@ -374,7 +374,6 @@ export default function Board() {
       {showModal && (
         <TaskModal
           task={editingTask}
-          initialStatus={initialStatus}
           onSave={handleSave}
           onClose={() => setShowModal(false)}
         />

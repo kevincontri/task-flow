@@ -1,16 +1,17 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, JSX } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
+// @ts-ignore
 const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
+export function AuthProvider({ children }: { children: React.ReactNode }): JSX.Element {
   const [token, setToken] = useState(localStorage.getItem("token"));
 
   // Navigation hook to programmatically navigate after login/logout
   const navigate = useNavigate();
 
-  const login = async (email, password) => {
+  const login = async (email: string, password: string): Promise<void> => {
     const response = await api.post("/auth/login", { email, password });
 
     const newToken = response.data.access_token;
@@ -22,7 +23,7 @@ export function AuthProvider({ children }) {
     navigate("/dashboard");
   };
 
-  const logout = () => {
+  const logout = (): void => {
     localStorage.removeItem("token");
 
     setToken(null);

@@ -4,10 +4,10 @@ import { CSS } from "@dnd-kit/utilities";
 import "./TaskCard.css";
 // @ts-ignore
 import commentIcon from "../assets/comment.png";
-import { getComments } from "../api/comments";
+import { getComments } from "../api/comments.ts";
 import { useState, useEffect } from "react";
 import { useContext } from "react";
-import LanguageContext from "../contexts/LanguageContext";
+import LanguageContext from "../contexts/LanguageContext.tsx";
 import { TaskBase } from "../types/task_types";
 
 export default function TaskCard({ task, onEdit, onDelete, onOpenComments, commentCount }: { task: TaskBase; onEdit: (task: TaskBase) => void; onDelete: (taskId: number) => void; onOpenComments: (task: TaskBase) => void; commentCount?: number }) {

@@ -2,8 +2,8 @@ import { useState } from "react";
 // @ts-ignore
 import "./ProjectModal.css";
 import { useContext } from "react";
-import LanguageContext from "../contexts/LanguageContext";
-import { ProjectModalProps } from "../types/user_types";
+import LanguageContext from "../contexts/LanguageContext.tsx";
+import { ProjectModalProps } from "../types/project_types";
 
 export default function ProjectModal({ project, onSave, onClose, isSaving = false }: ProjectModalProps) {
   const { language } = useContext(LanguageContext);

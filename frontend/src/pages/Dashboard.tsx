@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext.tsx";
 import {
   getProjects,
   createProject,
   updateProject,
   deleteProject,
-} from "../api/projects";
+} from "../api/projects.ts";
 import ProjectCard from "../components/ProjectCard";
 import ProjectModal from "../components/ProjectModal";
 // @ts-ignore
 import "./Dashboard.css";
-import QuoteModal from "../components/QuoteModal";
+import QuoteModal from "../components/QuoteModal.tsx";
 import { useContext } from "react";
-import LanguageContext from "../contexts/LanguageContext";
+import LanguageContext from "../contexts/LanguageContext.tsx";
 import { ProjectBase, ProjectUpdate, ProjectCreate } from "../types/project_types";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 
@@ -28,7 +28,7 @@ export default function Dashboard() {
   });
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
 
-  const { logout } = useAuth();
+  const { logout } = useAuth() as { logout: () => void };
 
   const queryClient = useQueryClient();
   
