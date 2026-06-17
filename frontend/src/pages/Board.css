@@ -183,8 +183,10 @@
 
 .login-loading {
   position: absolute;
-  top: 13%;
+  top: 6%;
   left: 50%;
+  z-index: 999;
+  transform: translateX(-50%);
   display: flex;
   gap: 8px;
   justify-content: center;
@@ -223,5 +225,11 @@
 @media (max-width: 360px) {
   .board-main {
     padding: 24px;
+  }
+}
+
+@media (max-height: 500px) {
+  .login-loading {
+    top: 9.5%;
   }
 }
