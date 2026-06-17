@@ -331,10 +331,10 @@ export default function Board() {
         
         {/* Loading animation when moving tasks */}
         {isMovingTask && (
-        <div className="login-loading">
-          <div className="login-loading-dot" />
-          <div className="login-loading-dot" />
-          <div className="login-loading-dot" />
+        <div className="board-loading">
+          <div className="board-loading-dot" />
+          <div className="board-loading-dot" />
+          <div className="board-loading-dot" />
         </div>
         )}
 

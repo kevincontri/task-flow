@@ -181,7 +181,7 @@
   }
 }
 
-.login-loading {
+.board-loading {
   position: absolute;
   top: 6%;
   left: 50%;
@@ -194,7 +194,7 @@
   margin-top: -12px;
 }
 
-.login-loading-dot {
+.board-loading-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -202,10 +202,10 @@
   animation: dotPulse 1.2s ease-in-out infinite;
 }
 
-.login-loading-dot:nth-child(2) {
+.board-loading-dot:nth-child(2) {
   animation-delay: 0.2s;
 }
-.login-loading-dot:nth-child(3) {
+.board-loading-dot:nth-child(3) {
   animation-delay: 0.4s;
 }
 
@@ -225,11 +225,5 @@
 @media (max-width: 360px) {
   .board-main {
     padding: 24px;
-  }
-}
-
-@media (max-height: 500px) {
-  .login-loading {
-    top: 9.5%;
   }
 }
