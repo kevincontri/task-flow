@@ -57,14 +57,14 @@ export default function Board() {
   const fetchComments = async ({taskId}: {taskId:number}): Promise<CommentBase[]> => await getComments(Number(projectId), taskId);
 
   // Fetch tasks from server
-  const {data: tasks = [] } = useQuery({
+  const {data: tasks = [] } = useQuery<TaskBase[]>({
     queryKey: ["tasks", Number(projectId)],
     queryFn: fetchTasks,
     staleTime: 5 * 60 * 1000 // 5 minutes to stale cache
   })
 
   // Fetch comments from server when a task is selected
-  const { data: comments = [] } = useQuery({
+  const { data: comments = [] } = useQuery<CommentBase[]>({
     queryKey: ["comments", commentTask?.id],
     queryFn: () => fetchComments({taskId: commentTask!.id}),
     enabled: !!commentTask, // Only fetch comments when a task is selected
@@ -72,7 +72,7 @@ export default function Board() {
   })
 
   // Mutations for creating/updating tasks
-  const { mutate: saveTaskMutation } = useMutation({
+  const { mutate: saveTaskMutation } = useMutation<TaskBase, any, TaskCreate | TaskUpdate>({
     mutationFn: (taskData: TaskCreate | TaskUpdate) =>{
       if (editingTask) {
         return updateTask(Number(projectId), editingTask.id, taskData as TaskUpdate);
@@ -84,7 +84,7 @@ export default function Board() {
       queryClient.invalidateQueries({ queryKey: ["tasks", Number(projectId)] })
       setShowModal(false);
     },
-    onError: (err: any) => {
+    onError: (err) => {
       console.error("Failed to save task:", err);
       alert(
         `${language === "en" ? "Failed to save task: " : "Falha ao salvar tarefa: "}` +
@@ -210,7 +210,7 @@ export default function Board() {
 
     if (!commentTask) return;
 
-    await commentCreateMutation(
+    commentCreateMutation(
       { taskId: commentTask.id, comment: newComment }
     );
 

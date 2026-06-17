@@ -9,11 +9,20 @@ import { useState, useEffect } from "react";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext.tsx";
 import { TaskBase } from "../types/task_types";
+import { useQuery } from "@tanstack/react-query";
+import { CommentBase } from "../types/comment_types.ts";
 
 export default function TaskCard({ task, onEdit, onDelete, onOpenComments, commentCount }: { task: TaskBase; onEdit: (task: TaskBase) => void; onDelete: (taskId: number) => void; onOpenComments: (task: TaskBase) => void; commentCount?: number }) {
+  
+  const { data: comments } = useQuery<CommentBase[]>({
+    queryKey: ["comments", task.id],
+    queryFn: () => getComments(task.project_id, task.id),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: commentCount === undefined, // Only fetch if commentCount is not provided
+  });
+
   const { language } = useContext(LanguageContext);
-  const [fetchedCount, setFetchedCount] = useState(0);
-  const commentsCount = commentCount !== undefined ? commentCount : fetchedCount;
+  const commentsCount = commentCount !== undefined ? commentCount : comments?.length || 0;
 
   if (task.priority === "high") {
     task.priority = language === "en" ? "high" : "alta";
@@ -47,15 +56,6 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments, comme
     },
   );
 
-  const fetchCommentsLength = async () => {
-    const comments = await getComments(task.project_id, task.id);
-    setFetchedCount(comments.length);
-  };
-
-  useEffect(() => {
-    if (commentCount === undefined) fetchCommentsLength();
-  }, [task.id]);
-
   return (
     <div
       ref={setNodeRef}
@@ -83,7 +83,7 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments, comme
 
         <div onPointerDown={(e) => e.stopPropagation()}>
           <button
-            title="Open Notes"
+            title={language === "en" ? "Open Notes" : "Abrir Anotações"}
             className="btn-task-comment"
             onClick={() => onOpenComments(task)}
           >
@@ -101,14 +101,14 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments, comme
         onPointerDown={(e) => e.stopPropagation()}
       >
         <button
-          title="Edit Task"
+          title={language === "en" ? "Edit Task" : "Editar Tarefa"}
           className="btn-task-edit"
           onClick={() => onEdit(task)}
         >
           {language === "en" ? "Edit" : "Editar"}
         </button>
         <button
-          title="Delete Task"
+          title={language === "en" ? "Delete Task" : "Excluir Tarefa"}
           className="btn-task-delete"
           onClick={() => onDelete(task.id)}
         >
