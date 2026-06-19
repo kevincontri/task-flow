@@ -156,7 +156,7 @@ export default function Board() {
   // @dnd-kit trigger event for drag end. We can get the current task and where it's standing.
   const handleDragEnd = async (event: any) => {
     const { active, over } = event;
-    setActiveTask(null); // Reinitiate active task since now we have it in 'active' variable
+    setActiveTask(null); // Remove the active task (the ghost card)
     if (!over) return;
 
     const taskId = active.id; // taskId is stored in active.id because we set it in useDraggable data

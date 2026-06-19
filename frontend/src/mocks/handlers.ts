@@ -69,6 +69,16 @@ export const handlers = [
         project_id: Number(projectId),
         created_at: new Date().toISOString()
       },
+      {
+        id: 3,
+        name: "Task 3",
+        description: "Description 3",
+        status: "done",
+        priority: "high", 
+        deadline: new Date().toISOString(),
+        project_id: Number(projectId),  
+        created_at: new Date().toISOString()
+      },
     ], { status: 200 });
   }),
 

@@ -60,20 +60,26 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments, comme
     <div
       ref={setNodeRef}
       style={style}
-      className="task-card"
+      className={`task-card ${task.status === 'done' ? 'task-card-done' : ''}`}
       {...attributes}
       {...listeners}
     >
       <div className="task-card-header">
-        <h4 className="task-card-title">{task.name}</h4>
-        <span className={`priority-badge priority-badge--${task.priority}`}>
-          {task.priority}
-        </span>
+        <h4 className="task-card-title" style={task.status === 'done' ? { textDecoration: 'line-through' } : {}}>
+          {task.name}
+          </h4>
+        {task.status !== "done" && (
+          <span className={`priority-badge priority-badge--${task.priority}`}>
+            {task.priority}
+          </span>
+        )}
       </div>
 
-      {task.description && <p className="task-card-desc">{task.description}</p>}
+      {task.description && <p className="task-card-desc" style={task.status === 'done' ? { textDecoration: 'line-through' } : {}}>
+        {task.description}
+        </p>}
 
-      <div className="task-card-footer">
+      <div className="task-card-footer" style={task.status === 'done' ? { textDecoration: 'line-through' } : {}}>
         {task.deadline && (
           <p className="task-card-deadline">
             {language === "en" ? "Deadline: " : "Prazo: "} -{" "}
