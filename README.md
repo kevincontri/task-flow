@@ -29,8 +29,6 @@ https://github.com/user-attachments/assets/8e5cc61a-6d56-4a45-951a-8ee7b7a53885
 - Empty-state and loading indicators throughout the UI
 - Animated hint buttons — the "New Project" button pulses when no projects exist and the "New Task" button pulses when a board has no tasks, guiding new users toward the next action
 
-> **Note:** The product behavior is unchanged for end users. This branch is a frontend overhaul under the hood — see [Frontend architecture](#frontend-architecture) below.
-
 ## Tech Stack
 
 **Backend**
