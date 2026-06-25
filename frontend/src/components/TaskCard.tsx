@@ -5,7 +5,6 @@ import "./TaskCard.css";
 // @ts-ignore
 import commentIcon from "../assets/comment.png";
 import { getComments } from "../api/comments.ts";
-import { useState, useEffect } from "react";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext.tsx";
 import { TaskBase } from "../types/task_types";
@@ -24,13 +23,12 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments, comme
   const { language } = useContext(LanguageContext);
   const commentsCount = commentCount !== undefined ? commentCount : comments?.length || 0;
 
-  if (task.priority === "high") {
-    task.priority = language === "en" ? "high" : "alta";
-  } else if (task.priority === "medium") {
-    task.priority = language === "en" ? "medium" : "média";
-  } else if (task.priority === "low") {
-    task.priority = language === "en" ? "low" : "baixa";
-  }
+  // Display-only translation. Never mutate task.priority: it's a reference to
+  // the cached task, and the backend only accepts the English enum values.
+  const priorityLabel =
+    language === "en"
+      ? task.priority
+      : { high: "alta", medium: "média", low: "baixa" }[task.priority] ?? task.priority;
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
@@ -70,7 +68,7 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments, comme
           </h4>
         {task.status !== "done" && (
           <span className={`priority-badge priority-badge--${task.priority}`}>
-            {task.priority}
+            {priorityLabel}
           </span>
         )}
       </div>

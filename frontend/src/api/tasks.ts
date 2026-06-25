@@ -12,7 +12,6 @@ export const createTask = async (projectId: number, data: TaskCreate): Promise<T
 }
 
 export const updateTask = async (projectId: number, taskId: number, data: TaskUpdate): Promise<TaskBase> => {
-  console.log(`Updating task ${taskId} in project ${projectId} with data:`, data);
   const response = await api.put(`/projects/${projectId}/tasks/${taskId}`, data)
   return response.data
 }
