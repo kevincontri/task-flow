@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     # Redis settings
-    REDIS_URL: str = "redis"
+    REDIS_URL: str = "redis://redis:6379"
     REDIS_PORT: int = 6379
     REDIS_DB: int = 0
     REDIS_DECODE_RESPONSES: bool = True
