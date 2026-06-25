@@ -2,7 +2,7 @@
 
 A **Kanban-style project** and **task management app** — FastAPI backend, React + TypeScript frontend.
 
-## Check the deployed website [Here](https://task-flow-1-vuz1.onrender.com/login)
+## Check the deployed website [Here](https://task-flow-gules-ten.vercel.app/login)
 
 ## Video Demo:
 
@@ -10,7 +10,7 @@ https://github.com/user-attachments/assets/8e5cc61a-6d56-4a45-951a-8ee7b7a53885
 
 ## Project Architecture Diagram:
 
-![TaskFlow System Architecture](./taskflow-architecture.png)
+![TaskFlow System Architecture](./taskflow-architecture.svg)
 
 ## Features
 
