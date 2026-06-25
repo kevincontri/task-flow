@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 
 async function enableMocking() {
-  return; // Disable MSW for now.
+  //return; // Disable MSW for now.
   // @ts-ignore
   if (import.meta.env.MODE !== "development") return;
   const { worker } = await import("./mocks/browser.js");
