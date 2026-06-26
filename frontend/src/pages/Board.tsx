@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -27,7 +27,7 @@ import LanguageContext from "../contexts/LanguageContext";
 // @ts-ignore
 import back from "../assets/arrow.png";
 import { TaskBase, TaskCreate, TaskStatus, TaskUpdate } from "../types/task_types";
-import { CommentBase, CommentCreate } from "../types/comment_types";
+import { CommentBase } from "../types/comment_types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const STATUSES: TaskStatus[] = ["todo", "in_progress", "done"];
@@ -48,7 +48,6 @@ export default function Board() {
   const [newComment, setNewComment] = useState("");
   const [showCommentsModal, setShowCommentsModal] = useState(false);
   const [commentError, setCommentError] = useState("");
-  const [commentCounts, setCommentCounts] = useState<Record<number, number>>({});
 
   const queryClient = useQueryClient();
 
@@ -67,30 +66,62 @@ export default function Board() {
   const { data: comments = [] } = useQuery<CommentBase[]>({
     queryKey: ["comments", commentTask?.id],
     queryFn: () => fetchComments({taskId: commentTask!.id}),
-    enabled: !!commentTask, // Only fetch comments when a task is selected
+    enabled: !!commentTask && (!commentTask._optimistic), // Only fetch comments when a task is selected and the task is not in optimistic mode
     staleTime: 5 * 60 * 1000 // 5 minutes to stale cache
   })
 
   // Mutations for creating/updating tasks
-  const { mutate: saveTaskMutation } = useMutation<TaskBase, any, TaskCreate | TaskUpdate>({
-    mutationFn: (taskData: TaskCreate | TaskUpdate) =>{
-      if (editingTask) {
-        return updateTask(Number(projectId), editingTask.id, taskData as TaskUpdate);
-      } else {
-        return createTask(Number(projectId), taskData as TaskCreate);
+  const { mutate: saveTaskMutation } = useMutation<TaskBase, any, TaskCreate | TaskUpdate, { previousTasks?: TaskBase[]; tempId?: number }>({
+    mutationFn: (taskData: TaskCreate | TaskUpdate) =>
+      editingTask ? updateTask(Number(projectId), editingTask.id, taskData as TaskUpdate) : createTask(Number(projectId), taskData as TaskCreate),
+    onMutate: async (newTask) => {
+      await queryClient.cancelQueries({ queryKey: ["tasks", Number(projectId)] });
+
+      const previousTasks = queryClient.getQueryData<TaskBase[]>(["tasks", Number(projectId)]);
+      
+      if (!editingTask) {
+        // Optimistically add the new task to the cache
+        const tempId = -Date.now();
+        const optimisticTask: TaskBase = {
+          id: tempId,
+          name: newTask.name!,
+          description: newTask.description!,
+          status: newTask.status!,
+          priority: newTask.priority!,
+          deadline: newTask.deadline!,
+          project_id: Number(projectId),
+          created_at: new Date().toISOString(),
+          _optimistic: true,
+        };
+        queryClient.setQueryData<TaskBase[]>(["tasks", Number(projectId)], (old = []) => [
+          ...old, 
+          optimisticTask
+        ]);
+        return { previousTasks, tempId };
       }
+      queryClient.setQueryData<TaskBase[]>(["tasks", Number(projectId)], (old = []) =>
+        old.map((t) => (t.id === editingTask.id ? { ...t, ...newTask } : t)),
+      );
+      return { previousTasks };
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", Number(projectId)] })
-      setShowModal(false);
-    },
-    onError: (err) => {
-      console.error("Failed to save task:", err);
+    onError: (_e, _v, ctx) => {
+      if (ctx?.previousTasks) {
+        queryClient.setQueryData<TaskBase[]>(["tasks", Number(projectId)], ctx.previousTasks);
+      }
       alert(
         `${language === "en" ? "Failed to save task: " : "Falha ao salvar tarefa: "}` +
-          (err.response?.data?.detail || err.message),
+          (_e.response?.data?.detail || _e.message),
       );
-    }
+    },
+    onSuccess: (serverTask, _v, ctx) => {
+      if (ctx?.tempId != null) {
+        queryClient.setQueryData<TaskBase[]>(["tasks", Number(projectId)], (old = []) =>
+          old.map((t) => (t.id === ctx.tempId ? { ...serverTask } : t)),
+        );
+      }
+      setShowModal(false);
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ["tasks", Number(projectId)] }),
   });
 
   // Mutation for moving tasks
@@ -109,7 +140,6 @@ export default function Board() {
   // Mutation for deleting tasks
   const { mutate: deleteTaskMutation } = useMutation<void, any, {taskId: number}>({
     mutationFn: ({ taskId }) => deleteTask(Number(projectId), taskId),
-    onSuccess: () => queryClient.invalidateQueries({queryKey: ["tasks", Number(projectId)]}),
     onError: (err) => {
       console.error("Failed to delete task:", err);
       alert(
@@ -117,32 +147,63 @@ export default function Board() {
           (err.response?.data?.detail || err.message),
       );
     },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ["tasks", Number(projectId)] }),
   });
 
   // Mutation for adding comments
-  const { mutate: commentCreateMutation } = useMutation<CommentBase, any, {taskId: number, comment: string}>({
+  const { mutate: commentCreateMutation } = useMutation<CommentBase, any, {taskId: number, comment: string}, { previousComments?: CommentBase[]; tempId?: number}>({
     mutationFn: ({ taskId, comment }) => createComment(Number(projectId), taskId, comment),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["comments", commentTask?.id]}),
-    onError: (err) => {
-      console.error("Failed to create comment:", err);
+    onMutate: async ({ taskId, comment }) => {
+      await queryClient.cancelQueries({ queryKey: ["comments", taskId] });
+
+      const previousComments = queryClient.getQueryData<CommentBase[]>(["comments", taskId]);
+
+      // Optimistically add the new comment to the cache
+      const tempId = -Date.now();
+      const optimisticComment: CommentBase = {
+        id: tempId,
+        task_id: taskId,
+        content: comment,
+        created_at: new Date().toISOString(),
+        author_id: -1, // Temporary author_id for optimistic comment
+        _optimistic: true,
+      };
+      queryClient.setQueryData<CommentBase[]>(["comments", taskId], (old = []) => [
+        ...old,
+        optimisticComment
+      ]);
+      return { previousComments, tempId };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.previousComments) {
+        queryClient.setQueryData(["comments", commentTask?.id], ctx.previousComments);
+      }
       alert(
         `${language === "en" ? "Failed to create comment: " : "Falha ao criar comentário: "}` +
-          (err.response?.data?.detail || err.message),
+          (_e.response?.data?.detail || _e.message),
       );
-    }
-  })
+    },
+    onSuccess: (serverComment, _v, ctx) => {
+      if (ctx?.tempId != null && commentTask) {
+        queryClient.setQueryData<CommentBase[]>(["comments", commentTask.id], (old = []) =>
+          old.map((c) => (c.id === ctx.tempId ? { ...serverComment } : c)),
+        );
+      }
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ["comments", commentTask?.id]}),
+  });
 
   // Mutation for deleting comments
-  const { mutate: commentDeleteMutation } = useMutation<void, any, {taskId: number, commentId: number}>({
+  const { mutate: commentDeleteMutation } = useMutation<void, any, {taskId: number, commentId: number}, { previousComments?: CommentBase[] }>({
     mutationFn: ({ taskId, commentId }) => deleteComment(Number(projectId), taskId, commentId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["comments", commentTask?.id]}),
     onError: (err) => {
       console.error("Failed to delete comment:", err);
       alert(
         `${language === "en" ? "Failed to delete comment: " : "Falha ao deletar comentário: "}` +
           (err.response?.data?.detail || err.message),
       );
-    }
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ["comments", commentTask?.id]}),
   })
 
   // Filter tasks by status to properly send it to the KanbanColumn
@@ -187,7 +248,6 @@ export default function Board() {
 
   const handleOpenComments = async (task: TaskBase) => {
     setCommentTask(task);
-    setCommentCounts((prev) => ({ ...prev, [task.id]: comments.length }));
     setShowCommentsModal(true);
   };
 
@@ -214,11 +274,6 @@ export default function Board() {
       { taskId: commentTask.id, comment: newComment }
     );
 
-    setCommentCounts((prev) => ({
-      ...prev,
-      [commentTask.id]: (prev[commentTask.id] ?? 0) + 1,
-    }));
-
     setNewComment("");
   };
 
@@ -232,12 +287,11 @@ export default function Board() {
 
     if (!commentTask) return;
 
-    commentDeleteMutation({ taskId: commentTask.id, commentId });
+    queryClient.setQueryData<CommentBase[]>(["comments", commentTask.id], (old) =>
+      old?.filter((c) => c.id !== commentId),
+    );
 
-    setCommentCounts((prev) => ({
-      ...prev,
-      [commentTask.id]: Math.max(0, (prev[commentTask.id] ?? 1) - 1),
-    }));
+    commentDeleteMutation({ taskId: commentTask.id, commentId });
   };
 
   const handleDelete = async (task: TaskBase) => {
@@ -247,6 +301,11 @@ export default function Board() {
       )
     )
       return;
+    
+    queryClient.setQueryData<TaskBase[]>(["tasks", Number(projectId)], (old) =>
+      old?.filter((t) => t.id !== task.id),
+    );
+    
     deleteTaskMutation({ taskId: task.id });
   };
 
@@ -349,7 +408,6 @@ export default function Board() {
                 onNewTask={handleNewTask}
                 onOpenComments={handleOpenComments}
                 taskLength={tasks.length}
-                commentCounts={commentCounts}
               />
             ))}
           </div>
@@ -361,7 +419,6 @@ export default function Board() {
                 onEdit={() => {}}
                 onDelete={() => {}}
                 onOpenComments={() => {}}
-                commentCount={0}
               />
             )}
           </DragOverlay>

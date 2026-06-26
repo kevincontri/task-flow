@@ -6,6 +6,7 @@ import "./Login.css";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext.tsx";
 import { RegisterRequest } from "../types/auth_types";
+import DevAlert from "../components/DevAlert.tsx";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
@@ -14,6 +15,7 @@ export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
@@ -37,6 +39,7 @@ export default function Register() {
     }
 
     try {
+      setShowAlert(true);
       setLoading(true);
       const payload: RegisterRequest = { email, username, password };
       await api.post("/auth/register", payload);
@@ -52,12 +55,16 @@ export default function Register() {
         );
       }
     } finally {
+      setShowAlert(false);
       setLoading(false);
     }
   };
 
   return (
     <div className="login-page">
+      { showAlert && (
+        <DevAlert language={language} setShowAlert={setShowAlert} />
+      )}
       <div className="hill hill-far" />
       <div className="hill hill-mid" />
       <div className="hill hill-near" />

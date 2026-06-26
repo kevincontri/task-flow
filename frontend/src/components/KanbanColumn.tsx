@@ -14,7 +14,6 @@ export default function KanbanColumn({
   onNewTask,
   onOpenComments,
   taskLength,
-  commentCounts,
 }: {
   status: TaskStatus;
   tasks: TaskBase[];
@@ -23,7 +22,6 @@ export default function KanbanColumn({
   onNewTask: (status: TaskStatus) => void;
   onOpenComments: (task: TaskBase) => void;
   taskLength: number;
-  commentCounts: Record<number, number>;
 }) {
   const { language } = useContext(LanguageContext);
   const { isOver, setNodeRef } = useDroppable({ id: status });
@@ -52,7 +50,6 @@ export default function KanbanColumn({
             onEdit={() => onEdit(task)}
             onDelete={() => onDelete(task)}
             onOpenComments={() => onOpenComments(task)}
-            commentCount={commentCounts?.[task.id]}
           />
         ))}
       </div>

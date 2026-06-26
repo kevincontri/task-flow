@@ -5,6 +5,7 @@ export interface ProjectBase {
   description: string;
   created_at: string;
   owner_id: number;
+  _optimistic?: boolean; // Used for temporary projects during optimistic updates
 }
 
 export type ProjectUpdate = Partial<Omit<ProjectBase, 'id' | 'created_at' | 'owner_id'>>;

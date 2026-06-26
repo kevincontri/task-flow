@@ -48,6 +48,7 @@
   font-weight: 500;
   color: #fff;
   line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 /* ── Priority badge ── */
@@ -88,6 +89,7 @@
   font-weight: 300;
   line-height: 1.45;
   margin-bottom: 8px;
+  overflow-wrap: anywhere;
 }
 
 /* ── Deadline ── */
@@ -198,6 +200,7 @@
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.5);
     line-height: 1.4;
+    overflow-wrap: anywhere;
   }
 }
 

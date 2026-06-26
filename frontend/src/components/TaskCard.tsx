@@ -11,17 +11,17 @@ import { TaskBase } from "../types/task_types";
 import { useQuery } from "@tanstack/react-query";
 import { CommentBase } from "../types/comment_types.ts";
 
-export default function TaskCard({ task, onEdit, onDelete, onOpenComments, commentCount }: { task: TaskBase; onEdit: (task: TaskBase) => void; onDelete: (taskId: number) => void; onOpenComments: (task: TaskBase) => void; commentCount?: number }) {
+export default function TaskCard({ task, onEdit, onDelete, onOpenComments }: { task: TaskBase; onEdit: (task: TaskBase) => void; onDelete: (taskId: number) => void; onOpenComments: (task: TaskBase) => void }) {
   
   const { data: comments } = useQuery<CommentBase[]>({
     queryKey: ["comments", task.id],
     queryFn: () => getComments(task.project_id, task.id),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: commentCount === undefined, // Only fetch if commentCount is not provided
+    enabled: !task._optimistic,
   });
 
   const { language } = useContext(LanguageContext);
-  const commentsCount = commentCount !== undefined ? commentCount : comments?.length || 0;
+  const commentsCount = comments?.length ?? 0;
 
   // Display-only translation. Never mutate task.priority: it's a reference to
   // the cached task, and the backend only accepts the English enum values.

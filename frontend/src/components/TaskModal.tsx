@@ -3,7 +3,7 @@ import { useState } from "react";
 import "./ProjectModal.css";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext";
-import { TaskBase, TaskCreate, TaskUpdate, TaskStatus, TaskPriority } from "../types/task_types";
+import { TaskBase, TaskCreate, TaskUpdate,TaskPriority } from "../types/task_types";
 
 export default function TaskModal({ task, onSave, onClose }: { task?: TaskBase | null, onSave: (data: TaskCreate | TaskUpdate) => void, onClose: () => void }) {
   const { language } = useContext(LanguageContext);

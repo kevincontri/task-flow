@@ -141,12 +141,19 @@
 .error-alert {
   background: rgba(239, 68, 68, 0.2);
   border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #fecaca;
+  color: rgb(255, 236, 236);
   font-size: 0.82rem;
   padding: 10px 14px;
   border-radius: 10px;
   margin-bottom: 18px;
   text-align: center;
+}
+
+/* ── Loading alert ── */
+@layer alert-utils {
+  .login-alert-container {
+    @apply fixed bottom-10 left-1/2 transform -translate-x-1/2 z-50 w-[90%] max-w-[400px];
+  }
 }
 
 /* ── Form ── */

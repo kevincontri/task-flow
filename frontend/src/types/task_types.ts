@@ -11,6 +11,7 @@ export interface TaskBase {
   deadline: string; // ISO date string
   project_id: number;
   created_at: string; // ISO date string
+  _optimistic?: boolean; // Used for temporary tasks during optimistic updates
 }
 
 export type TaskCreate = Omit<TaskBase, 'id' | 'created_at' | 'project_id'>;

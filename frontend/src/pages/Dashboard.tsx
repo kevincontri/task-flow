@@ -49,38 +49,75 @@ export default function Dashboard() {
   // Project removal
   const { mutate: removeProject, isPending: isDeleting } = useMutation({
     mutationFn: (id: number) => deleteProject(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["projects"]}),
     onError: (err: any) => {
       console.log("Failed to delete project:", err);
       alert("Failed to delete project: " + (err.response?.data?.detail ||err.message));
-    }
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ["projects"] }),
   });
 
   const handleDelete = (id: number): void => {
     if (!window.confirm("Deletar projeto?")) return;
+    queryClient.setQueryData<ProjectBase[]>(["projects"], (oldProjects = []) =>
+      oldProjects.filter((p) => p.id !== id),
+    );
     removeProject(id);
   }
 
-  // Project creation
+  // Project creation - Optimistic update
   const { mutate: saveProject, isPending: isSaving } = useMutation({
-    mutationFn: (projectData: ProjectCreate | ProjectUpdate) => {
-      if (editingProject) {
-        return updateProject(editingProject.id, projectData as ProjectUpdate);
-      } else {
-        return createProject(projectData as ProjectCreate);
+    mutationFn: (projectData: ProjectCreate | ProjectUpdate) => editingProject ? updateProject(editingProject.id, projectData as ProjectUpdate) : createProject(projectData as ProjectCreate),
+
+    onMutate: async (newProject) => {
+      await queryClient.cancelQueries({ queryKey: ["projects"] });
+
+      const previousProjects = queryClient.getQueryData<ProjectBase[]>(["projects"]);
+
+      if (!editingProject) {
+        const tempId = -Date.now();
+        const optimisticProject: ProjectBase = {
+          id: tempId,
+          name: newProject.name!,
+          description: newProject.description!,
+          created_at: new Date().toISOString(),
+          owner_id: -1,
+          _optimistic: true,
+        };
+        queryClient.setQueryData<ProjectBase[]>(["projects"], (oldProjects = []) => [
+          ...oldProjects,
+          optimisticProject,
+        ]);
+        return { previousProjects, tempId };
       }
+      queryClient.setQueryData<ProjectBase[]>(["projects"], (oldProjects = []) =>
+        oldProjects.map((p) =>
+          p.id === editingProject.id ? { ...p, ...newProject } : p,
+        ),
+      );
+      return { previousProjects };
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ["projects"]});
-      setShowModal(false);
-    },
-    onError: (error: any) => {
-      console.error("Failed to save project:", error);
+    onError: (_e, _v, ctx) => {
+      if (ctx?.previousProjects) {
+        queryClient.setQueryData(["projects"], ctx.previousProjects);
+      }
       alert(
-        "Failed to save project: " +
-          (error.response?.data?.detail || error.message),
+        `${language === "en" ? "Failed to save project: " : "Falha ao salvar o projeto: "}` +
+          (_e.message),
       );
     },
+    onSuccess: (serverProject, _v, ctx) => {
+      if (ctx?.tempId != null) {
+        queryClient.setQueryData<ProjectBase[]>(["projects"], (oldProjects = []) =>
+          oldProjects.map((p) =>
+            p.id === ctx.tempId ? { ...serverProject } : p,
+          ),
+        );
+      }
+      setShowModal(false);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    }
   });
 
   const handleNewProject = (): void => {

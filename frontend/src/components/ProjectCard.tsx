@@ -14,8 +14,10 @@ export default function ProjectCard({ project, onEdit, onDelete, isDeleting }: P
   const { data: tasks, isError } = useQuery({
     queryKey: ["tasks", project.id],
     queryFn: () => getTasks(project.id),
+    enabled: !project._optimistic, // Disable fetching if the project is in an optimistic state
     staleTime: 5 * 60 * 1000, // 1 minute to stale cache
   });
+  
 
   if (isError) {
     console.error("Failed to fetch tasks count for project:", project.id);
@@ -27,11 +29,10 @@ export default function ProjectCard({ project, onEdit, onDelete, isDeleting }: P
     <div className="project-card">
       <div
         className="project-card-body"
-        onClick={() =>
-          navigate(`/board/${project.id}`, {
-            state: { projectName: project.name }, // Pass project name for header display in Board.jsx
-          })
-        }
+        onClick={() => {
+          if (project._optimistic) return;
+          navigate(`/board/${project.id}`, { state: { projectName: project.name } });
+}}
       >
         <div className="project-header">
           <div>

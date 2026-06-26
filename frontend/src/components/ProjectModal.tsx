@@ -4,12 +4,15 @@ import "./ProjectModal.css";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext.tsx";
 import { ProjectModalProps } from "../types/project_types";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function ProjectModal({ project, onSave, onClose, isSaving = false }: ProjectModalProps) {
   const { language } = useContext(LanguageContext);
   const [name, setName] = useState(project?.name || "");
   const [description, setDescription] = useState(project?.description || "");
   const [err, setError] = useState("");
+
+  const queryClient = useQueryClient();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,6 +28,14 @@ export default function ProjectModal({ project, onSave, onClose, isSaving = fals
           : "O nome do projeto deve ter entre 3 e 32 caracteres e a descrição entre 3 e 256 caracteres",
       );
       return;
+    }
+
+    if (project) {
+      queryClient.setQueryData(["projects"], (oldProjects: any) =>
+        oldProjects.map((p: any) =>
+          p.id === project.id ? { ...p, name, description } : p,
+        ),
+      );
     }
 
     onSave({ name, description });

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import "./Login.css";
 import { useContext } from "react";
 import LanguageContext from "../contexts/LanguageContext.tsx";
+import DevAlert from "../components/DevAlert.tsx";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -12,11 +13,13 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
   const { login } = useAuth() as { login: (email: string, password: string) => Promise<void> };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setLoading(true);
+    setShowAlert(true);
     try {
       await login(email, password);
     } catch (err: any) {
@@ -33,11 +36,16 @@ export default function Login() {
         setError(err.message || "Unexpected error");
       }
     }
+    setShowAlert(false);
     setLoading(false);
   };
 
   return (
     <div className="login-page">
+      { showAlert && (
+        <DevAlert language={language} setShowAlert={setShowAlert} />
+      )}
+      
       <div className="hill hill-far" />
       <div className="hill hill-mid" />
       <div className="hill hill-near" />
