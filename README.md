@@ -2,7 +2,9 @@
 
 A **Kanban-style project** and **task management app** — FastAPI backend, React + TypeScript frontend.
 
-## Check the deployed website [Here](https://task-flow-gules-ten.vercel.app/login)
+## Check the deployed website [Here](https://task-flow-1-vuz1.onrender.com/login)
+
+> **Heads up:** the backend is hosted on a free tier that spins down when idle, so the first request after a while may take a few seconds while the server wakes up. The app shows a small notice on the entrance pages explaining this.
 
 ## Video Demo:
 
@@ -18,6 +20,8 @@ https://github.com/user-attachments/assets/8e5cc61a-6d56-4a45-951a-8ee7b7a53885
 - Project CRUD with a dashboard overview — each project card shows task count and creation date
 - Kanban board per project (To Do / In Progress / Done columns)
 - **Drag-and-drop task** reordering across columns — with an optimistic UI so cards land in the new column instantly, before the server confirms
+- **Optimistic updates on every mutation** — creating, editing, moving, and deleting tasks; creating projects; and adding/deleting comments all update the UI immediately and reconcile (or roll back) once the server responds. This keeps the app feeling instant despite the latency of an externally-hosted database
+- **Smart temporary-card management** — optimistic items render as dimmed, non-interactive "pending" cards (a temporary negative id + an `_optimistic` flag) until the server returns the real record, at which point the placeholder is seamlessly swapped for the persisted entity (or removed on failure). Queries that depend on a not-yet-persisted item (e.g. a new task's comments) are held back until it exists
 - Task fields: name, description, priority (low / medium / high), deadline
 - Notes on tasks — add, view, and delete notes via a modal opened from each task card (Enter to submit, Shift+Enter for newline); note count shown directly on the task card
 - Customizable motivational quote on the dashboard — editable via a modal, persisted in localStorage
@@ -28,6 +32,8 @@ https://github.com/user-attachments/assets/8e5cc61a-6d56-4a45-951a-8ee7b7a53885
 - Form validation on all inputs
 - Empty-state and loading indicators throughout the UI
 - Animated hint buttons — the "New Project" button pulses when no projects exist and the "New Task" button pulses when a board has no tasks, guiding new users toward the next action
+- Cold-start notice — an informational alert on the entrance pages letting users know the free-tier backend may take a few seconds to wake up (dismissable, animated, EN/PT aware)
+- UI built on **shadcn/ui + Radix primitives + Tailwind CSS v4**, with `lucide-react` icons and Headless UI transitions
 
 ## Tech Stack
 
@@ -50,6 +56,8 @@ https://github.com/user-attachments/assets/8e5cc61a-6d56-4a45-951a-8ee7b7a53885
 - React Router v7
 - Axios
 - @dnd-kit (drag-and-drop)
+- **Tailwind CSS v4** (`@tailwindcss/vite`) + **shadcn/ui** + **Radix UI** primitives — styled component layer
+- `lucide-react` (icons), `@headlessui/react` (transitions), `react-spinners`, `class-variance-authority` / `clsx` / `tailwind-merge`
 - **Vitest** + **@testing-library/react** + jsdom — unit / component tests
 - **MSW (Mock Service Worker)** — API mocking for the test suite
 - @vitest/coverage-v8 — test coverage reports
@@ -60,6 +68,12 @@ https://github.com/user-attachments/assets/8e5cc61a-6d56-4a45-951a-8ee7b7a53885
 - Redis 7 (Alpine) — caching layer
 - RedisInsight — Redis GUI at `http://localhost:5540`
 - Docker Compose
+
+**Deployment**
+
+- **Frontend & backend** — both hosted on [Render](https://render.com) (previously the frontend was on Vercel) as separate services
+- **Database** — managed PostgreSQL on [Neon](https://neon.tech) (previously on Render)
+- Because the frontend, backend, and database run as independent services across providers, requests carry more network latency than a single-host setup — which is why the app leans heavily on optimistic updates and shows a cold-start notice on first load
 
 ## Frontend architecture
 
@@ -78,7 +92,12 @@ Manual `useEffect` fetching and local `useState` lists were replaced by [TanStac
 - **`useQuery`** — fetches projects, a project's tasks, and a task's comments. Each query has a stable `queryKey` (e.g. `["tasks", projectId]`) and a `staleTime`, so already-fetched data is served from cache instead of re-hitting the API on every mount.
 - **`useMutation`** — handles create / update / delete / move for tasks and comments, with `onSuccess` / `onError` / `onSettled` callbacks for feedback and reconciliation.
 - **Cache invalidation** — after a mutation, `queryClient.invalidateQueries({ queryKey })` marks the affected data stale so it refetches automatically. This is why the dashboard task count and the board stay in sync without a manual page reload.
-- **Optimistic updates** — dragging a task across columns writes the new status straight into the cache (`setQueryData`) in the same render flush as the drop, so the card moves instantly; `onSettled` then refetches to reconcile with the server (and rolls back on error).
+- **Optimistic updates (everywhere)** — every mutation writes its expected result straight into the cache before the request resolves, so the UI never waits on the round trip:
+  - **Move** — dragging a task writes the new status into the cache in the same render flush as the drop, so the card moves instantly.
+  - **Create** — new tasks, projects, and comments appear immediately as a temporary record stamped with a negative id and an `_optimistic` flag. `onMutate` snapshots the current cache and inserts the placeholder; `onSuccess` swaps it for the server's real record (matched by the temp id).
+  - **Update / Delete** — edits are applied and deletions are removed from the cache up front.
+  - **Rollback & reconcile** — `onError` restores the snapshot taken in `onMutate`; `onSettled` invalidates the query so it refetches and converges with the server.
+- **Temporary-card management** — while an item is `_optimistic` it renders dimmed and non-interactive (a `disabled` class on the card), and any query that depends on it (a new task's comments, a new project's task count) is disabled until the real entity exists, avoiding requests against ids the backend doesn't know yet.
 
 ### Testing (Vitest + Testing Library + MSW)
 
@@ -112,7 +131,8 @@ TaskFlow/
 └── frontend/
     └── src/
         ├── api/                # Axios clients (projects, tasks, comments) + configured instance
-        ├── components/         # ProjectCard, ProjectModal, TaskCard, TaskModal, KanbanColumn, CommentModal, QuoteModal, PrivateRoute
+        ├── components/         # ProjectCard, ProjectModal, TaskCard, TaskModal, KanbanColumn, CommentModal, QuoteModal, PrivateRoute, DevAlert
+        │   └── ui/             # shadcn/ui primitives (alert, button)
         ├── contexts/           # AuthContext (JWT storage + refresh), LanguageContext (EN/PT toggle)
         ├── pages/              # Login, Register, Dashboard, Board
         ├── types/              # shared domain types (task, project, comment, auth)
@@ -171,7 +191,7 @@ npm install
 npm run dev
 ```
 
-Vite dev server: `http://localhost:5173`. CORS is configured to allow any `localhost` port.
+Vite dev server: `http://localhost:5173`. The API base URL comes from `VITE_API_URL` (falls back to `http://localhost:8000`), so the deployed frontend can point at the deployed backend. CORS is configured to allow any `localhost` port and any `*.onrender.com` origin.
 
 ## Tests
 
