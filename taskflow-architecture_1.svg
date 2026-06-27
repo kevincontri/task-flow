@@ -1,0 +1,278 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 880" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e293b"/>
+    </linearGradient>
+    <linearGradient id="frontendGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a5f"/>
+      <stop offset="100%" style="stop-color:#172d4a"/>
+    </linearGradient>
+    <linearGradient id="backendGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a3a2a"/>
+      <stop offset="100%" style="stop-color:#153022"/>
+    </linearGradient>
+    <linearGradient id="dbGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b1f5e"/>
+      <stop offset="100%" style="stop-color:#2d1748"/>
+    </linearGradient>
+    <linearGradient id="redisGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#5c1a1a"/>
+      <stop offset="100%" style="stop-color:#461515"/>
+    </linearGradient>
+    <linearGradient id="dockerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1565c0;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#0d47a1;stop-opacity:0.08"/>
+    </linearGradient>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+    <marker id="arrowWhite" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#94a3b8"/>
+    </marker>
+    <marker id="arrowCyan" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#22d3ee"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#4ade80"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#a78bfa"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#f87171"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="880" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- Title -->
+  <text x="600" y="42" text-anchor="middle" fill="#f1f5f9" font-size="22" font-weight="700" letter-spacing="1">TaskFlow — System Architecture</text>
+  <text x="600" y="62" text-anchor="middle" fill="#64748b" font-size="12" letter-spacing="0.5">Kanban-style Project &amp; Task Management App · React + TypeScript · FastAPI</text>
+
+  <!-- ==================== DOCKER COMPOSE BOUNDARY (local dev) ==================== -->
+  <rect x="270" y="240" width="900" height="558" rx="14" fill="url(#dockerGrad)" stroke="#1e88e5" stroke-width="1.5" stroke-dasharray="8,4" opacity="0.9"/>
+  <text x="1155" y="260" text-anchor="end" fill="#42a5f5" font-size="11" font-weight="600" letter-spacing="0.5">🐳 DOCKER COMPOSE (local dev)</text>
+
+  <!-- ==================== CLIENT / BROWSER ==================== -->
+  <rect x="30" y="88" width="250" height="138" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.2" filter="url(#shadow)"/>
+  <text x="155" y="112" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="600" letter-spacing="1.2">CLIENT</text>
+  <rect x="50" y="122" width="210" height="28" rx="6" fill="#0f172a" stroke="#475569" stroke-width="0.8"/>
+  <text x="155" y="141" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="500">🌐 Web Browser</text>
+  <text x="155" y="166" text-anchor="middle" fill="#64748b" font-size="10">JWT in AuthContext · localStorage</text>
+  <text x="155" y="182" text-anchor="middle" fill="#64748b" font-size="10">(quote, language EN/PT)</text>
+  <text x="155" y="198" text-anchor="middle" fill="#64748b" font-size="10">Drag &amp; Drop · Optimistic UI</text>
+  <text x="155" y="214" text-anchor="middle" fill="#64748b" font-size="10">Responsive layout</text>
+
+  <!-- ==================== FRONTEND ==================== -->
+  <rect x="30" y="260" width="210" height="320" rx="10" fill="url(#frontendGrad)" stroke="#2563eb" stroke-width="1.2" filter="url(#shadow)"/>
+  <rect x="42" y="270" width="186" height="22" rx="4" fill="#2563eb" opacity="0.2"/>
+  <text x="135" y="286" text-anchor="middle" fill="#60a5fa" font-size="11" font-weight="700" letter-spacing="1">⚡ FRONTEND</text>
+  <text x="135" y="306" text-anchor="middle" fill="#38bdf8" font-size="10">React 19 + Vite + TypeScript</text>
+
+  <!-- Pages -->
+  <rect x="46" y="318" width="180" height="46" rx="6" fill="#0f172a" stroke="#1e40af" stroke-width="0.7"/>
+  <text x="136" y="334" text-anchor="middle" fill="#93c5fd" font-size="9" font-weight="600">PAGES</text>
+  <text x="136" y="348" text-anchor="middle" fill="#cbd5e1" font-size="9">Login · Register</text>
+  <text x="136" y="359" text-anchor="middle" fill="#cbd5e1" font-size="9">Dashboard · Board</text>
+
+  <!-- Components / UI -->
+  <rect x="46" y="370" width="180" height="56" rx="6" fill="#0f172a" stroke="#1e40af" stroke-width="0.7"/>
+  <text x="136" y="386" text-anchor="middle" fill="#93c5fd" font-size="9" font-weight="600">COMPONENTS + UI</text>
+  <text x="136" y="400" text-anchor="middle" fill="#cbd5e1" font-size="9">KanbanColumn · TaskCard · Modals</text>
+  <text x="136" y="412" text-anchor="middle" fill="#cbd5e1" font-size="9">shadcn/ui · Radix · Tailwind v4</text>
+
+  <!-- React Query (server state) -->
+  <rect x="46" y="432" width="180" height="56" rx="6" fill="#0f172a" stroke="#dc2680" stroke-width="0.9"/>
+  <text x="136" y="448" text-anchor="middle" fill="#f9a8d4" font-size="9" font-weight="600">SERVER STATE</text>
+  <text x="136" y="462" text-anchor="middle" fill="#cbd5e1" font-size="9">TanStack Query (React Query v5)</text>
+  <text x="136" y="474" text-anchor="middle" fill="#cbd5e1" font-size="9">useQuery · useMutation · optimistic</text>
+
+  <!-- Contexts -->
+  <rect x="46" y="494" width="180" height="36" rx="6" fill="#0f172a" stroke="#1e40af" stroke-width="0.7"/>
+  <text x="136" y="510" text-anchor="middle" fill="#93c5fd" font-size="9" font-weight="600">CONTEXTS</text>
+  <text x="136" y="523" text-anchor="middle" fill="#cbd5e1" font-size="9">AuthContext · LanguageContext</text>
+
+  <!-- API layer + types -->
+  <rect x="46" y="536" width="180" height="38" rx="6" fill="#0f172a" stroke="#1e40af" stroke-width="0.7"/>
+  <text x="136" y="552" text-anchor="middle" fill="#93c5fd" font-size="9" font-weight="600">API LAYER · TYPES</text>
+  <text x="136" y="565" text-anchor="middle" fill="#cbd5e1" font-size="9">Axios · Router v7 · src/types</text>
+
+  <!-- ==================== BACKEND ==================== -->
+  <rect x="310" y="260" width="440" height="320" rx="10" fill="url(#backendGrad)" stroke="#16a34a" stroke-width="1.2" filter="url(#shadow)"/>
+  <rect x="322" y="270" width="416" height="22" rx="4" fill="#16a34a" opacity="0.2"/>
+  <text x="530" y="286" text-anchor="middle" fill="#4ade80" font-size="11" font-weight="700" letter-spacing="1">🚀 BACKEND</text>
+  <text x="530" y="306" text-anchor="middle" fill="#86efac" font-size="10">FastAPI 0.136 · :8000</text>
+
+  <!-- Routes -->
+  <rect x="326" y="320" width="200" height="70" rx="6" fill="#0f172a" stroke="#166534" stroke-width="0.7"/>
+  <text x="426" y="337" text-anchor="middle" fill="#86efac" font-size="9" font-weight="600">ROUTES</text>
+  <text x="426" y="352" text-anchor="middle" fill="#cbd5e1" font-size="9">/auth  (register, login)</text>
+  <text x="426" y="365" text-anchor="middle" fill="#cbd5e1" font-size="9">/projects  /tasks  /comments</text>
+  <text x="426" y="378" text-anchor="middle" fill="#cbd5e1" font-size="9">/health  /tasks/{id}/move</text>
+
+  <!-- Services -->
+  <rect x="534" y="320" width="200" height="70" rx="6" fill="#0f172a" stroke="#166534" stroke-width="0.7"/>
+  <text x="634" y="337" text-anchor="middle" fill="#86efac" font-size="9" font-weight="600">SERVICES</text>
+  <text x="634" y="352" text-anchor="middle" fill="#cbd5e1" font-size="9">Business Logic Layer</text>
+  <text x="634" y="365" text-anchor="middle" fill="#cbd5e1" font-size="9">Auth · Projects</text>
+  <text x="634" y="378" text-anchor="middle" fill="#cbd5e1" font-size="9">Tasks · Comments</text>
+
+  <!-- Repositories -->
+  <rect x="326" y="400" width="200" height="56" rx="6" fill="#0f172a" stroke="#166534" stroke-width="0.7"/>
+  <text x="426" y="417" text-anchor="middle" fill="#86efac" font-size="9" font-weight="600">REPOSITORIES</text>
+  <text x="426" y="432" text-anchor="middle" fill="#cbd5e1" font-size="9">Data-Access Layer</text>
+  <text x="426" y="445" text-anchor="middle" fill="#cbd5e1" font-size="9">SQLAlchemy 2.0 async queries</text>
+
+  <!-- Redis Repository -->
+  <rect x="534" y="400" width="200" height="56" rx="6" fill="#0f172a" stroke="#991b1b" stroke-width="0.7"/>
+  <text x="634" y="417" text-anchor="middle" fill="#fca5a5" font-size="9" font-weight="600">REDIS REPOSITORY</text>
+  <text x="634" y="432" text-anchor="middle" fill="#cbd5e1" font-size="9">redis.asyncio client</text>
+  <text x="634" y="445" text-anchor="middle" fill="#cbd5e1" font-size="9">get / set / hash / TTL ops</text>
+
+  <!-- Models + Schemas -->
+  <rect x="326" y="466" width="200" height="56" rx="6" fill="#0f172a" stroke="#166534" stroke-width="0.7"/>
+  <text x="426" y="483" text-anchor="middle" fill="#86efac" font-size="9" font-weight="600">MODELS + SCHEMAS</text>
+  <text x="426" y="498" text-anchor="middle" fill="#cbd5e1" font-size="9">SQLAlchemy: User · Project</text>
+  <text x="426" y="511" text-anchor="middle" fill="#cbd5e1" font-size="9">Task · Comment + Pydantic v2</text>
+
+  <!-- Core / Security -->
+  <rect x="534" y="466" width="200" height="56" rx="6" fill="#0f172a" stroke="#166534" stroke-width="0.7"/>
+  <text x="634" y="483" text-anchor="middle" fill="#86efac" font-size="9" font-weight="600">CORE</text>
+  <text x="634" y="498" text-anchor="middle" fill="#cbd5e1" font-size="9">JWT Auth (python-jose)</text>
+  <text x="634" y="511" text-anchor="middle" fill="#cbd5e1" font-size="9">Security · Config · Deps · Enums</text>
+
+  <!-- Alembic + CORS label -->
+  <rect x="370" y="532" width="320" height="6" rx="3" fill="#16a34a" opacity="0.25"/>
+  <text x="530" y="550" text-anchor="middle" fill="#4ade80" font-size="8" font-weight="500">Alembic Migrations · CORS Middleware · Exception Handlers</text>
+  <text x="530" y="566" text-anchor="middle" fill="#86efac" font-size="8">Layered: routes → services → repositories</text>
+
+  <!-- ==================== POSTGRESQL ==================== -->
+  <rect x="310" y="628" width="260" height="150" rx="10" fill="url(#dbGrad)" stroke="#8b5cf6" stroke-width="1.2" filter="url(#shadow)"/>
+  <rect x="322" y="638" width="236" height="22" rx="4" fill="#8b5cf6" opacity="0.2"/>
+  <text x="440" y="654" text-anchor="middle" fill="#c4b5fd" font-size="11" font-weight="700" letter-spacing="1">🐘 POSTGRESQL 16</text>
+  <text x="440" y="674" text-anchor="middle" fill="#a78bfa" font-size="10">asyncpg · local :5433 · Neon (prod)</text>
+
+  <!-- DB Tables -->
+  <rect x="326" y="688" width="110" height="46" rx="5" fill="#0f172a" stroke="#6d28d9" stroke-width="0.7"/>
+  <text x="381" y="705" text-anchor="middle" fill="#e9d5ff" font-size="9" font-weight="500">📋 users</text>
+  <text x="381" y="725" text-anchor="middle" fill="#e9d5ff" font-size="9">📋 projects</text>
+
+  <rect x="444" y="688" width="110" height="46" rx="5" fill="#0f172a" stroke="#6d28d9" stroke-width="0.7"/>
+  <text x="499" y="705" text-anchor="middle" fill="#e9d5ff" font-size="9" font-weight="500">📋 tasks</text>
+  <text x="499" y="725" text-anchor="middle" fill="#e9d5ff" font-size="9">📋 comments</text>
+
+  <text x="440" y="756" text-anchor="middle" fill="#7c3aed" font-size="8">Alembic-managed schema migrations</text>
+
+  <!-- ==================== REDIS ==================== -->
+  <rect x="600" y="628" width="260" height="150" rx="10" fill="url(#redisGrad)" stroke="#ef4444" stroke-width="1.2" filter="url(#shadow)"/>
+  <rect x="612" y="638" width="236" height="22" rx="4" fill="#ef4444" opacity="0.2"/>
+  <text x="730" y="654" text-anchor="middle" fill="#fca5a5" font-size="11" font-weight="700" letter-spacing="1">⚡ REDIS 7</text>
+  <text x="730" y="674" text-anchor="middle" fill="#f87171" font-size="10">Alpine · :6379</text>
+
+  <rect x="616" y="688" width="228" height="46" rx="5" fill="#0f172a" stroke="#991b1b" stroke-width="0.7"/>
+  <text x="730" y="705" text-anchor="middle" fill="#fecaca" font-size="9" font-weight="500">Caching Layer (async)</text>
+  <text x="730" y="722" text-anchor="middle" fill="#fecaca" font-size="9">Key-Value · Hash · TTL ops</text>
+
+  <text x="730" y="756" text-anchor="middle" fill="#ef4444" font-size="8">fakeredis in pytest fixtures</text>
+
+  <!-- ==================== REDISINSIGHT ==================== -->
+  <rect x="890" y="628" width="260" height="70" rx="10" fill="#1e293b" stroke="#f87171" stroke-width="1" filter="url(#shadow)"/>
+  <text x="1020" y="652" text-anchor="middle" fill="#fca5a5" font-size="10" font-weight="600">🔍 RedisInsight</text>
+  <text x="1020" y="670" text-anchor="middle" fill="#94a3b8" font-size="9">Redis GUI · :5540</text>
+  <text x="1020" y="686" text-anchor="middle" fill="#64748b" font-size="8">Database visualization</text>
+
+  <!-- ==================== TESTING ==================== -->
+  <rect x="890" y="714" width="260" height="84" rx="10" fill="#1e293b" stroke="#f59e0b" stroke-width="1" filter="url(#shadow)"/>
+  <text x="1020" y="736" text-anchor="middle" fill="#fcd34d" font-size="10" font-weight="600">🧪 Testing</text>
+  <text x="1020" y="753" text-anchor="middle" fill="#94a3b8" font-size="9">Backend: pytest + pytest-asyncio · fakeredis</text>
+  <text x="1020" y="769" text-anchor="middle" fill="#94a3b8" font-size="9">Frontend: Vitest + Testing Library</text>
+  <text x="1020" y="785" text-anchor="middle" fill="#94a3b8" font-size="9">MSW (mocked API) · jsdom · coverage-v8</text>
+
+  <!-- ==================== SWAGGER DOCS ==================== -->
+  <rect x="790" y="270" width="170" height="60" rx="10" fill="#1e293b" stroke="#f59e0b" stroke-width="1" filter="url(#shadow)"/>
+  <text x="875" y="296" text-anchor="middle" fill="#fcd34d" font-size="10" font-weight="600">📄 Swagger UI</text>
+  <text x="875" y="312" text-anchor="middle" fill="#94a3b8" font-size="9">/docs · OpenAPI 3.1</text>
+  <text x="875" y="324" text-anchor="middle" fill="#64748b" font-size="8">Auto-generated from FastAPI</text>
+
+  <!-- ==================== DEPLOYMENT ==================== -->
+  <rect x="890" y="356" width="260" height="100" rx="10" fill="#1e293b" stroke="#06b6d4" stroke-width="1" filter="url(#shadow)"/>
+  <text x="1020" y="378" text-anchor="middle" fill="#22d3ee" font-size="10" font-weight="600">☁️ Deployment (distributed)</text>
+  <text x="1020" y="396" text-anchor="middle" fill="#94a3b8" font-size="9">Render — frontend + backend (2 services)</text>
+  <text x="1020" y="411" text-anchor="middle" fill="#94a3b8" font-size="9">Neon — managed PostgreSQL</text>
+  <text x="1020" y="428" text-anchor="middle" fill="#64748b" font-size="8">task-flow-1-vuz1.onrender.com</text>
+  <text x="1020" y="444" text-anchor="middle" fill="#64748b" font-size="8">Cross-provider latency → optimistic UI + cold-start notice</text>
+
+  <!-- ==================== FLOW ARROWS ==================== -->
+
+  <!-- Browser → Frontend -->
+  <line x1="155" y1="226" x2="155" y2="256" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowWhite)" stroke-dasharray="4,3"/>
+  <text x="172" y="246" fill="#64748b" font-size="8">render</text>
+
+  <!-- Frontend → Backend (Axios / REST) -->
+  <line x1="240" y1="420" x2="306" y2="370" stroke="#22d3ee" stroke-width="2" marker-end="url(#arrowCyan)"/>
+  <rect x="248" y="372" width="52" height="16" rx="3" fill="#0e7490" opacity="0.6"/>
+  <text x="274" y="383" text-anchor="middle" fill="#22d3ee" font-size="8" font-weight="600">Axios</text>
+
+  <!-- Backend response arrow -->
+  <line x1="306" y1="400" x2="240" y2="450" stroke="#22d3ee" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrowCyan)"/>
+  <text x="258" y="442" fill="#22d3ee" font-size="7">JSON + JWT</text>
+
+  <!-- Routes → Services -->
+  <line x1="526" y1="350" x2="532" y2="350" stroke="#4ade80" stroke-width="1.3" marker-end="url(#arrowGreen)"/>
+
+  <!-- Services → Repositories -->
+  <line x1="534" y1="380" x2="426" y2="396" stroke="#4ade80" stroke-width="1.2" marker-end="url(#arrowGreen)" stroke-dasharray="3,2"/>
+
+  <!-- Services → Redis Repo -->
+  <line x1="634" y1="390" x2="634" y2="396" stroke="#f87171" stroke-width="1.2" marker-end="url(#arrowRed)" stroke-dasharray="3,2"/>
+
+  <!-- Repositories → PostgreSQL -->
+  <line x1="426" y1="522" x2="426" y2="624" stroke="#a78bfa" stroke-width="2" marker-end="url(#arrowPurple)"/>
+  <rect x="404" y="570" width="68" height="16" rx="3" fill="#6d28d9" opacity="0.4"/>
+  <text x="438" y="581" text-anchor="middle" fill="#c4b5fd" font-size="8" font-weight="600">asyncpg</text>
+
+  <!-- Redis Repo → Redis -->
+  <line x1="634" y1="456" x2="700" y2="624" stroke="#f87171" stroke-width="2" marker-end="url(#arrowRed)"/>
+  <rect x="640" y="530" width="72" height="16" rx="3" fill="#991b1b" opacity="0.4"/>
+  <text x="676" y="541" text-anchor="middle" fill="#fca5a5" font-size="8" font-weight="600">redis.asyncio</text>
+
+  <!-- Redis → RedisInsight -->
+  <line x1="860" y1="660" x2="886" y2="660" stroke="#f87171" stroke-width="1" marker-end="url(#arrowRed)" stroke-dasharray="4,3"/>
+
+  <!-- Backend → Swagger -->
+  <line x1="750" y1="290" x2="786" y2="290" stroke="#fcd34d" stroke-width="1" marker-end="url(#arrowWhite)" stroke-dasharray="4,3"/>
+
+  <!-- ==================== LEGEND ==================== -->
+  <rect x="890" y="470" width="260" height="124" rx="8" fill="#0f172a" stroke="#334155" stroke-width="0.8"/>
+  <text x="1020" y="490" text-anchor="middle" fill="#94a3b8" font-size="9" font-weight="600" letter-spacing="0.8">LEGEND</text>
+
+  <line x1="906" y1="504" x2="936" y2="504" stroke="#22d3ee" stroke-width="2"/>
+  <text x="944" y="508" fill="#94a3b8" font-size="8">HTTP / REST (Axios)</text>
+
+  <line x1="906" y1="520" x2="936" y2="520" stroke="#a78bfa" stroke-width="2"/>
+  <text x="944" y="524" fill="#94a3b8" font-size="8">Database connection (asyncpg)</text>
+
+  <line x1="906" y1="536" x2="936" y2="536" stroke="#f87171" stroke-width="2"/>
+  <text x="944" y="540" fill="#94a3b8" font-size="8">Redis connection (redis.asyncio)</text>
+
+  <line x1="906" y1="552" x2="936" y2="552" stroke="#4ade80" stroke-width="1.3"/>
+  <text x="944" y="556" fill="#94a3b8" font-size="8">Internal layer communication</text>
+
+  <line x1="906" y1="568" x2="936" y2="568" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="944" y="572" fill="#94a3b8" font-size="8">Dev / tooling connection</text>
+
+  <rect x="906" y="582" width="30" height="6" rx="2" fill="#dc2680" opacity="0.7"/>
+  <text x="944" y="588" fill="#94a3b8" font-size="8">React Query server-state cache</text>
+
+  <!-- ==================== TECH BADGES ==================== -->
+  <rect x="30" y="88" width="250" height="3" rx="1.5" fill="#60a5fa" opacity="0.6"/>
+  <rect x="30" y="260" width="210" height="3" rx="1.5" fill="#2563eb" opacity="0.8"/>
+  <rect x="310" y="260" width="440" height="3" rx="1.5" fill="#16a34a" opacity="0.8"/>
+  <rect x="310" y="628" width="260" height="3" rx="1.5" fill="#8b5cf6" opacity="0.8"/>
+  <rect x="600" y="628" width="260" height="3" rx="1.5" fill="#ef4444" opacity="0.8"/>
+
+  <!-- Footer -->
+  <text x="600" y="862" text-anchor="middle" fill="#475569" font-size="10">github.com/kevincontri/task-flow</text>
+</svg>
