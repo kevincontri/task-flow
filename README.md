@@ -12,7 +12,7 @@ https://github.com/user-attachments/assets/8e5cc61a-6d56-4a45-951a-8ee7b7a53885
 
 ## Project Architecture Diagram:
 
-![TaskFlow System Architecture]
+![TaskFlow System Architecture](./taskflow-architecture-updated.svg)
 
 ## Features
 
