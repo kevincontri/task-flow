@@ -1,7 +1,7 @@
 import { delay, http, HttpResponse } from "msw";
 import { LoginRequest, TokenResponse, RegisterRequest, UserBase } from "../types/auth_types";
-import { ProjectBase } from "../types/project_types";
-import { TaskBase } from "../types/task_types";
+import { ProjectBase, ProjectCreate } from "../types/project_types";
+import { TaskBase, TaskCreate } from "../types/task_types";
 
 
 export const handlers = [
@@ -92,6 +92,7 @@ export const handlers = [
   // Mock to create a comment
   http.post("*/projects/:projectId/tasks/:taskId/comments", async ({ params, request }) => {
     const taskId: number = Number(params.taskId);
+    await delay(2000); // Simulate network delay
     const body = await request.json() as { content: string };
     return HttpResponse.json({
       id: 1,
@@ -108,14 +109,32 @@ export const handlers = [
   }),
 
   // Mock to create a project
-  http.post<any, { name: string; description: string }, ProjectBase>("*/projects", async ({ request }) => {
+  http.post<any, ProjectCreate, ProjectBase>("*/projects", async ({ request }) => {
     const body = await request.json();
+    await delay(5000); // Simulate network delay
     return HttpResponse.json({
       id: 4,
       name: body.name,
       description: body.description,
       created_at: new Date().toISOString(),
       owner_id: 1
+    }, { status: 201 });
+  }),
+
+  // Mock to create a task
+  http.post<any, TaskCreate, TaskBase>("*/projects/:projectId/tasks", async ({ params, request }) => {
+    const { projectId } = params;
+    const body = await request.json();
+    await delay(5000); // Simulate network delay
+    return HttpResponse.json({
+      id: 4,
+      name: body.name,
+      description: body.description,
+      status: body.status,
+      priority: body.priority,
+      deadline: body.deadline,
+      project_id: Number(projectId),
+      created_at: new Date().toISOString()
     }, { status: 201 });
   }),
 ];

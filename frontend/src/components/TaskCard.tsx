@@ -58,7 +58,7 @@ export default function TaskCard({ task, onEdit, onDelete, onOpenComments }: { t
     <div
       ref={setNodeRef}
       style={style}
-      className={`task-card ${task.status === 'done' ? 'task-card-done' : ''}`}
+      className={`task-card ${task.status === 'done' ? 'task-card-done' : ''} ${task._optimistic ? 'disabled' : ''}`}
       {...attributes}
       {...listeners}
     >

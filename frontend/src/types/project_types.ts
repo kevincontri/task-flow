@@ -17,6 +17,7 @@ export interface ProjectModalProps {
   onSave: (data: ProjectCreate | ProjectUpdate) => void;
   onClose: () => void;
   isSaving?: boolean; // Optional prop to indicate saving state
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>; // Optional prop to control modal visibility
 }
 
 export interface ProjectCardProps {

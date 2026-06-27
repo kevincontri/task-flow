@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* ── Backdrop ── */
 .modal-backdrop {
   position: fixed;
@@ -22,22 +24,10 @@
 }
 
 /* ── Card ── */
-.modal-card {
-  background: rgba(12, 32, 18, 0.95);
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 24px;
-  padding: 36px;
-  width: 100%;
-  max-width: 440px;
-  max-height: 80vh;
-  overflow: hidden;
-  box-shadow:
-    0 32px 80px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.09);
-  font-family: "DM Sans", sans-serif;
-  animation: modalIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+@layer components {
+  .modal-card {
+    @apply bg-[rgba(12,32,18,0.95)] backdrop-blur-[32px] border-[rgba(255,255,255,0.16)] rounded-[24px] p-9 w-full max-w-110 max-h-[80vh] overflow-y-auto md:overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.09)] font-[DM_Sans,sans-serif] animate-[modalIn_0.3s_cubic-bezier(0.22,1,0.36,1)_both];
+  }
 }
 
 @keyframes modalIn {

@@ -49,7 +49,7 @@ export default function CommentModal({
           </p>
         )}
         {comments.map((c) => (
-          <div key={c.id} className="comment">
+          <div key={c.id} className={`comment ${c._optimistic ? 'disabled' : ''}`}>
             <div className="comment-header">
               <div className="comment-date">
                 <p>{c.created_at.slice(0, 10)}</p>

@@ -6,7 +6,7 @@ import LanguageContext from "../contexts/LanguageContext.tsx";
 import { ProjectModalProps } from "../types/project_types";
 import { useQueryClient } from "@tanstack/react-query";
 
-export default function ProjectModal({ project, onSave, onClose, isSaving = false }: ProjectModalProps) {
+export default function ProjectModal({ project, onSave, onClose, isSaving = false, setShowModal }: ProjectModalProps) {
   const { language } = useContext(LanguageContext);
   const [name, setName] = useState(project?.name || "");
   const [description, setDescription] = useState(project?.description || "");
@@ -38,6 +38,7 @@ export default function ProjectModal({ project, onSave, onClose, isSaving = fals
       );
     }
 
+    setShowModal(false);
     onSave({ name, description });
   };
 

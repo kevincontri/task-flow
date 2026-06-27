@@ -26,11 +26,10 @@ export default function ProjectCard({ project, onEdit, onDelete, isDeleting }: P
   const tasksCount = tasks?.length || -1;
 
   return (
-    <div className="project-card">
+    <div className={`project-card ${project._optimistic ? 'disabled' : ''}`}>
       <div
         className="project-card-body"
         onClick={() => {
-          if (project._optimistic) return;
           navigate(`/board/${project.id}`, { state: { projectName: project.name } });
 }}
       >
@@ -54,13 +53,21 @@ export default function ProjectCard({ project, onEdit, onDelete, isDeleting }: P
       </div>
 
       <div className="project-card-footer">
-        <button className="btn-card-edit" onClick={() => onEdit(project)}>
+        <button 
+        className="btn-card-edit" 
+        onClick={() => {
+          onEdit(project)
+          }}
+        disabled={ isDeleting }
+        >
           {language === "en" ? "Edit" : "Editar"}
         </button>
         <button
           className="btn-card-delete"
-          onClick={() => onDelete(project.id)}
-          disabled={isDeleting}
+          onClick={() => {
+            onDelete(project.id)
+          }}
+          disabled={ isDeleting }
         >
           {(language === "en" ? "Delete" : "Excluir")}
         </button>

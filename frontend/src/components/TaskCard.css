@@ -11,6 +11,11 @@
     border-color 0.2s ease;
 }
 
+.disabled {
+  background: rgba(255, 255, 255, 0.02);
+  pointer-events: none;
+}
+
 .task-card-done {
   background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.07);

@@ -62,9 +62,7 @@ export default function Register() {
 
   return (
     <div className="login-page">
-      { showAlert && (
-        <DevAlert language={language} setShowAlert={setShowAlert} />
-      )}
+      <DevAlert language={language} setShowAlert={setShowAlert} showAlert={showAlert}/>
       <div className="hill hill-far" />
       <div className="hill hill-mid" />
       <div className="hill hill-near" />

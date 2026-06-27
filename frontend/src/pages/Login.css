@@ -152,7 +152,7 @@
 /* ── Loading alert ── */
 @layer alert-utils {
   .login-alert-container {
-    @apply fixed bottom-10 left-1/2 transform -translate-x-1/2 z-50 w-[90%] max-w-[400px];
+    @apply fixed bottom-5 right-5 z-50 w-[90%] max-w-[400px];
   }
 }
 
@@ -163,24 +163,24 @@
   gap: 16px;
 }
 
-.field-group {
+.login-page .field-group {
   display: flex;
   flex-direction: column;
   gap: 7px;
 }
 
-.field-group label {
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.75);
-  letter-spacing: 0.06em;
+.login-page .field-group label {
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
-.field-group input {
+.login-page .field-group input {
   width: 100%;
   padding: 13px 16px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.20);
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 12px;
   color: #fff;
@@ -194,11 +194,11 @@
     background 0.2s ease;
 }
 
-.field-group input::placeholder {
-  color: rgba(255, 255, 255, 0.35);
+.login-page .field-group input::placeholder {
+  color: rgba(255, 255, 255, 0.85);
 }
 
-.field-group input:focus {
+.login-page .field-group input:focus {
   background: rgba(255, 255, 255, 0.18);
   border-color: rgba(134, 239, 172, 0.65);
   box-shadow: 0 0 0 3px rgba(134, 239, 172, 0.18);

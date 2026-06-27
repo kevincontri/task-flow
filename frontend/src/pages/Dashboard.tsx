@@ -16,6 +16,7 @@ import LanguageContext from "../contexts/LanguageContext.tsx";
 import { ProjectBase, ProjectUpdate, ProjectCreate } from "../types/project_types";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 
+
 export default function Dashboard() {
   const { language, setLanguage } = useContext(LanguageContext);
   const [showModal, setShowModal] = useState(false);
@@ -238,6 +239,7 @@ export default function Dashboard() {
           onSave={saveProject}
           onClose={() => setShowModal(false)}
           isSaving={isSaving}
+          setShowModal={setShowModal}
         />
       )}
     </div>
